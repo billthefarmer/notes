@@ -1,2 +1,2 @@
-# notes
+# Notes
 Android notepad
