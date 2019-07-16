@@ -456,4 +456,350 @@ public class Notes extends Activity
                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         startActivity(intent);
     }
+
+    // openFile
+    private void openFile()
+    {
+        // Check if file changed
+        if (changed)
+            alertDialog(R.string.open, R.string.modified,
+                        R.string.save, R.string.discard, (dialog, id) ->
+        {
+            switch (id)
+            {
+            case DialogInterface.BUTTON_POSITIVE:
+                saveFile();
+                getFile();
+                break;
+
+            case DialogInterface.BUTTON_NEGATIVE:
+                changed = false;
+                getFile();
+                break;
+            }
+        });
+
+        else
+            getFile();
+
+    }
+
+    // getFile
+    private void getFile()
+    {
+        // Check permissions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED)
+            {
+                requestPermissions(new String[]
+                    {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                     Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_OPEN);
+                return;
+            }
+        }
+
+        // Open parent folder
+        File dir = file.getParentFile();
+        getFile(dir);
+    }
+
+    // getFile
+    private void getFile(File dir)
+    {
+        // Get list of files
+        List<File> list = getList(dir);
+        if (list == null)
+            return;
+
+        // Pop up dialog
+        String title = FOLDER + dir.getPath();
+        openDialog(title, list, (dialog, which) ->
+            {
+                File selection = list.get(which);
+                if (selection.isDirectory())
+                    getFile(selection);
+
+                else
+                    readFile(Uri.fromFile(selection));
+            });
+    }
+
+    // getList
+    private List<File> getList(File dir)
+    {
+        List<File> list = null;
+        File[] files = dir.listFiles();
+        // Check files
+        if (files == null)
+        {
+            // Create a list with just the parent folder and the
+            // external storage folder
+            list = new ArrayList<File>();
+
+            if (dir.getParentFile() == null)
+                list.add(dir);
+
+            else
+                list.add(dir.getParentFile());
+
+            list.add(Environment.getExternalStorageDirectory());
+            return list;
+        }
+
+        // Sort the files
+        Arrays.sort(files);
+        // Create a list
+        list = new ArrayList<File>(Arrays.asList(files));
+        // Remove hidden files
+        Iterator<File> iterator = list.iterator();
+        while (iterator.hasNext())
+        {
+            File item = iterator.next();
+            if (item.getName().startsWith("."))
+                iterator.remove();
+        }
+
+        // Add parent folder
+        if (dir.getParentFile() == null)
+            list.add(0, dir);
+
+        else
+            list.add(0, dir.getParentFile());
+
+        return list;
+    }
+
+    // openDialog
+    private void openDialog(String title, List<File> list,
+                            DialogInterface.OnClickListener listener)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+
+        // Add the adapter
+        FileAdapter adapter = new FileAdapter(builder.getContext(), list);
+        builder.setAdapter(adapter, listener);
+
+        // Add the button
+        builder.setNegativeButton(R.string.cancel, null);
+
+        // Create the Dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    // onRequestPermissionsResult
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions,
+                                           int[] grantResults)
+    {
+        switch (requestCode)
+        {
+        case REQUEST_SAVE:
+            for (int i = 0; i < grantResults.length; i++)
+                if (permissions[i].equals(Manifest.permission
+                                          .WRITE_EXTERNAL_STORAGE) &&
+                    grantResults[i] == PackageManager.PERMISSION_GRANTED)
+                    // Granted, save file
+                    saveFile();
+            break;
+
+        case REQUEST_READ:
+            for (int i = 0; i < grantResults.length; i++)
+                if (permissions[i].equals(Manifest.permission
+                                          .READ_EXTERNAL_STORAGE) &&
+                    grantResults[i] == PackageManager.PERMISSION_GRANTED)
+                    // Granted, read file
+                    readFile(readUri);
+            break;
+
+        case REQUEST_OPEN:
+            for (int i = 0; i < grantResults.length; i++)
+                if (permissions[i].equals(Manifest.permission
+                                          .READ_EXTERNAL_STORAGE) &&
+                    grantResults[i] == PackageManager.PERMISSION_GRANTED)
+                    // Granted, open file
+                    getFile();
+            break;
+        }
+    }
+
+    // readFile
+    private void readFile(Uri uri)
+    {
+        if (uri == null)
+            return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED)
+            {
+                requestPermissions(new String[]
+                    {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                     Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ);
+                readUri = uri;
+                return;
+            }
+        }
+
+        content = null;
+
+        // Attempt to resolve content uri
+        if (CONTENT.equalsIgnoreCase(uri.getScheme()))
+            uri = resolveContent(uri);
+
+        // Read into default file if unresolved
+        if (CONTENT.equalsIgnoreCase(uri.getScheme()))
+        {
+            content = uri;
+            file = getDefaultFile();
+            Uri defaultUri = Uri.fromFile(file);
+            path = defaultUri.getPath();
+
+            String title = uri.getLastPathSegment();
+            setTitle(title);
+        }
+
+        // Read file
+        else
+        {
+            path = uri.getPath();
+            file = new File(path);
+
+            String title = uri.getLastPathSegment();
+            setTitle(title);
+        }
+
+        textView.setText(R.string.loading);
+
+        ReadTask read = new ReadTask(this);
+        read.execute(uri);
+
+        changed = false;
+        modified = file.lastModified();
+        savePath(path);
+        invalidateOptionsMenu();
+    }
+
+    // resolveContent
+    private Uri resolveContent(Uri uri)
+    {
+        String path = FileUtils.getPath(this, uri);
+
+        if (path != null)
+        {
+            File file = new File(path);
+            if (file.canRead())
+                uri = Uri.fromFile(file);
+        }
+
+        return uri;
+    }
+
+    // saveFile
+    private void saveFile()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED)
+            {
+                requestPermissions(new String[]
+                    {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                     Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_SAVE);
+                return;
+            }
+        }
+
+        if (file.lastModified() > modified)
+            alertDialog(R.string.appName, R.string.changedOverwrite,
+                        R.string.overwrite, R.string.cancel, (dialog, id) ->
+        {
+            switch (id)
+            {
+            case DialogInterface.BUTTON_POSITIVE:
+                saveFile(file);
+                break;
+            }
+        });
+
+        else
+        {
+            if (content == null)
+                saveFile(file);
+
+            else
+                saveFile(content);
+        }
+    }
+
+    // saveFile
+    private void saveFile(File file)
+    {
+        CharSequence text = textView.getText();
+        write(text, file);
+    }
+
+    // saveFile
+    private void saveFile(Uri uri)
+    {
+        CharSequence text = textView.getText();
+        try (OutputStream outputStream =
+             getContentResolver().openOutputStream(uri))
+        {
+            write(text, outputStream);
+        }
+
+        catch (Exception e)
+        {
+            alertDialog(R.string.appName, e.getMessage(), R.string.ok);
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    // write
+    private void write(CharSequence text, File file)
+    {
+        file.getParentFile().mkdirs();
+        try (FileWriter fileWriter = new FileWriter(file))
+        {
+            fileWriter.append(text);
+        }
+
+        catch (Exception e)
+        {
+            alertDialog(R.string.appName, e.getMessage(), R.string.ok);
+            e.printStackTrace();
+            return;
+        }
+
+        changed = false;
+        invalidateOptionsMenu();
+        modified = file.lastModified();
+        savePath(file.getPath());
+    }
+
+    // write
+    private void write(CharSequence text, OutputStream os)
+    {
+        try (OutputStreamWriter writer = new OutputStreamWriter(os))
+        {
+            writer.append(text);
+        }
+
+        catch (Exception e)
+        {
+            alertDialog(R.string.appName, e.getMessage(), R.string.ok);
+            e.printStackTrace();
+            return;
+        }
+
+        changed = false;
+        invalidateOptionsMenu();
+    }
 }
