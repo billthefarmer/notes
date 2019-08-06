@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="app_name">Notes</string>
+  <string name="appName">Notes</string>
+  <string name="open">Open</string>
+  <string name="openRecent">Open recent</string>
+  <string name="save">Save</string>
+  <string name="saveAs">Save as</string>
+  <string name="search">Search</string>
+  <string name="addTime">Add time</string>
+  <string name="addMedia">Add media</string>
+  <string name="editStyles">Edit styles</string>
+  <string name="editScript">Edit script</string>
 
 </resources>

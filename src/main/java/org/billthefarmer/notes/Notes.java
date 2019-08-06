@@ -24,6 +24,23 @@ package org.billthefarmer.notes;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.Spanned;
+import android.text.TextWatcher;
+import android.text.style.BackgroundColorSpan;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -36,6 +53,16 @@ import android.support.v4.content.FileProvider;
 
 import org.billthefarmer.markdown.MarkdownView;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,15 +73,26 @@ public class Notes extends Activity
     public final static String CONTENT = "content";
     public final static String PREF_DARK = "dark";
 
+    private static final int EDIT_TEXT = 0;
+    private static final int MARKDOWN = 1;
+    private static final int ACCEPT = 0;
+    private static final int EDIT = 1;
+
     private EditText textView;
     private ScrollView scrollView;
 
     private MarkdownView markdownView;
-    private ViewSwitcher layoutSwitcher;
+    private ViewSwitcher viewSwitcher;
     private ViewSwitcher buttonSwitcher;
 
     private SearchView searchView;
     private MenuItem searchItem;
+
+    private View accept;
+    private View edit;
+
+    private boolean changed = false;
+    private boolean shown = true;
 
     // onCreate
     @Override
@@ -72,7 +110,7 @@ public class Notes extends Activity
         if (dark)
             setTheme(R.style.AppDarkTheme);
 
-        setContentView(R.layout.editor);
+        setContentView(R.layout.main);
 
         textView = findViewById(R.id.text);
         scrollView = findViewById(R.id.scroll);
@@ -81,7 +119,7 @@ public class Notes extends Activity
         accept = findViewById(R.id.accept);
         edit = findViewById(R.id.edit);
 
-        layoutSwitcher = findViewById(R.id.layout_switcher);
+        viewSwitcher = findViewById(R.id.view_switcher);
         buttonSwitcher = findViewById(R.id.button_switcher);
 
         WebSettings settings = markdownView.getSettings();
@@ -180,14 +218,11 @@ public class Notes extends Activity
     public void onBackPressed()
     {
         // External
-        else
-        {
-            if (markdownView.canGoBack())
-                markdownView.goBack();
+        if (markdownView.canGoBack())
+            markdownView.goBack();
 
-            else
-                super.onBackPressed();
-        }
+        else
+            super.onBackPressed();
     }
 
     private void setListeners()
@@ -247,8 +282,6 @@ public class Notes extends Activity
                     loadMarkdown();
                     // Clear flag
                     changed = false;
-                    // Set flag
-                    entry = true;
                 }
 
                 // Animation
@@ -335,7 +368,7 @@ public class Notes extends Activity
     public void animateAccept()
     {
         // Animation
-        layoutSwitcher.setDisplayedChild(MARKDOWN);
+        viewSwitcher.setDisplayedChild(MARKDOWN);
         buttonSwitcher.setDisplayedChild(EDIT);
     }
 
@@ -343,7 +376,7 @@ public class Notes extends Activity
     private void animateEdit()
     {
         // Animation
-        layoutSwitcher.setDisplayedChild(EDIT_TEXT);
+        viewSwitcher.setDisplayedChild(EDIT_TEXT);
         buttonSwitcher.setDisplayedChild(ACCEPT);
     }
 
@@ -405,18 +438,18 @@ public class Notes extends Activity
             // Check if shown
             if (shown)
             {
-                layoutSwitcher.setDisplayedChild(MARKDOWN);
+                viewSwitcher.setDisplayedChild(MARKDOWN);
                 buttonSwitcher.setDisplayedChild(EDIT);
             }
             else
             {
-                layoutSwitcher.setDisplayedChild(EDIT_TEXT);
+                viewSwitcher.setDisplayedChild(EDIT_TEXT);
                 buttonSwitcher.setDisplayedChild(ACCEPT);
             }
         }
         else
         {
-            layoutSwitcher.setDisplayedChild(EDIT_TEXT);
+            viewSwitcher.setDisplayedChild(EDIT_TEXT);
             buttonSwitcher.setVisibility(View.GONE);
         }
     }
@@ -700,6 +733,11 @@ public class Notes extends Activity
         return uri;
     }
 
+    // save
+    private void save()
+    {
+    }
+
     // saveFile
     private void saveFile()
     {
@@ -801,5 +839,105 @@ public class Notes extends Activity
 
         changed = false;
         invalidateOptionsMenu();
+    }
+
+    // QueryTextListener
+    private class QueryTextListener
+        implements SearchView.OnQueryTextListener
+    {
+        private BackgroundColorSpan span = new
+        BackgroundColorSpan(Color.YELLOW);
+        private Editable editable;
+        private Pattern pattern;
+        private Matcher matcher;
+        private int index;
+        private int height;
+
+        // onQueryTextChange
+        @Override
+        @SuppressWarnings("deprecation")
+        public boolean onQueryTextChange(String newText)
+        {
+            // Use web view functionality
+            if (shown)
+                markdownView.findAll(newText);
+
+            // Use regex search and spannable for highlighting
+            else
+            {
+                height = scrollView.getHeight();
+                editable = textView.getEditableText();
+
+                // Reset the index and clear highlighting
+                if (newText.length() == 0)
+                {
+                    index = 0;
+                    editable.removeSpan(span);
+                }
+
+                // Get pattern
+                pattern = Pattern.compile(newText,
+                                          Pattern.CASE_INSENSITIVE |
+                                          Pattern.LITERAL |
+                                          Pattern.UNICODE_CASE);
+                // Find text
+                matcher = pattern.matcher(editable);
+                if (matcher.find(index))
+                {
+                    // Get index
+                    index = matcher.start();
+
+                    // Get text position
+                    int line = textView.getLayout().getLineForOffset(index);
+                    int position = textView.getLayout().getLineBaseline(line);
+
+                    // Scroll to it
+                    scrollView.smoothScrollTo(0, position - height / 2);
+
+                    // Highlight it
+                    editable.setSpan(span, matcher.start(), matcher.end(),
+                                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+            }
+
+            return true;
+        }
+
+        // onQueryTextSubmit
+        @Override
+        public boolean onQueryTextSubmit(String query)
+        {
+            // Use web view functionality
+            if (shown)
+                markdownView.findNext(true);
+
+            // Use regex search and spannable for highlighting
+            else
+            {
+                // Find next text
+                if (matcher.find())
+                {
+                    // Get index
+                    index = matcher.start();
+
+                    // Get text position
+                    int line = textView.getLayout().getLineForOffset(index);
+                    int position = textView.getLayout().getLineBaseline(line);
+
+                    // Scroll to it
+                    scrollView.smoothScrollTo(0, position - height / 2);
+
+                    // Highlight it
+                    editable.setSpan(span, matcher.start(), matcher.end(),
+                                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+
+                // Reset matcher
+                if (matcher.hitEnd())
+                    matcher.reset();
+            }
+
+            return true;
+        }
     }
 }

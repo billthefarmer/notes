@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+  <declare-styleable name="Notes">
+
+    <attr name="application" format="reference" />
+    <attr name="external" format="reference" />
+    <attr name="folder" format="reference" />
+    <attr name="parent" format="reference" />
+    <attr name="audio" format="reference" />
+    <attr name="image" format="reference" />
+    <attr name="video" format="reference" />
+    <attr name="file" format="reference" />
+
+    <attr name="pref_about" format="reference" />
+    <attr name="pref_calendar" format="reference" />
+    <attr name="pref_copy_media" format="reference" />
+    <attr name="pref_dark_theme" format="reference" />
+    <attr name="pref_external" format="reference" />
+    <attr name="pref_folder" format="reference" />
+    <attr name="pref_index_page" format="reference" />
+    <attr name="pref_markdown" format="reference" />
+    <attr name="pref_use_index" format="reference" />
+
+  </declare-styleable>
+
+</resources>
