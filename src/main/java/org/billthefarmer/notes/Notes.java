@@ -65,6 +65,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -84,10 +87,17 @@ public class Notes extends Activity
     private final static String JS_SCRIPT = "js/script.js";
     private final static String TEXT_JAVASCRIPT = "text/javascript";
 
+    public final static String DOCUMENTS = "Documents";
+    public final static String FOLDER = "Folder:  ";
+
     private static final int EDIT_TEXT = 0;
     private static final int MARKDOWN = 1;
     private static final int ACCEPT = 0;
     private static final int EDIT = 1;
+
+    private final static int REQUEST_READ = 1;
+    private final static int REQUEST_SAVE = 2;
+    private final static int REQUEST_OPEN = 3;
 
     private final static int POSITION_DELAY = 128;
 
@@ -105,6 +115,10 @@ public class Notes extends Activity
     private View edit;
 
     private String folder = NOTES;
+
+    private File file;
+    private String path;
+    private Uri readUri;
 
     private boolean changed = false;
     private boolean shown = true;
@@ -531,6 +545,37 @@ public class Notes extends Activity
         else
             getFile();
 
+    }
+
+    // alertDialog
+    private void alertDialog(int title, int message,
+                             int positiveButton, int negativeButton,
+                             DialogInterface.OnClickListener listener)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        // Add the buttons
+        builder.setPositiveButton(positiveButton, listener);
+        builder.setNegativeButton(negativeButton, listener);
+
+        // Create the AlertDialog
+        builder.show();
+    }
+
+    // alertDialog
+    private void alertDialog(int title, String message, int neutralButton)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        // Add the buttons
+        builder.setNeutralButton(neutralButton, null);
+
+        // Create the AlertDialog
+        builder.show();
     }
 
     // getFile
