@@ -25,22 +25,25 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -69,14 +72,24 @@ import java.util.regex.Pattern;
 public class Notes extends Activity
 {
     public final static String TAG = "Notes";
+    public final static String NOTES = "Notes";
     public final static String CHANGED = "changed";
     public final static String CONTENT = "content";
     public final static String PREF_DARK = "dark";
+
+    private final static String STYLES = "file:///android_asset/styles.css";
+    private final static String SCRIPT = "file:///android_asset/script.js";
+    private final static String CSS_STYLES = "css/styles.css";
+    private final static String TEXT_CSS = "text/css";
+    private final static String JS_SCRIPT = "js/script.js";
+    private final static String TEXT_JAVASCRIPT = "text/javascript";
 
     private static final int EDIT_TEXT = 0;
     private static final int MARKDOWN = 1;
     private static final int ACCEPT = 0;
     private static final int EDIT = 1;
+
+    private final static int POSITION_DELAY = 128;
 
     private EditText textView;
     private ScrollView scrollView;
@@ -90,6 +103,8 @@ public class Notes extends Activity
 
     private View accept;
     private View edit;
+
+    private String folder = NOTES;
 
     private boolean changed = false;
     private boolean shown = true;
@@ -397,14 +412,23 @@ public class Notes extends Activity
     // getBaseUrl
     private String getBaseUrl()
     {
-        return Uri.fromFile(getCurrent()).toString() + File.separator;
+        return Uri.fromFile(getHome()).toString() + File.separator;
     }
 
-    // getCurrent
-    private File getCurrent()
+    // getHome
+    private File getHome()
     {
-        return getMonth(currEntry.get(Calendar.YEAR),
-                        currEntry.get(Calendar.MONTH));
+        File file = new File(folder);
+        if (file.isAbsolute() && file.isDirectory() && file.canWrite())
+            return file;
+
+        return new File(Environment.getExternalStorageDirectory(), folder);
+    }
+
+    // markdownCheck
+    private String markdownCheck(CharSequence text)
+    {
+        return text.toString();
     }
 
     // getStyles
@@ -432,25 +456,17 @@ public class Notes extends Activity
     // setVisibility
     private void setVisibility()
     {
-        if (markdown)
+        buttonSwitcher.setVisibility(View.VISIBLE);
+        // Check if shown
+        if (shown)
         {
-            buttonSwitcher.setVisibility(View.VISIBLE);
-            // Check if shown
-            if (shown)
-            {
-                viewSwitcher.setDisplayedChild(MARKDOWN);
-                buttonSwitcher.setDisplayedChild(EDIT);
-            }
-            else
-            {
-                viewSwitcher.setDisplayedChild(EDIT_TEXT);
-                buttonSwitcher.setDisplayedChild(ACCEPT);
-            }
+            viewSwitcher.setDisplayedChild(MARKDOWN);
+            buttonSwitcher.setDisplayedChild(EDIT);
         }
         else
         {
             viewSwitcher.setDisplayedChild(EDIT_TEXT);
-            buttonSwitcher.setVisibility(View.GONE);
+            buttonSwitcher.setDisplayedChild(ACCEPT);
         }
     }
 
