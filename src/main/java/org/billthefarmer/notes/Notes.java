@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -64,6 +65,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+
+import java.lang.ref.WeakReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,6 +122,7 @@ public class Notes extends Activity
     private File file;
     private String path;
     private Uri readUri;
+    private Uri content;
 
     private boolean changed = false;
     private boolean shown = true;
@@ -999,6 +1003,63 @@ public class Notes extends Activity
             }
 
             return true;
+        }
+    }
+
+    // ReadTask
+    private static class ReadTask
+        extends AsyncTask<Uri, Void, CharSequence>
+    {
+        private WeakReference<Notes> notesWeakReference;
+
+        public ReadTask(Notes notes)
+        {
+            notesWeakReference = new WeakReference<>(notes);
+        }
+
+        // doInBackground
+        @Override
+        protected CharSequence doInBackground(Uri... uris)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            final Notes notes = notesWeakReference.get();
+            if (notes == null)
+                return stringBuilder;
+
+            try (InputStream inputStream = notes.getContentResolver()
+                 .openInputStream(uris[0]);
+                 BufferedReader reader = new BufferedReader
+                 (new InputStreamReader(inputStream)))
+            {
+                String line;
+                while ((line = reader.readLine()) != null)
+                {
+                    stringBuilder.append(line);
+                    stringBuilder.append(System.getProperty("line.separator"));
+                }
+            }
+
+            catch (Exception e)
+            {
+                notes.textView.post(() ->
+                                     notes.alertDialog(R.string.appName,
+                                                        e.getMessage(),
+                                                        R.string.ok));
+                e.printStackTrace();
+            }
+
+            return stringBuilder;
+        }
+
+        // onPostExecute
+        @Override
+        protected void onPostExecute(CharSequence result)
+        {
+            final Notes notes = notesWeakReference.get();
+            if (notes == null)
+                return;
+
+            notes.loadText(result);
         }
     }
 }
