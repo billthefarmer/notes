@@ -11,6 +11,26 @@
   <string name="addMedia">Add media</string>
   <string name="editStyles">Edit styles</string>
   <string name="editScript">Edit script</string>
+  <string name="settings">Settings</string>
+  <string name="folder">Folder</string>
+  <string name="theme">Theme</string>
+  <string name="pref_dark_theme">Dark</string>
+  <string name="pref_dark_theme_summ">
+    Use dark theme for editing
+  </string>
+  <string name="template">Template</string>
+  <string name="pref_use_template">Use template</string>
+  <string name="pref_use_template_summ">
+    Use template for notes
+  </string>
+  <string name="pref_template_page">Template page</string>
+  <string name="about">About</string>
+  <string name="pref_about_summ">Notes <a href="https://github.com/billthefarmer/notes/releases/latest">version %s</a></string>
+  <string name="built">Built %s</string>
+  <string name="licence">Licence <a href="https://www.gnu.org/licenses/gpl.txt">GNU GPLv3</a>
+  </string>
+  <string name="copyright">Copyright \u00A9 2017 <a href="https://billthefarmer.github.io">Bill Farmer</a>\nMarkdown view by <a href="https://github.com/falnatsheh/MarkdownView">Markdown View</a>
+  </string>
 
   <string name="choose">Choose a file name</string>
   <string name="loading">Loading…</string>

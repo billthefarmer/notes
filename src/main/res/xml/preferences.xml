@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/settings">
+
+  <PreferenceCategory
+      android:key="pref_folder_category"
+      android:title="@string/folder">
+
+    <EditTextPreference
+        android:defaultValue="Notes"
+        android:icon="?attr/pref_folder"
+        android:key="pref_folder"
+        android:persistent="true"
+        android:title="@string/folder" />
+
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:key="pref_template_category"
+      android:title="@string/template">
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:icon="?attr/pref_use_template"
+        android:key="pref_use_template"
+        android:persistent="true"
+        android:summary="@string/pref_use_template_summ"
+        android:title="@string/pref_use_template" />
+
+    <EditTextPreference
+        android:defaultValue="Template"
+        android:icon="?attr/pref_use_template"
+        android:key="pref_template"
+        android:persistent="true"
+        android:title="@string/folder" />
+
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:key="pref_theme_category"
+      android:title="@string/theme">
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:icon="?attr/pref_dark_theme"
+        android:key="pref_dark_theme"
+        android:persistent="true"
+        android:summary="@string/pref_dark_theme_summ"
+        android:title="@string/pref_dark_theme" />
+
+    <EditTextPreference
+        android:dependency="pref_use_template"
+        android:defaultValue="Notes"
+        android:icon="?attr/pref_folder"
+        android:key="pref_folder"
+        android:persistent="true"
+        android:title="@string/folder" />
+
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:key="pref_about_category"
+      android:title="@string/about">
+
+    <org.billthefarmer.notes.AboutPreference
+        android:dialogIcon="?attr/pref_about"
+        android:dialogLayout="@layout/about"
+        android:icon="?attr/pref_about"
+        android:key="pref_about"
+        android:negativeButtonText=""
+        android:summary="@string/pref_about_summ"
+        android:title="@string/about" />
+
+  </PreferenceCategory>
+
+</PreferenceScreen>

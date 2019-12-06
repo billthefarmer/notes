@@ -28,6 +28,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -70,8 +71,12 @@ import java.lang.ref.WeakReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -93,6 +98,9 @@ public class Notes extends Activity
     public final static String DOCUMENTS = "Documents";
     public final static String FOLDER = "Folder:  ";
 
+    public final static String NOTES_FILE = "Notes.md";
+    public final static String NOTES_FOLDER = "Notes";
+
     private static final int EDIT_TEXT = 0;
     private static final int MARKDOWN = 1;
     private static final int ACCEPT = 0;
@@ -103,6 +111,7 @@ public class Notes extends Activity
     private final static int REQUEST_OPEN = 3;
 
     private final static int POSITION_DELAY = 128;
+    private final static int MAX_PATHS = 10;
 
     private EditText textView;
     private ScrollView scrollView;
@@ -117,15 +126,21 @@ public class Notes extends Activity
     private View accept;
     private View edit;
 
+    private Map<String, Integer> pathMap;
+    private List<String> removeList;
+
     private String folder = NOTES;
 
     private File file;
     private String path;
     private Uri readUri;
     private Uri content;
+    private String append;
 
     private boolean changed = false;
     private boolean shown = true;
+
+    private long modified;
 
     // onCreate
     @Override
@@ -294,11 +309,11 @@ public class Notes extends Activity
         {
             // On long click
             markdownView.setOnLongClickListener(v ->
-            {
-                // Reveal button
-                edit.setVisibility(View.VISIBLE);
-                return false;
-            });
+                {
+                    // Reveal button
+                    edit.setVisibility(View.VISIBLE);
+                    return false;
+                });
         }
 
         if (accept != null)
@@ -495,7 +510,7 @@ public class Notes extends Activity
 
         // Get file provider uri
         Uri uri = FileProvider.getUriForFile
-            (this, "org.billthefarmer.diary.fileprovider", file);
+            (this, "org.billthefarmer.notes.fileprovider", file);
         if (BuildConfig.DEBUG)
             Log.d(TAG, "Path " + uri.getPath());
 
@@ -513,7 +528,7 @@ public class Notes extends Activity
 
         // Get file provider uri
         Uri uri = FileProvider.getUriForFile
-            (this, "org.billthefarmer.diary.fileprovider", file);
+            (this, "org.billthefarmer.notes.fileprovider", file);
         if (BuildConfig.DEBUG)
             Log.d(TAG, "Path " + uri.getPath());
 
@@ -798,6 +813,74 @@ public class Notes extends Activity
         return uri;
     }
 
+    // getDefaultFile
+    private File getDefaultFile()
+    {
+        File documents = new
+            File(Environment.getExternalStorageDirectory(), DOCUMENTS);
+        return new File(documents, NOTES_FILE);
+    }
+
+    // defaultFile
+    private void defaultFile(String text)
+    {
+        file = getDefaultFile();
+
+        Uri uri = Uri.fromFile(file);
+        path = uri.getPath();
+
+        if (file.exists())
+        {
+            readFile(uri);
+            append = text;
+        }
+
+        else
+        {
+            if (text != null)
+                textView.append(text);
+
+            String title = uri.getLastPathSegment();
+            setTitle(title);
+        }
+    }
+
+    // savePath
+    private void savePath(String path)
+    {
+        // Save the current position
+        pathMap.put(path, scrollView.getScrollY());
+
+        // Get a list of files
+        List<Long> list = new ArrayList<>();
+        Map<Long, String> map = new HashMap<>();
+        for (String name : pathMap.keySet())
+        {
+            File file = new File(name);
+            list.add(file.lastModified());
+            map.put(file.lastModified(), name);
+        }
+
+        // Sort in reverse order
+        Collections.sort(list);
+        Collections.reverse(list);
+
+        int count = 0;
+        for (long date : list)
+        {
+            String name = map.get(date);
+
+            // Remove old files
+            if (count >= MAX_PATHS)
+            {
+                pathMap.remove(name);
+                removeList.add(name);
+            }
+
+            count++;
+        }
+    }
+
     // save
     private void save()
     {
@@ -903,6 +986,40 @@ public class Notes extends Activity
         }
 
         changed = false;
+        invalidateOptionsMenu();
+    }
+
+    // loadText
+    private void loadText(CharSequence text)
+    {
+        if (textView != null)
+            textView.setText(text);
+
+        if (append != null)
+        {
+            textView.append(append);
+            append = null;
+            changed = true;
+        }
+
+        else
+            changed = false;
+
+        // Check for saved position
+        if (pathMap.containsKey(path))
+            textView.postDelayed(() ->
+                                 scrollView.smoothScrollTo
+                                 (0, pathMap.get(path)),
+                                 POSITION_DELAY);
+        else
+            textView.postDelayed(() ->
+                                 scrollView.smoothScrollTo(0, 0),
+                                 POSITION_DELAY);
+
+        // Dismiss keyboard
+        textView.clearFocus();
+
+        // Update menu
         invalidateOptionsMenu();
     }
 

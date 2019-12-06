@@ -50,5 +50,10 @@
       android:icon="@drawable/ic_action_save"
       android:showAsAction="ifRoom"
       android:title="@string/editScript" />
+  <item
+      android:id="@+id/settings"
+      android:icon="@drawable/ic_action_settings"
+      android:showAsAction="ifRoom"
+      android:title="@string/settings" />
 
 </menu>
