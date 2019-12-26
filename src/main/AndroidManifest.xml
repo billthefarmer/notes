@@ -6,8 +6,13 @@
     android:installLocation="auto"
     tools:ignore="GoogleAppIndexingWarning">
 
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.INTERNET" />
+
+  <meta-data
+      android:name="android.webkit.WebView.MetricsOptOut"
+      android:value="true" />
 
   <application
       android:allowBackup="true"
@@ -63,6 +68,10 @@
         <data android:mimeType="text/*" />
       </intent-filter>
     </activity>
+
+    <activity
+        android:name="Settings"
+        android:label="@string/settings" />
 
     <provider
         android:name="android.support.v4.content.FileProvider"
