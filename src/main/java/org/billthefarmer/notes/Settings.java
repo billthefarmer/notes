@@ -36,7 +36,7 @@ public class Settings extends Activity
     public final static String PREF_ABOUT = "pref_about";
     public final static String PREF_FOLDER = "pref_folder";
     public final static String PREF_USE_TEMPLATE = "pref_use_template";
-    public final static String PREF_TEMPLATE_PAGE = "pref_template_page";
+    public final static String PREF_TEMPLATE_FILE = "pref_template_file";
     public final static String PREF_DARK_THEME = "pref_dark_theme";
 
     // onCreate

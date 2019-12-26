@@ -29,11 +29,12 @@
         android:title="@string/pref_use_template" />
 
     <EditTextPreference
-        android:defaultValue="Template"
-        android:icon="?attr/pref_use_template"
-        android:key="pref_template"
+        android:dependency="pref_use_template"
+        android:defaultValue="Template.md"
+        android:icon="?attr/pref_template_file"
+        android:key="pref_template_file"
         android:persistent="true"
-        android:title="@string/folder" />
+        android:title="@string/pref_template_file" />
 
   </PreferenceCategory>
 
@@ -48,14 +49,6 @@
         android:persistent="true"
         android:summary="@string/pref_dark_theme_summ"
         android:title="@string/pref_dark_theme" />
-
-    <EditTextPreference
-        android:dependency="pref_use_template"
-        android:defaultValue="Notes"
-        android:icon="?attr/pref_folder"
-        android:key="pref_folder"
-        android:persistent="true"
-        android:title="@string/folder" />
 
   </PreferenceCategory>
 

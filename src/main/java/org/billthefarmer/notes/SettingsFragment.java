@@ -62,10 +62,10 @@ public class SettingsFragment extends android.preference.PreferenceFragment
                                                 Notes.NOTES_FOLDER));
         // Get template preference
         EditTextPreference entry =
-            (EditTextPreference) findPreference(Settings.PREF_TEMPLATE_PAGE);
+            (EditTextPreference) findPreference(Settings.PREF_TEMPLATE_FILE);
 
         // Set template in text view
-        entry.setSummary(preferences.getString(Settings.PREF_TEMPLATE_PAGE,
+        entry.setSummary(preferences.getString(Settings.PREF_TEMPLATE_FILE,
                                                Notes.NOTES_FILE));
         // Get about summary
         Preference about = findPreference(Settings.PREF_ABOUT);
@@ -128,7 +128,7 @@ public class SettingsFragment extends android.preference.PreferenceFragment
             folder.setSummary(preferences.getString(key, Notes.NOTES_FOLDER));
         }
 
-        if (key.equals(Settings.PREF_TEMPLATE_PAGE))
+        if (key.equals(Settings.PREF_TEMPLATE_FILE))
         {
             // Get template preference
             EditTextPreference entry =

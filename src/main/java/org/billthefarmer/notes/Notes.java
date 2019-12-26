@@ -173,6 +173,8 @@ public class Notes extends Activity
         settings.setJavaScriptEnabled(true);
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
+
+        setListeners();
     }
 
     // onRestoreInstanceState
@@ -248,6 +250,9 @@ public class Notes extends Activity
         {
         case android.R.id.home:
             onBackPressed();
+            break;
+        case R.id.settings:
+            settings();
             break;
         default:
             return super.onOptionsItemSelected(item);
@@ -445,6 +450,12 @@ public class Notes extends Activity
     private String getBaseUrl()
     {
         return Uri.fromFile(getHome()).toString() + File.separator;
+    }
+
+    // settings
+    private void settings()
+    {
+        startActivity(new Intent(this, Settings.class));
     }
 
     // getHome

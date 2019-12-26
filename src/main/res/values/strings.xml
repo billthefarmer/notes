@@ -23,7 +23,7 @@
   <string name="pref_use_template_summ">
     Use template for notes
   </string>
-  <string name="pref_template_page">Template page</string>
+  <string name="pref_template_file">Template file</string>
   <string name="about">About</string>
   <string name="pref_about_summ">Notes <a href="https://github.com/billthefarmer/notes/releases/latest">version %s</a></string>
   <string name="built">Built %s</string>
