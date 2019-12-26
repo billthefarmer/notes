@@ -59,14 +59,14 @@ public class SettingsFragment extends android.preference.PreferenceFragment
 
         // Set folder in text view
         folder.setSummary(preferences.getString(Settings.PREF_FOLDER,
-                                                Notes.NOTES));
+                                                Notes.NOTES_FOLDER));
         // Get template preference
         EditTextPreference entry =
             (EditTextPreference) findPreference(Settings.PREF_TEMPLATE_PAGE);
 
         // Set template in text view
         entry.setSummary(preferences.getString(Settings.PREF_TEMPLATE_PAGE,
-                                               Notes.NOTES));
+                                               Notes.NOTES_FILE));
         // Get about summary
         Preference about = findPreference(Settings.PREF_ABOUT);
         String sum = about.getSummary().toString();
@@ -125,7 +125,7 @@ public class SettingsFragment extends android.preference.PreferenceFragment
                 (EditTextPreference) findPreference(key);
 
             // Set folder in text view
-            folder.setSummary(preferences.getString(key, Notes.NOTES));
+            folder.setSummary(preferences.getString(key, Notes.NOTES_FOLDER));
         }
 
         if (key.equals(Settings.PREF_TEMPLATE_PAGE))
@@ -136,7 +136,7 @@ public class SettingsFragment extends android.preference.PreferenceFragment
 
             
             // Set folder in text view
-            entry.setSummary(preferences.getString(key, Notes.NOTES));
+            entry.setSummary(preferences.getString(key, Notes.NOTES_FILE));
         }
 
         if (key.equals(Settings.PREF_DARK_THEME))

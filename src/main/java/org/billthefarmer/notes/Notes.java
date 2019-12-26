@@ -83,10 +83,9 @@ import java.util.regex.Pattern;
 public class Notes extends Activity
 {
     public final static String TAG = "Notes";
-    public final static String NOTES = "Notes";
+
     public final static String CHANGED = "changed";
     public final static String CONTENT = "content";
-    public final static String PREF_DARK = "dark";
 
     private final static String STYLES = "file:///android_asset/styles.css";
     private final static String SCRIPT = "file:///android_asset/script.js";
@@ -129,7 +128,7 @@ public class Notes extends Activity
     private Map<String, Integer> pathMap;
     private List<String> removeList;
 
-    private String folder = NOTES;
+    private String folder = NOTES_FOLDER;
 
     private File file;
     private String path;
@@ -153,7 +152,7 @@ public class Notes extends Activity
             PreferenceManager.getDefaultSharedPreferences(this);
 
         boolean dark =
-                preferences.getBoolean(PREF_DARK, false);
+                preferences.getBoolean(Settings.PREF_DARK_THEME, false);
 
         if (dark)
             setTheme(R.style.AppDarkTheme);
@@ -816,9 +815,7 @@ public class Notes extends Activity
     // getDefaultFile
     private File getDefaultFile()
     {
-        File documents = new
-            File(Environment.getExternalStorageDirectory(), DOCUMENTS);
-        return new File(documents, NOTES_FILE);
+        return new File(getHome(), NOTES_FILE);
     }
 
     // defaultFile
