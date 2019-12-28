@@ -94,11 +94,11 @@ public class Notes extends Activity
     private final static String JS_SCRIPT = "js/script.js";
     private final static String TEXT_JAVASCRIPT = "text/javascript";
 
-    public final static String DOCUMENTS = "Documents";
     public final static String FOLDER = "Folder:  ";
 
-    public final static String NOTES_FILE = "Notes.md";
     public final static String NOTES_FOLDER = "Notes";
+    public final static String NOTES_FILE = "Notes.md";
+    public final static String NOTES_IMAGE = "Notes.png";
 
     private static final int EDIT_TEXT = 0;
     private static final int MARKDOWN = 1;
@@ -251,6 +251,33 @@ public class Notes extends Activity
         case android.R.id.home:
             onBackPressed();
             break;
+        case R.id.newNote:
+            newNote();
+            break;
+        case R.id.openNote:
+            openNote();
+            break;
+        case R.id.saveNote:
+            saveNote();
+            break;
+        case R.id.saveAs:
+            saveAs();
+            break;
+        case R.id.share:
+            share();
+            break;
+        case R.id.addTime:
+            addTime();
+            break;
+        case R.id.addMedia:
+            addMedia();
+            break;
+        case R.id.editStyles:
+            editStyles();
+            break;
+        case R.id.editScript:
+            editScript();
+            break;
         case R.id.settings:
             settings();
             break;
@@ -277,6 +304,7 @@ public class Notes extends Activity
             super.onBackPressed();
     }
 
+    // setListeners
     private void setListeners()
     {
         if (textView != null)
@@ -513,6 +541,192 @@ public class Notes extends Activity
         }
     }
 
+    // share
+    @SuppressWarnings("deprecation")
+    public void share()
+    {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_SUBJECT,
+                        getString(R.string.appName) + ": " +
+                        getTitle().toString());
+        if (shown)
+        {
+            intent.setType(IMAGE_PNG);
+            View v = markdownView.getRootView();
+            v.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v.getDrawingCache());
+            v.setDrawingCacheEnabled(false);
+
+            File image = new File(getCacheDir(), DIARY_IMAGE);
+            try (FileOutputStream out = new FileOutputStream(image))
+            {
+                bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+            }
+
+            catch (Exception e) {}
+            Uri imageUri = FileProvider
+                .getUriForFile(this, FILE_PROVIDER, image);
+            intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+        }
+
+        else
+        {
+            intent.setType(TEXT_PLAIN);
+            intent.putExtra(Intent.EXTRA_TEXT, textView.getText().toString());
+        }
+
+        startActivity(Intent.createChooser(intent, null));
+    }
+
+    // addTime
+    public void addTime()
+    {
+        DateFormat format = DateFormat.getTimeInstance(DateFormat.SHORT);
+        String time = format.format(new Date());
+        Editable editable = textView.getEditableText();
+        int position = textView.getSelectionStart();
+        editable.insert(position, time);
+        loadMarkdown();
+    }
+
+    // addMedia
+    public void addMedia()
+    {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType(WILD_WILD);
+        startActivityForResult(Intent.createChooser(intent, null), ADD_MEDIA);
+    }
+
+    // onActivityResult
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent data)
+    {
+        // Do nothing if cancelled
+        if (resultCode != RESULT_OK)
+            return;
+
+        if (requestCode == ADD_MEDIA)
+        {
+            // Get uri
+            Uri uri = data.getData();
+
+            // Resolve content uri
+            if (CONTENT.equalsIgnoreCase(uri.getScheme()))
+                uri = resolveContent(uri);
+
+            if (uri != null)
+            {
+                String type;
+
+                // Get type
+                if (CONTENT.equalsIgnoreCase(uri.getScheme()))
+                    type = getContentResolver().getType(uri);
+
+                else
+                    type = FileUtils.getMimeType(this, uri);
+
+                if (type == null)
+                    addLink(uri, uri.getLastPathSegment(), false);
+
+                else if (type.startsWith(IMAGE) ||
+                         type.startsWith(AUDIO) ||
+                         type.startsWith(VIDEO))
+                    addMedia(uri, false);
+
+                else
+                    addLink(uri, uri.getLastPathSegment(), false);
+            }
+        }
+    }
+
+    // addMedia
+    private void addMedia(Uri media, boolean append)
+    {
+        String name = media.getLastPathSegment();
+        // Copy media file to diary folder
+        // TODO: as for now, only for images because video and audio
+        // are too time-consuming to be copied on the main thread
+        if (copyMedia)
+        {
+            // Get type
+            String type = FileUtils.getMimeType(this, media);
+            if (type != null && type.startsWith(IMAGE))
+            {
+                File newMedia = new
+                    File(getCurrent(), UUID.randomUUID().toString() +
+                         FileUtils.getExtension(media.toString()));
+                File oldMedia = FileUtils.getFile(this, media);
+                try
+                {
+                    FileUtils.copyFile(oldMedia, newMedia);
+                    String newName =
+                        Uri.fromFile(newMedia).getLastPathSegment();
+                    media = Uri.parse(newName);
+                }
+
+                catch (Exception e) {}
+            }
+        }
+
+        String mediaText = String.format(MEDIA_TEMPLATE,
+                                         name,
+                                         media.toString());
+        if (append)
+            textView.append(mediaText);
+
+        else
+        {
+            Editable editable = textView.getEditableText();
+            int position = textView.getSelectionStart();
+            editable.insert(position, mediaText);
+        }
+
+        loadMarkdown();
+    }
+
+    // addLink
+    private void addLink(Uri uri, String title, boolean append)
+    {
+        if ((title == null) || (title.length() == 0))
+            title = uri.getLastPathSegment();
+
+        String url = uri.toString();
+        String linkText = String.format(LINK_TEMPLATE, title, url);
+
+        if (append)
+            textView.append(linkText);
+
+        else
+        {
+            Editable editable = textView.getEditableText();
+            int position = textView.getSelectionStart();
+            editable.insert(position, linkText);
+        }
+
+        loadMarkdown();
+    }
+
+    // addMap
+    private void addMap(Uri uri)
+    {
+        String mapText = String.format(MEDIA_TEMPLATE,
+                                       OSM,
+                                       uri.toString());
+        if (true)
+            textView.append(mapText);
+
+        else
+        {
+            Editable editable = textView.getEditableText();
+            int position = textView.getSelectionStart();
+            editable.insert(position, mapText);
+        }
+
+        loadMarkdown();
+    }
+
     // editStyles
     public void editStyles()
     {
@@ -549,31 +763,149 @@ public class Notes extends Activity
         startActivity(intent);
     }
 
-    // openFile
-    private void openFile()
+    // addMedia
+    private void addMedia(Intent intent)
+    {
+        String type = intent.getType();
+
+        if (type == null)
+        {
+            // Get uri
+            Uri uri = intent.getData();
+            if (GEO.equalsIgnoreCase(uri.getScheme()))
+                addMap(uri);
+        }
+        else if (type.equalsIgnoreCase(TEXT_PLAIN))
+        {
+            // Get the text
+            String text = intent.getStringExtra(Intent.EXTRA_TEXT);
+
+            // Check text
+            if (text != null)
+            {
+                // Check if it's an URL
+                Uri uri = Uri.parse(text);
+                if ((uri != null) && (uri.getScheme() != null) &&
+                        (uri.getScheme().equalsIgnoreCase(HTTP) ||
+                         uri.getScheme().equalsIgnoreCase(HTTPS)))
+                    addLink(uri, intent.getStringExtra(Intent.EXTRA_TITLE),
+                            true);
+                else
+                {
+                    textView.append(text);
+                    loadMarkdown();
+                }
+            }
+
+            // Get uri
+            Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+
+            // Check uri
+            if (uri != null)
+            {
+                // Resolve content uri
+                if (CONTENT.equalsIgnoreCase(uri.getScheme()))
+                    uri = resolveContent(uri);
+
+                addLink(uri, intent.getStringExtra(Intent.EXTRA_TITLE), true);
+            }
+        }
+        else if (type.startsWith(IMAGE) ||
+                 type.startsWith(AUDIO) ||
+                 type.startsWith(VIDEO))
+        {
+            if (Intent.ACTION_SEND.equals(intent.getAction()))
+            {
+                // Get the media uri
+                Uri media =
+                    intent.getParcelableExtra(Intent.EXTRA_STREAM);
+
+                // Resolve content uri
+                if (CONTENT.equalsIgnoreCase(media.getScheme()))
+                    media = resolveContent(media);
+
+                // Attempt to get web uri
+                String path = intent.getStringExtra(Intent.EXTRA_TEXT);
+
+                if (path != null)
+                {
+                    // Try to get the path as an uri
+                    Uri uri = Uri.parse(path);
+                    // Check if it's an URL
+                    if ((uri != null) &&
+                        (HTTP.equalsIgnoreCase(uri.getScheme()) ||
+                         HTTPS.equalsIgnoreCase(uri.getScheme())))
+                        media = uri;
+                }
+
+                addMedia(media, true);
+            }
+            else if (Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction()))
+            {
+                // Get the media
+                ArrayList<Uri> media =
+                    intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                for (Uri uri : media)
+                {
+                    // Resolve content uri
+                    if (CONTENT.equalsIgnoreCase(uri.getScheme()))
+                        uri = resolveContent(uri);
+
+                    addMedia(uri, true);
+                }
+            }
+        }
+
+        // Reset the flag
+        haveMedia = false;
+    }
+
+    // newNote
+    private void newNote()
     {
         // Check if file changed
         if (changed)
-            alertDialog(R.string.open, R.string.modified,
-                        R.string.save, R.string.discard, (dialog, id) ->
+            alertDialog(R.string.newNote, R.string.modified,
+                        R.string.saveNote, R.string.discard, (dialog, id) ->
         {
             switch (id)
             {
             case DialogInterface.BUTTON_POSITIVE:
-                saveFile();
-                getFile();
+                saveNote();
+                break;
+            }
+        });
+
+        textView.setText("");
+        changed = false;
+        loadMarkdown();
+        invalidateOptionsMenu();
+    }
+
+    // openNote
+    private void openNote()
+    {
+        // Check if file changed
+        if (changed)
+            alertDialog(R.string.openNote, R.string.modified,
+                        R.string.saveNote, R.string.discard, (dialog, id) ->
+        {
+            switch (id)
+            {
+            case DialogInterface.BUTTON_POSITIVE:
+                saveNote();
+                getNote();
                 break;
 
             case DialogInterface.BUTTON_NEGATIVE:
                 changed = false;
-                getFile();
+                getNote();
                 break;
             }
         });
 
         else
-            getFile();
-
+            getNote();
     }
 
     // alertDialog
@@ -607,8 +939,8 @@ public class Notes extends Activity
         builder.show();
     }
 
-    // getFile
-    private void getFile()
+    // getNote
+    private void getNote()
     {
         // Check permissions
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -625,11 +957,11 @@ public class Notes extends Activity
 
         // Open parent folder
         File dir = file.getParentFile();
-        getFile(dir);
+        getNote(dir);
     }
 
-    // getFile
-    private void getFile(File dir)
+    // getNote
+    private void getNote(File dir)
     {
         // Get list of files
         List<File> list = getList(dir);
@@ -642,10 +974,10 @@ public class Notes extends Activity
             {
                 File selection = list.get(which);
                 if (selection.isDirectory())
-                    getFile(selection);
+                    getNote(selection);
 
                 else
-                    readFile(Uri.fromFile(selection));
+                    readNote(Uri.fromFile(selection));
             });
     }
 
@@ -736,7 +1068,7 @@ public class Notes extends Activity
                                           .READ_EXTERNAL_STORAGE) &&
                     grantResults[i] == PackageManager.PERMISSION_GRANTED)
                     // Granted, read file
-                    readFile(readUri);
+                    readNote(readUri);
             break;
 
         case REQUEST_OPEN:
@@ -745,13 +1077,13 @@ public class Notes extends Activity
                                           .READ_EXTERNAL_STORAGE) &&
                     grantResults[i] == PackageManager.PERMISSION_GRANTED)
                     // Granted, open file
-                    getFile();
+                    getNote();
             break;
         }
     }
 
-    // readFile
-    private void readFile(Uri uri)
+    // readNote
+    private void readNote(Uri uri)
     {
         if (uri == null)
             return;
