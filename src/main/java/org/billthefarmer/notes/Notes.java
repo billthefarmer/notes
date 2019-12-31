@@ -82,6 +82,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import java.util.regex.Matcher;
@@ -184,6 +185,16 @@ public class Notes extends Activity
         // Get preferences
         SharedPreferences preferences =
             PreferenceManager.getDefaultSharedPreferences(this);
+
+        Set<String> pathSet =
+            preferences.getStringSet(Settings.PREF_PATHS, null);
+        pathMap = new HashMap<>();
+
+        if (pathSet != null)
+            for (String path : pathSet)
+                pathMap.put(path, preferences.getInt(path, 0));
+
+        removeList = new ArrayList<>();
 
         boolean dark =
                 preferences.getBoolean(Settings.PREF_DARK_THEME, false);
@@ -809,6 +820,9 @@ public class Notes extends Activity
         intent.setDataAndType(uri, TEXT_CSS);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION |
                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+        Uri extra = Uri.fromFile(file);
+        intent.putExtra(FILE_URI, extra);
         startActivity(intent);
     }
 
@@ -827,6 +841,9 @@ public class Notes extends Activity
         intent.setDataAndType(uri, TEXT_JAVASCRIPT);
         intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION |
                         Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+        Uri extra = Uri.fromFile(file);
+        intent.putExtra(FILE_URI, extra);
         startActivity(intent);
     }
 
@@ -939,11 +956,18 @@ public class Notes extends Activity
             {
             case DialogInterface.BUTTON_POSITIVE:
                 saveNote();
+                textView.setText("");
+                break;
+
+            case DialogInterface.BUTTON_NEGATIVE:
+                textView.setText("");
                 break;
             }
         });
 
-        textView.setText("");
+        else
+            textView.setText("");
+            
         changed = false;
         loadMarkdown();
         invalidateOptionsMenu();
