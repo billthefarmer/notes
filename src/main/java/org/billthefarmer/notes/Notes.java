@@ -24,10 +24,13 @@ package org.billthefarmer.notes;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -60,6 +63,7 @@ import org.billthefarmer.markdown.MarkdownView;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
@@ -69,13 +73,16 @@ import java.io.OutputStreamWriter;
 
 import java.lang.ref.WeakReference;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,6 +93,9 @@ public class Notes extends Activity
 
     public final static String CHANGED = "changed";
     public final static String CONTENT = "content";
+    public final static String MODIFIED = "modified";
+    public final static String SHOWN = "shown";
+    public final static String PATH = "path";
 
     private final static String STYLES = "file:///android_asset/styles.css";
     private final static String SCRIPT = "file:///android_asset/script.js";
@@ -95,11 +105,34 @@ public class Notes extends Activity
     private final static String TEXT_JAVASCRIPT = "text/javascript";
 
     public final static String FOLDER = "Folder:  ";
+    public final static String FILE_PROVIDER =
+        "org.billthefarmer.diary.fileprovider";
+    public final static String FILE_URI =
+        "org.billthefarmer.diary.Uri";
 
     public final static String NOTES_FOLDER = "Notes";
     public final static String NOTES_FILE = "Notes.md";
     public final static String NOTES_IMAGE = "Notes.png";
+    public final static String TEXT_PLAIN = "text/plain";
+    public final static String IMAGE_PNG = "image/png";
+    public final static String WILD_WILD = "*/*";
+    public final static String IMAGE = "image";
+    public final static String AUDIO = "audio";
+    public final static String VIDEO = "video";
+    public final static String MEDIA_TEMPLATE = "![%s](%s)\n";
+    public final static String LINK_TEMPLATE = "[%s](%s)\n";
+    public final static String AUDIO_TEMPLATE =
+        "<audio controls src=\"%s\"></audio>\n";
+    public final static String VIDEO_TEMPLATE =
+        "<video controls src=\"%s\"></video>\n";
 
+    public final static String GEO = "geo";
+    public final static String OSM = "osm";
+    public final static String HTTP = "http";
+    public final static String TEXT = "text";
+    public final static String HTTPS = "https";
+
+    private final static int ADD_MEDIA = 1;
     private static final int EDIT_TEXT = 0;
     private static final int MARKDOWN = 1;
     private static final int ACCEPT = 0;
@@ -130,14 +163,15 @@ public class Notes extends Activity
 
     private String folder = NOTES_FOLDER;
 
+    private Uri uri;
     private File file;
     private String path;
-    private Uri readUri;
     private Uri content;
     private String append;
 
     private boolean changed = false;
     private boolean shown = true;
+    private boolean copyMedia = false;
 
     private long modified;
 
@@ -174,6 +208,9 @@ public class Notes extends Activity
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
 
+        if (savedInstanceState == null)
+            defaultFile(null);
+
         setListeners();
     }
 
@@ -183,7 +220,31 @@ public class Notes extends Activity
     {
         super.onRestoreInstanceState(savedInstanceState);
         markdownView.restoreState(savedInstanceState);
-    }
+
+        path = savedInstanceState.getString(PATH);
+        shown = savedInstanceState.getBoolean(SHOWN);
+        changed = savedInstanceState.getBoolean(CHANGED);
+        modified = savedInstanceState.getLong(MODIFIED);
+        content = savedInstanceState.getParcelable(CONTENT);
+        invalidateOptionsMenu();
+
+        file = new File(path);
+        uri = Uri.fromFile(file);
+
+        String title = uri.getLastPathSegment();
+        setTitle(title);
+
+        if (file.lastModified() > modified)
+            alertDialog(R.string.appName, R.string.changedReload,
+                        R.string.reload, R.string.cancel, (dialog, id) ->
+        {
+            switch (id)
+            {
+            case DialogInterface.BUTTON_POSITIVE:
+                readNote(uri);
+            }
+        });
+     }
 
     // onResume
     @Override
@@ -206,6 +267,12 @@ public class Notes extends Activity
     {
         super.onSaveInstanceState(outState);
         markdownView.saveState(outState);
+
+        outState.putParcelable(CONTENT, content);
+        outState.putLong(MODIFIED, modified);
+        outState.putBoolean(CHANGED, changed);
+        outState.putBoolean(SHOWN, shown);
+        outState.putString(PATH, path);
     }
 
     // onPause
@@ -215,7 +282,7 @@ public class Notes extends Activity
         super.onPause();
 
         if (changed)
-            save();
+            saveNote();
     }
 
     // onCreateOptionsMenu
@@ -357,7 +424,7 @@ public class Notes extends Activity
                 if (changed)
                 {
                     // Save text
-                    save();
+                    saveNote();
                     // Get text
                     loadMarkdown();
                     // Clear flag
@@ -557,7 +624,7 @@ public class Notes extends Activity
             Bitmap bitmap = Bitmap.createBitmap(v.getDrawingCache());
             v.setDrawingCacheEnabled(false);
 
-            File image = new File(getCacheDir(), DIARY_IMAGE);
+            File image = new File(getCacheDir(), NOTES_IMAGE);
             try (FileOutputStream out = new FileOutputStream(image))
             {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
@@ -655,7 +722,7 @@ public class Notes extends Activity
             if (type != null && type.startsWith(IMAGE))
             {
                 File newMedia = new
-                    File(getCurrent(), UUID.randomUUID().toString() +
+                    File(getHome(), UUID.randomUUID().toString() +
                          FileUtils.getExtension(media.toString()));
                 File oldMedia = FileUtils.getFile(this, media);
                 try
@@ -857,7 +924,7 @@ public class Notes extends Activity
         }
 
         // Reset the flag
-        haveMedia = false;
+        // haveMedia = false;
     }
 
     // newNote
@@ -1068,7 +1135,7 @@ public class Notes extends Activity
                                           .READ_EXTERNAL_STORAGE) &&
                     grantResults[i] == PackageManager.PERMISSION_GRANTED)
                     // Granted, read file
-                    readNote(readUri);
+                    readNote(uri);
             break;
 
         case REQUEST_OPEN:
@@ -1096,7 +1163,7 @@ public class Notes extends Activity
                 requestPermissions(new String[]
                     {Manifest.permission.WRITE_EXTERNAL_STORAGE,
                      Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ);
-                readUri = uri;
+                this.uri = uri;
                 return;
             }
         }
@@ -1166,12 +1233,12 @@ public class Notes extends Activity
     {
         file = getDefaultFile();
 
-        Uri uri = Uri.fromFile(file);
+        uri = Uri.fromFile(file);
         path = uri.getPath();
 
         if (file.exists())
         {
-            readFile(uri);
+            readNote(uri);
             append = text;
         }
 
@@ -1222,8 +1289,9 @@ public class Notes extends Activity
     }
 
     // save
-    private void save()
+    private void saveNote()
     {
+        saveFile();
     }
 
     // saveFile
@@ -1288,13 +1356,77 @@ public class Notes extends Activity
         }
     }
 
+    // saveAs
+    private void saveAs()
+    {
+        // Remove path prefix
+        String name =
+            path.replaceFirst(Environment
+                              .getExternalStorageDirectory()
+                              .getPath() + File.separator, "");
+
+        // Open dialog
+        saveAsDialog(name, (dialog, id) ->
+        {
+            switch (id)
+            {
+            case DialogInterface.BUTTON_POSITIVE:
+                EditText text = ((Dialog) dialog).findViewById(R.id.path_text);
+                String string = text.getText().toString();
+
+                // Ignore empty string
+                if (string.isEmpty())
+                    return;
+
+                file = new File(string);
+
+                // Check absolute file
+                if (!file.isAbsolute())
+                    file = new
+                        File(Environment.getExternalStorageDirectory(), string);
+
+                // Set interface title
+                Uri uri = Uri.fromFile(file);
+                String title = uri.getLastPathSegment();
+                setTitle(title);
+
+                path = file.getPath();
+                saveFile();
+            }
+        });
+    }
+
+    // saveAsDialog
+    private void saveAsDialog(String path,
+                              DialogInterface.OnClickListener listener)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.saveNote);
+        builder.setMessage(R.string.choose);
+
+        // Add the buttons
+        builder.setPositiveButton(R.string.saveNote, listener);
+        builder.setNegativeButton(R.string.cancel, listener);
+
+        // Create edit text
+        Context context = builder.getContext();
+        EditText text = new EditText(context);
+        text.setId(R.id.path_text);
+        text.setText(path);
+
+        // Create the AlertDialog
+        AlertDialog dialog = builder.create();
+        dialog.setView(text, 40, 0, 40, 0);
+        dialog.show();
+    }
+
     // write
     private void write(CharSequence text, File file)
     {
         file.getParentFile().mkdirs();
-        try (FileWriter fileWriter = new FileWriter(file))
+        try (FileWriter writer = new FileWriter(file))
         {
-            fileWriter.append(text);
+            writer.append(text);
         }
 
         catch (Exception e)
