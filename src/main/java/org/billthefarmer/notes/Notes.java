@@ -159,7 +159,7 @@ public class Notes extends Activity
     private View accept;
     private View edit;
 
-    private Map<String, Integer> pathMap;
+    private List<String> pathList;
     private List<String> removeList;
 
     private String folder = NOTES_FOLDER;
@@ -188,12 +188,7 @@ public class Notes extends Activity
 
         Set<String> pathSet =
             preferences.getStringSet(Settings.PREF_PATHS, null);
-        pathMap = new HashMap<>();
-
-        if (pathSet != null)
-            for (String path : pathSet)
-                pathMap.put(path, preferences.getInt(path, 0));
-
+        pathList = new ArrayList<>(pathSet);
         removeList = new ArrayList<>();
 
         boolean dark =
@@ -1280,12 +1275,12 @@ public class Notes extends Activity
     private void savePath(String path)
     {
         // Save the current position
-        pathMap.put(path, scrollView.getScrollY());
+        pathList.add(path);
 
         // Get a list of files
         List<Long> list = new ArrayList<>();
         Map<Long, String> map = new HashMap<>();
-        for (String name : pathMap.keySet())
+        for (String name : pathList)
         {
             File file = new File(name);
             list.add(file.lastModified());
@@ -1304,7 +1299,7 @@ public class Notes extends Activity
             // Remove old files
             if (count >= MAX_PATHS)
             {
-                pathMap.remove(name);
+                pathList.remove(name);
                 removeList.add(name);
             }
 
@@ -1502,17 +1497,6 @@ public class Notes extends Activity
             changed = false;
 
         loadMarkdown();
-
-        // Check for saved position
-        if (pathMap.containsKey(path))
-            textView.postDelayed(() ->
-                                 scrollView.smoothScrollTo
-                                 (0, pathMap.get(path)),
-                                 POSITION_DELAY);
-        else
-            textView.postDelayed(() ->
-                                 scrollView.smoothScrollTo(0, 0),
-                                 POSITION_DELAY);
 
         // Dismiss keyboard
         textView.clearFocus();
