@@ -23,11 +23,17 @@
       android:showAsAction="never"
       android:title="@string/openRecent">
     <menu>
+      <item
+          android:id="@+id/clearList"
+          android:showAsAction="never"
+          android:title="@string/clearList">
+      </item>
     </menu>
   </item>
   <item
       android:id="@+id/saveAs"
-      android:showAsAction="never"
+      android:icon="@drawable/ic_action_save"
+      android:showAsAction="ifRoom"
       android:title="@string/saveAs" />
   <item
       android:id="@+id/search"

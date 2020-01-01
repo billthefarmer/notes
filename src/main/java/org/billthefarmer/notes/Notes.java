@@ -107,9 +107,9 @@ public class Notes extends Activity
 
     public final static String FOLDER = "Folder:  ";
     public final static String FILE_PROVIDER =
-        "org.billthefarmer.diary.fileprovider";
+        "org.billthefarmer.notes.fileprovider";
     public final static String FILE_URI =
-        "org.billthefarmer.diary.Uri";
+        "org.billthefarmer.notes.Uri";
 
     public final static String NOTES_FOLDER = "Notes";
     public final static String NOTES_FILE = "Notes.md";
@@ -419,11 +419,11 @@ public class Notes extends Activity
         {
             // On long click
             markdownView.setOnLongClickListener(v ->
-                {
-                    // Reveal button
-                    edit.setVisibility(View.VISIBLE);
-                    return false;
-                });
+            {
+                // Reveal button
+                edit.setVisibility(View.VISIBLE);
+                return false;
+            });
         }
 
         if (accept != null)
@@ -723,7 +723,7 @@ public class Notes extends Activity
     private void addMedia(Uri media, boolean append)
     {
         String name = media.getLastPathSegment();
-        // Copy media file to diary folder
+        // Copy media file to notes folder
         // TODO: as for now, only for images because video and audio
         // are too time-consuming to be copied on the main thread
         if (copyMedia)
@@ -1500,6 +1500,8 @@ public class Notes extends Activity
 
         else
             changed = false;
+
+        loadMarkdown();
 
         // Check for saved position
         if (pathMap.containsKey(path))
