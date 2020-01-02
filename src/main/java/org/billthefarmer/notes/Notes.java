@@ -46,6 +46,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -74,15 +75,18 @@ import java.io.OutputStreamWriter;
 import java.lang.ref.WeakReference;
 
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Locale;
 import java.util.UUID;
 
 import java.util.regex.Matcher;
@@ -126,12 +130,24 @@ public class Notes extends Activity
         "<audio controls src=\"%s\"></audio>\n";
     public final static String VIDEO_TEMPLATE =
         "<video controls src=\"%s\"></video>\n";
+    public final static String MAP_TEMPLATE =
+        "<iframe width=\"560\" height=\"420\" " +
+        "src=\"http://www.openstreetmap.org/export/embed.html?" +
+        "bbox=%f,%f,%f,%f&amp;layer=mapnik\">" +
+        "</iframe><br/><small>" +
+        "<a href=\"http://www.openstreetmap.org/#map=16/%f/%f\">" +
+        "View Larger Map</a></small>\n";
 
     public final static String GEO = "geo";
     public final static String OSM = "osm";
     public final static String HTTP = "http";
     public final static String TEXT = "text";
     public final static String HTTPS = "https";
+
+    public final static Pattern GEO_PATTERN =
+        Pattern.compile("geo:(-?\\d+[.]\\d+), ?(-?\\d+[.]\\d+).*");
+    public final static Pattern MEDIA_PATTERN =
+        Pattern.compile("!\\[(.*)\\]\\((.+)\\)", Pattern.MULTILINE);
 
     private final static int ADD_MEDIA = 1;
     private static final int EDIT_TEXT = 0;
@@ -159,7 +175,7 @@ public class Notes extends Activity
     private View accept;
     private View edit;
 
-    private List<String> pathList;
+    private Set<String> pathSet;
     private List<String> removeList;
 
     private String folder = NOTES_FOLDER;
@@ -186,9 +202,11 @@ public class Notes extends Activity
         SharedPreferences preferences =
             PreferenceManager.getDefaultSharedPreferences(this);
 
-        Set<String> pathSet =
+        Set<String> set =
             preferences.getStringSet(Settings.PREF_PATHS, null);
-        pathList = new ArrayList<>(pathSet);
+        pathSet = new HashSet<>();
+        if (set != null)
+            pathSet.addAll(set);
         removeList = new ArrayList<>();
 
         boolean dark =
@@ -286,9 +304,6 @@ public class Notes extends Activity
     public void onPause()
     {
         super.onPause();
-
-        if (changed)
-            saveNote();
     }
 
     // onCreateOptionsMenu
@@ -315,6 +330,53 @@ public class Notes extends Activity
         return true;
     }
 
+    // onPrepareOptionsMenu
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        menu.findItem(R.id.saveNote).setVisible(changed);
+
+        // Get a list of recent files
+        List<Long> list = new ArrayList<>();
+        Map<Long, String> map = new HashMap<>();
+
+        // Get the last modified dates
+        for (String path : pathSet)
+        {
+            File file = new File(path);
+            long last = file.lastModified();
+            list.add(last);
+            map.put(last, path);
+        }
+
+        // Sort in reverse order
+        Collections.sort(list);
+        Collections.reverse(list);
+
+        // Get the submenu
+        MenuItem item = menu.findItem(R.id.openRecent);
+        SubMenu sub = item.getSubMenu();
+        sub.clear();
+
+        // Add the recent files
+        for (long date : list)
+        {
+            String path = map.get(date);
+
+            // Remove path prefix
+            String name =
+                path.replaceFirst(Environment
+                                  .getExternalStorageDirectory()
+                                  .getPath() + File.separator, "");
+            sub.add(name);
+        }
+
+        // Add clear list item
+        sub.add(Menu.NONE, R.id.clearList, Menu.NONE, R.string.clearList);
+
+        return true;
+    }
+
     // onOptionsItemSelected
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -336,8 +398,11 @@ public class Notes extends Activity
         case R.id.saveAs:
             saveAs();
             break;
-        case R.id.share:
-            share();
+        case R.id.clearList:
+            clearList();
+            break;
+        case R.id.shareNote:
+            shareNote();
             break;
         case R.id.addTime:
             addTime();
@@ -389,6 +454,7 @@ public class Notes extends Activity
             {
                 // Text changed
                 changed = true;
+                invalidateOptionsMenu();
             }
 
             // beforeTextChanged
@@ -429,12 +495,8 @@ public class Notes extends Activity
                 // Check flag
                 if (changed)
                 {
-                    // Save text
-                    saveNote();
                     // Get text
                     loadMarkdown();
-                    // Clear flag
-                    changed = false;
                 }
 
                 // Animation
@@ -572,7 +634,8 @@ public class Notes extends Activity
     // markdownCheck
     private String markdownCheck(CharSequence text)
     {
-        return text.toString();
+        // Check for media
+        return mediaCheck(text).toString();
     }
 
     // getStyles
@@ -597,6 +660,87 @@ public class Notes extends Activity
         return null;
     }
 
+    // mediaCheck
+    private CharSequence mediaCheck(CharSequence text)
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        Matcher matcher = MEDIA_PATTERN.matcher(text);
+
+        // Find matches
+        while (matcher.find())
+        {
+            File file = new File(matcher.group(2));
+            String type = FileUtils.getMimeType(file);
+
+            if (type == null)
+            {
+                Matcher geoMatcher = GEO_PATTERN.matcher(matcher.group(2));
+
+                if (geoMatcher.matches())
+                {
+                    NumberFormat parser =
+                        NumberFormat.getInstance(Locale.ENGLISH);
+
+                    double lat;
+                    double lng;
+
+                    try
+                    {
+                        lat = parser.parse(geoMatcher.group(1)).doubleValue();
+                        lng = parser.parse(geoMatcher.group(2)).doubleValue();
+                    }
+
+                    // Ignore parse error
+                    catch (Exception e)
+                    {
+                        continue;
+                    }
+
+                    // Create replacement iframe
+                    String replace =
+                        String.format(Locale.ENGLISH, MAP_TEMPLATE,
+                                      lng - 0.005, lat - 0.005,
+                                      lng + 0.005, lat + 0.005,
+                                      lat, lng);
+
+                    // Append replacement
+                    matcher.appendReplacement(buffer, replace);
+                }
+                else
+                {
+                }
+            }
+            else if (type.startsWith(IMAGE))
+            {
+                // Do nothing, handled by markdown view
+            }
+            else if (type.startsWith(AUDIO))
+            {
+                // Create replacement
+                String replace =
+                    String.format(AUDIO_TEMPLATE, matcher.group(2));
+
+                // Append replacement
+                matcher.appendReplacement(buffer, replace);
+            }
+            else if (type.startsWith(VIDEO))
+            {
+                // Create replacement
+                String replace =
+                    String.format(VIDEO_TEMPLATE, matcher.group(2));
+
+                // Append replacement
+                matcher.appendReplacement(buffer, replace);
+            }
+        }
+
+        // Append rest of entry
+        matcher.appendTail(buffer);
+
+        return buffer;
+    }
+
     // setVisibility
     private void setVisibility()
     {
@@ -614,9 +758,18 @@ public class Notes extends Activity
         }
     }
 
-    // share
+    // clearList
+    private void clearList()
+    {
+        for (String path : pathSet)
+            removeList.add(path);
+
+        pathSet.clear();
+    }
+
+    // shareNote
     @SuppressWarnings("deprecation")
-    public void share()
+    public void shareNote()
     {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_SUBJECT,
@@ -701,83 +854,44 @@ public class Notes extends Activity
                     type = FileUtils.getMimeType(this, uri);
 
                 if (type == null)
-                    addLink(uri, uri.getLastPathSegment(), false);
+                    addLink(uri, uri.getLastPathSegment());
 
                 else if (type.startsWith(IMAGE) ||
                          type.startsWith(AUDIO) ||
                          type.startsWith(VIDEO))
-                    addMedia(uri, false);
+                    addMedia(uri);
 
                 else
-                    addLink(uri, uri.getLastPathSegment(), false);
+                    addLink(uri, uri.getLastPathSegment());
             }
         }
     }
 
     // addMedia
-    private void addMedia(Uri media, boolean append)
+    private void addMedia(Uri media)
     {
         String name = media.getLastPathSegment();
-        // Copy media file to notes folder
-        // TODO: as for now, only for images because video and audio
-        // are too time-consuming to be copied on the main thread
-        if (copyMedia)
-        {
-            // Get type
-            String type = FileUtils.getMimeType(this, media);
-            if (type != null && type.startsWith(IMAGE))
-            {
-                File newMedia = new
-                    File(getHome(), UUID.randomUUID().toString() +
-                         FileUtils.getExtension(media.toString()));
-                File oldMedia = FileUtils.getFile(this, media);
-                try
-                {
-                    FileUtils.copyFile(oldMedia, newMedia);
-                    String newName =
-                        Uri.fromFile(newMedia).getLastPathSegment();
-                    media = Uri.parse(newName);
-                }
-
-                catch (Exception e) {}
-            }
-        }
-
         String mediaText = String.format(MEDIA_TEMPLATE,
                                          name,
                                          media.toString());
-        if (append)
-            textView.append(mediaText);
 
-        else
-        {
-            Editable editable = textView.getEditableText();
-            int position = textView.getSelectionStart();
-            editable.insert(position, mediaText);
-        }
-
+        Editable editable = textView.getEditableText();
+        int position = textView.getSelectionStart();
+        editable.insert(position, mediaText);
         loadMarkdown();
     }
 
     // addLink
-    private void addLink(Uri uri, String title, boolean append)
+    private void addLink(Uri uri, String title)
     {
         if ((title == null) || (title.length() == 0))
             title = uri.getLastPathSegment();
 
         String url = uri.toString();
         String linkText = String.format(LINK_TEMPLATE, title, url);
-
-        if (append)
-            textView.append(linkText);
-
-        else
-        {
-            Editable editable = textView.getEditableText();
-            int position = textView.getSelectionStart();
-            editable.insert(position, linkText);
-        }
-
+        Editable editable = textView.getEditableText();
+        int position = textView.getSelectionStart();
+        editable.insert(position, linkText);
         loadMarkdown();
     }
 
@@ -840,103 +954,6 @@ public class Notes extends Activity
         Uri extra = Uri.fromFile(file);
         intent.putExtra(FILE_URI, extra);
         startActivity(intent);
-    }
-
-    // addMedia
-    private void addMedia(Intent intent)
-    {
-        String type = intent.getType();
-
-        if (type == null)
-        {
-            // Get uri
-            Uri uri = intent.getData();
-            if (GEO.equalsIgnoreCase(uri.getScheme()))
-                addMap(uri);
-        }
-        else if (type.equalsIgnoreCase(TEXT_PLAIN))
-        {
-            // Get the text
-            String text = intent.getStringExtra(Intent.EXTRA_TEXT);
-
-            // Check text
-            if (text != null)
-            {
-                // Check if it's an URL
-                Uri uri = Uri.parse(text);
-                if ((uri != null) && (uri.getScheme() != null) &&
-                        (uri.getScheme().equalsIgnoreCase(HTTP) ||
-                         uri.getScheme().equalsIgnoreCase(HTTPS)))
-                    addLink(uri, intent.getStringExtra(Intent.EXTRA_TITLE),
-                            true);
-                else
-                {
-                    textView.append(text);
-                    loadMarkdown();
-                }
-            }
-
-            // Get uri
-            Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-
-            // Check uri
-            if (uri != null)
-            {
-                // Resolve content uri
-                if (CONTENT.equalsIgnoreCase(uri.getScheme()))
-                    uri = resolveContent(uri);
-
-                addLink(uri, intent.getStringExtra(Intent.EXTRA_TITLE), true);
-            }
-        }
-        else if (type.startsWith(IMAGE) ||
-                 type.startsWith(AUDIO) ||
-                 type.startsWith(VIDEO))
-        {
-            if (Intent.ACTION_SEND.equals(intent.getAction()))
-            {
-                // Get the media uri
-                Uri media =
-                    intent.getParcelableExtra(Intent.EXTRA_STREAM);
-
-                // Resolve content uri
-                if (CONTENT.equalsIgnoreCase(media.getScheme()))
-                    media = resolveContent(media);
-
-                // Attempt to get web uri
-                String path = intent.getStringExtra(Intent.EXTRA_TEXT);
-
-                if (path != null)
-                {
-                    // Try to get the path as an uri
-                    Uri uri = Uri.parse(path);
-                    // Check if it's an URL
-                    if ((uri != null) &&
-                        (HTTP.equalsIgnoreCase(uri.getScheme()) ||
-                         HTTPS.equalsIgnoreCase(uri.getScheme())))
-                        media = uri;
-                }
-
-                addMedia(media, true);
-            }
-            else if (Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction()))
-            {
-                // Get the media
-                ArrayList<Uri> media =
-                    intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-                for (Uri uri : media)
-                {
-                    // Resolve content uri
-                    if (CONTENT.equalsIgnoreCase(uri.getScheme()))
-                        uri = resolveContent(uri);
-
-                    addMedia(uri, true);
-                }
-            }
-        }
-
-        // Reset the flag
-        // haveMedia = false;
     }
 
     // newNote
@@ -1275,12 +1292,12 @@ public class Notes extends Activity
     private void savePath(String path)
     {
         // Save the current position
-        pathList.add(path);
+        pathSet.add(path);
 
         // Get a list of files
         List<Long> list = new ArrayList<>();
         Map<Long, String> map = new HashMap<>();
-        for (String name : pathList)
+        for (String name : pathSet)
         {
             File file = new File(name);
             list.add(file.lastModified());
@@ -1299,7 +1316,7 @@ public class Notes extends Activity
             // Remove old files
             if (count >= MAX_PATHS)
             {
-                pathList.remove(name);
+                pathSet.remove(name);
                 removeList.add(name);
             }
 

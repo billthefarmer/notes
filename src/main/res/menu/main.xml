@@ -19,6 +19,17 @@
       android:showAsAction="ifRoom"
       android:title="@string/saveNote" />
   <item
+      android:id="@+id/search"
+      android:actionViewClass="android.widget.SearchView"
+      android:icon="@drawable/ic_action_search"
+      android:showAsAction="ifRoom|collapseActionView"
+      android:title="@string/search" />
+  <item
+      android:id="@+id/shareNote"
+      android:icon="@drawable/ic_action_share"
+      android:showAsAction="ifRoom"
+      android:title="@string/share" />
+  <item
       android:id="@+id/openRecent"
       android:showAsAction="never"
       android:title="@string/openRecent">
@@ -32,44 +43,32 @@
   </item>
   <item
       android:id="@+id/saveAs"
-      android:icon="@drawable/ic_action_save"
-      android:showAsAction="ifRoom"
+      android:showAsAction="never"
       android:title="@string/saveAs" />
-  <item
-      android:id="@+id/search"
-      android:actionViewClass="android.widget.SearchView"
-      android:icon="@drawable/ic_action_search"
-      android:showAsAction="ifRoom|collapseActionView"
-      android:title="@string/search" />
-  <item
-      android:id="@+id/share"
-      android:icon="@drawable/ic_action_share"
-      android:showAsAction="ifRoom"
-      android:title="@string/share" />
   <item
       android:id="@+id/addTime"
       android:icon="@drawable/ic_action_time"
-      android:showAsAction="ifRoom"
+      android:showAsAction="never"
       android:title="@string/addTime" />
   <item
       android:id="@+id/addMedia"
       android:icon="@drawable/ic_action_picture"
-      android:showAsAction="ifRoom"
+      android:showAsAction="never"
       android:title="@string/addMedia" />
   <item
       android:id="@+id/editStyles"
       android:icon="@drawable/ic_action_save"
-      android:showAsAction="ifRoom"
+      android:showAsAction="never"
       android:title="@string/editStyles" />
   <item
       android:id="@+id/editScript"
       android:icon="@drawable/ic_action_save"
-      android:showAsAction="ifRoom"
+      android:showAsAction="never"
       android:title="@string/editScript" />
   <item
       android:id="@+id/settings"
       android:icon="@drawable/ic_action_settings"
-      android:showAsAction="ifRoom"
+      android:showAsAction="never"
       android:title="@string/settings" />
 
 </menu>
