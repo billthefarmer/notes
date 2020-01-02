@@ -17,6 +17,11 @@
   <string name="editScript">Edit script</string>
   <string name="settings">Settings</string>
   <string name="folder">Folder</string>
+  <string name="media">Media</string>
+  <string name="pref_external">Browser</string>
+  <string name="pref_external_summ">
+    Use browser for external links
+  </string>
   <string name="theme">Theme</string>
   <string name="pref_dark_theme">Dark</string>
   <string name="pref_dark_theme_summ">

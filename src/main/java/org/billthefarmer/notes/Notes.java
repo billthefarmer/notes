@@ -118,6 +118,7 @@ public class Notes extends Activity
     public final static String NOTES_FOLDER = "Notes";
     public final static String NOTES_FILE = "Notes.md";
     public final static String NOTES_IMAGE = "Notes.png";
+    public final static String TEMPLATE_FILE = "Template.md";
     public final static String TEXT_PLAIN = "text/plain";
     public final static String IMAGE_PNG = "image/png";
     public final static String WILD_WILD = "*/*";
@@ -158,6 +159,7 @@ public class Notes extends Activity
     private final static int REQUEST_READ = 1;
     private final static int REQUEST_SAVE = 2;
     private final static int REQUEST_OPEN = 3;
+    private final static int REQUEST_TEMPLATE = 4;
 
     private final static int POSITION_DELAY = 128;
     private final static int MAX_PATHS = 10;
@@ -179,6 +181,7 @@ public class Notes extends Activity
     private List<String> removeList;
 
     private String folder = NOTES_FOLDER;
+    private String templateFile;
 
     private Uri uri;
     private File file;
@@ -186,9 +189,12 @@ public class Notes extends Activity
     private Uri content;
     private String append;
 
-    private boolean changed = false;
     private boolean shown = true;
-    private boolean copyMedia = false;
+    private boolean changed = false;
+
+    private boolean external = false;
+    private boolean useTemplate = false;
+    private boolean darkTheme = false;
 
     private long modified;
 
@@ -199,20 +205,9 @@ public class Notes extends Activity
         super.onCreate(savedInstanceState);
 
         // Get preferences
-        SharedPreferences preferences =
-            PreferenceManager.getDefaultSharedPreferences(this);
+        getPreferences();
 
-        Set<String> set =
-            preferences.getStringSet(Settings.PREF_PATHS, null);
-        pathSet = new HashSet<>();
-        if (set != null)
-            pathSet.addAll(set);
-        removeList = new ArrayList<>();
-
-        boolean dark =
-                preferences.getBoolean(Settings.PREF_DARK_THEME, false);
-
-        if (dark)
+        if (darkTheme)
             setTheme(R.style.AppDarkTheme);
 
         setContentView(R.layout.main);
@@ -275,6 +270,15 @@ public class Notes extends Activity
     protected void onResume()
     {
         super.onResume();
+
+        boolean dark = darkTheme;
+
+        // Get preferences
+        getPreferences();
+
+        // Recreate
+        if (dark != darkTheme && Build.VERSION.SDK_INT != Build.VERSION_CODES.M)
+            recreate();
 
         // Clear cache
         markdownView.clearCache(true);
@@ -440,6 +444,31 @@ public class Notes extends Activity
 
         else
             super.onBackPressed();
+    }
+
+    // getPreferences
+    private void getPreferences()
+    {
+        // Get preferences
+        SharedPreferences preferences =
+            PreferenceManager.getDefaultSharedPreferences(this);
+
+        external = preferences.getBoolean(Settings.PREF_EXTERNAL, false);
+        useTemplate = preferences.getBoolean(Settings.PREF_USE_TEMPLATE, false);
+        darkTheme = preferences.getBoolean(Settings.PREF_DARK_THEME, false);
+
+        // Template file
+        templateFile = preferences.getString(Settings.PREF_TEMPLATE_FILE,
+                                             TEMPLATE_FILE);
+        // Folder
+        folder = preferences.getString(Settings.PREF_FOLDER, NOTES_FOLDER);
+
+        Set<String> set =
+            preferences.getStringSet(Settings.PREF_PATHS, null);
+        pathSet = new HashSet<>();
+        if (set != null)
+            pathSet.addAll(set);
+        removeList = new ArrayList<>();
     }
 
     // setListeners
@@ -969,20 +998,51 @@ public class Notes extends Activity
             case DialogInterface.BUTTON_POSITIVE:
                 saveNote();
                 textView.setText("");
+                changed = false;
+                // Check template
+                if (useTemplate)
+                    loadTemplate();
                 break;
 
             case DialogInterface.BUTTON_NEGATIVE:
                 textView.setText("");
+                changed = false;
+                if (useTemplate)
+                    loadTemplate();
                 break;
             }
         });
 
         else
+        {
             textView.setText("");
-            
-        changed = false;
+            changed = false;
+            if (useTemplate)
+                loadTemplate();
+        }
+
         loadMarkdown();
         invalidateOptionsMenu();
+    }
+
+    // loadTemplate
+    private void loadTemplate()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED)
+            {
+                requestPermissions(new String[]
+                    {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                     Manifest.permission.READ_EXTERNAL_STORAGE},
+                                   REQUEST_TEMPLATE);
+
+                return;
+            }
+        }
+
+        loadMarkdown();
     }
 
     // openNote
@@ -1181,6 +1241,15 @@ public class Notes extends Activity
                     grantResults[i] == PackageManager.PERMISSION_GRANTED)
                     // Granted, open file
                     getNote();
+            break;
+
+        case REQUEST_TEMPLATE:
+            for (int i = 0; i < grantResults.length; i++)
+                if (permissions[i].equals(Manifest.permission
+                                          .READ_EXTERNAL_STORAGE) &&
+                    grantResults[i] == PackageManager.PERMISSION_GRANTED)
+                    // Granted, load template
+                    loadTemplate();
             break;
         }
     }
