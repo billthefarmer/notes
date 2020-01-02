@@ -1,0 +1,7 @@
+Notepad
+
+* Template file
+* Add media
+* Add maps
+* Share
+* Back navigation
