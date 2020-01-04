@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -44,6 +45,7 @@ import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -58,14 +60,17 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.SearchView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import android.support.v4.content.FileProvider;
 
 import org.billthefarmer.markdown.MarkdownView;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -94,6 +99,9 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 public class Notes extends Activity
 {
     public final static String TAG = "Notes";
@@ -104,12 +112,13 @@ public class Notes extends Activity
     public final static String SHOWN = "shown";
     public final static String PATH = "path";
 
-    private final static String STYLES = "file:///android_asset/styles.css";
-    private final static String SCRIPT = "file:///android_asset/script.js";
-    private final static String CSS_STYLES = "css/styles.css";
-    private final static String TEXT_CSS = "text/css";
-    private final static String JS_SCRIPT = "js/script.js";
-    private final static String TEXT_JAVASCRIPT = "text/javascript";
+    public final static String ZIP = ".zip";
+    public final static String STYLES = "file:///android_asset/styles.css";
+    public final static String SCRIPT = "file:///android_asset/script.js";
+    public final static String CSS_STYLES = "css/styles.css";
+    public final static String TEXT_CSS = "text/css";
+    public final static String JS_SCRIPT = "js/script.js";
+    public final static String TEXT_JAVASCRIPT = "text/javascript";
 
     public final static String FOLDER = "Folder:  ";
     public final static String FILE_PROVIDER =
@@ -163,6 +172,7 @@ public class Notes extends Activity
     private final static int REQUEST_OPEN = 3;
     private final static int REQUEST_TEMPLATE = 4;
 
+    private final static int BUFFER_SIZE = 4096;
     private final static int POSITION_DELAY = 128;
     private final static int MAX_PATHS = 10;
 
@@ -178,6 +188,7 @@ public class Notes extends Activity
     private SearchView searchView;
     private MenuItem searchItem;
 
+    private Toast toast;
     private View accept;
     private View edit;
 
@@ -425,6 +436,9 @@ public class Notes extends Activity
             break;
         case R.id.editScript:
             editScript();
+            break;
+        case R.id.backup:
+            backup();
             break;
         case R.id.settings:
             settings();
@@ -700,6 +714,13 @@ public class Notes extends Activity
     private String getBaseUrl()
     {
         return Uri.fromFile(getHome()).toString() + File.separator;
+    }
+
+    // backup
+    public void backup()
+    {
+        ZipTask zipTask = new ZipTask(this);
+        zipTask.execute();
     }
 
     // settings
@@ -1229,14 +1250,14 @@ public class Notes extends Activity
         // Pop up dialog
         String title = FOLDER + dir.getPath();
         openDialog(title, list, (dialog, which) ->
-            {
-                File selection = list.get(which);
-                if (selection.isDirectory())
-                    getNote(selection);
+        {
+            File selection = list.get(which);
+            if (selection.isDirectory())
+                getNote(selection);
 
-                else
-                    readNote(Uri.fromFile(selection));
-            });
+            else
+                readNote(Uri.fromFile(selection));
+        });
     }
 
     // getList
@@ -1655,6 +1676,27 @@ public class Notes extends Activity
         invalidateOptionsMenu();
     }
 
+    // showToast
+    void showToast(int id)
+    {
+        Resources resources = getResources();
+        String text = resources.getString(id);
+        showToast(text);
+    }
+
+    // showToast
+    void showToast(String text)
+    {
+        // Cancel the last one
+        if (toast != null)
+            toast.cancel();
+
+        // Make a new one
+        toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+    }
+
     // loadText
     private void loadText(CharSequence text)
     {
@@ -1777,6 +1819,130 @@ public class Notes extends Activity
             }
 
             return true;
+        }
+    }
+
+    // listFiles
+    private static void listFiles(File directory, List<File> fileList)
+    {
+        // Get all entry files from a directory.
+        File[] files = directory.listFiles();
+        if (files != null)
+            for (File file : files)
+            {
+                if (file.isFile())
+                {
+                    fileList.add(file);
+                }
+
+                else if (file.isDirectory())
+                {
+                    fileList.add(file);
+                    listFiles(file, fileList);
+                }
+            }
+    }
+
+    // ZipTask
+    private static class ZipTask
+            extends AsyncTask<Void, Void, Void>
+    {
+        private WeakReference<Notes> notesWeakReference;
+        private String search;
+
+        // ZipTask
+        public ZipTask(Notes notes)
+        {
+            notesWeakReference = new WeakReference<>(notes);
+        }
+
+        // onPreExecute
+        @Override
+        protected void onPreExecute()
+        {
+            final Notes notes = notesWeakReference.get();
+            if (notes != null)
+                notes.showToast(R.string.start);
+        }
+
+        // doInBackground
+        @Override
+        protected Void doInBackground(Void... noparams)
+        {
+            final Notes notes = notesWeakReference.get();
+            if (notes == null)
+                return null;
+
+            File home = notes.getHome();
+
+            // Create output stream
+            try (ZipOutputStream output = new
+                 ZipOutputStream(new FileOutputStream(home.getPath() + ZIP)))
+            {
+                byte[] buffer = new byte[BUFFER_SIZE];
+
+                // Get entry list
+                List<File> files = new ArrayList<>();
+                listFiles(home, files);
+
+                for (File file: files)
+                {
+                    // Get path
+                    String path = file.getPath();
+                    path = path.substring(home.getPath().length() + 1);
+
+                    if (file.isDirectory())
+                    {
+                        ZipEntry entry = new ZipEntry(path + File.separator);
+                        entry.setMethod(ZipEntry.STORED);
+                        entry.setTime(file.lastModified());
+                        entry.setSize(0);
+                        entry.setCompressedSize(0);
+                        entry.setCrc(0);
+                        output.putNextEntry(entry);
+                    }
+
+                    else if (file.isFile())
+                    {
+                        ZipEntry entry = new ZipEntry(path);
+                        entry.setMethod(ZipEntry.DEFLATED);
+                        entry.setTime(file.lastModified());
+                        output.putNextEntry(entry);
+
+                        try (BufferedInputStream input = new
+                             BufferedInputStream(new FileInputStream(file)))
+                        {
+                            while (input.available() > 0)
+                            {
+                                int size = input.read(buffer);
+                                output.write(buffer, 0, size);
+                            }
+                        }
+                    }
+                }
+
+                // Close last entry
+                output.closeEntry();
+            }
+
+            catch (Exception e)
+            {
+                notes.runOnUiThread (() ->
+                    notes.alertDialog(R.string.appName, e.getMessage(),
+                                      android.R.string.ok));
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        // onPostExecute
+        @Override
+        protected void onPostExecute(Void noresult)
+        {
+            final Notes notes = notesWeakReference.get();
+            if (notes != null)
+                notes.showToast(R.string.complete);
         }
     }
 

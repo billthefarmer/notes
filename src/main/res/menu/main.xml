@@ -66,6 +66,11 @@
       android:showAsAction="never"
       android:title="@string/editScript" />
   <item
+      android:id="@+id/backup"
+      android:icon="@drawable/ic_action_save"
+      android:showAsAction="never"
+      android:title="@string/backup" />
+  <item
       android:id="@+id/settings"
       android:icon="@drawable/ic_action_settings"
       android:showAsAction="never"
