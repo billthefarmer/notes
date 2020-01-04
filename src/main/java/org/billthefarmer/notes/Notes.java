@@ -29,7 +29,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -1679,8 +1678,7 @@ public class Notes extends Activity
     // showToast
     void showToast(int id)
     {
-        Resources resources = getResources();
-        String text = resources.getString(id);
+        String text = getString(id);
         showToast(text);
     }
 
