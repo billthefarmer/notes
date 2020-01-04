@@ -43,9 +43,11 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -171,6 +173,8 @@ public class Notes extends Activity
     private ViewSwitcher viewSwitcher;
     private ViewSwitcher buttonSwitcher;
 
+    private GestureDetector gestureDetector;
+
     private SearchView searchView;
     private MenuItem searchItem;
 
@@ -231,6 +235,9 @@ public class Notes extends Activity
             defaultFile(null);
 
         setListeners();
+
+        gestureDetector =
+            new GestureDetector(this, new GestureListener());
     }
 
     // onRestoreInstanceState
@@ -250,8 +257,7 @@ public class Notes extends Activity
         file = new File(path);
         uri = Uri.fromFile(file);
 
-        String title = uri.getLastPathSegment();
-        setTitle(title);
+        setTitle(uri.getLastPathSegment());
 
         if (file.lastModified() > modified)
             alertDialog(R.string.appName, R.string.changedReload,
@@ -424,7 +430,8 @@ public class Notes extends Activity
             settings();
             break;
         default:
-            return super.onOptionsItemSelected(item);
+            openRecent(item);
+            break;
         }
 
         // Close text search
@@ -444,6 +451,14 @@ public class Notes extends Activity
 
         else
             super.onBackPressed();
+    }
+
+    // dispatchTouchEvent
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event)
+    {
+        gestureDetector.onTouchEvent(event);
+        return super.dispatchTouchEvent(event);
     }
 
     // getPreferences
@@ -475,38 +490,51 @@ public class Notes extends Activity
     private void setListeners()
     {
         if (textView != null)
-            textView.addTextChangedListener(new TextWatcher()
-        {
-            // afterTextChanged
-            @Override
-            public void afterTextChanged(Editable s)
-            {
-                // Text changed
-                changed = true;
-                invalidateOptionsMenu();
-            }
-
-            // beforeTextChanged
-            @Override
-            public void beforeTextChanged(CharSequence s,
-                                          int start,
-                                          int count,
-                                          int after)
-            {
-            }
-
-            // onTextChanged
-            @Override
-            public void onTextChanged(CharSequence s,
-                                      int start,
-                                      int before,
-                                      int count)
-            {
-            }
-        });
 
         if (markdownView != null)
         {
+            markdownView.setWebViewClient(new WebViewClient()
+            {
+                // onPageFinished
+                @Override
+                public void onPageFinished(WebView view, String url)
+                {
+                    // Check if local
+                    if (FileUtils.isLocal(url))
+                    {
+                        getActionBar().setDisplayHomeAsUpEnabled(false);
+                        view.clearHistory();
+                    }
+
+                    else
+                    {
+                        if (view.canGoBack())
+                        {
+                            getActionBar().setDisplayHomeAsUpEnabled(true);
+
+                            // Get page title
+                            if (view.getTitle() != null)
+                                setTitle(view.getTitle());
+                        }
+
+                        else
+                        {
+                            getActionBar().setDisplayHomeAsUpEnabled(false);
+                            setTitle(uri.getLastPathSegment());
+                        }
+                    }
+                }
+
+                // shouldOverrideUrlLoading
+                @Override
+                @SuppressWarnings("deprecation")
+                public boolean shouldOverrideUrlLoading(WebView view,
+                                                        String url)
+                {
+                    return false;
+                }
+            });
+
             // On long click
             markdownView.setOnLongClickListener(v ->
             {
@@ -588,6 +616,36 @@ public class Notes extends Activity
 
         if (textView != null)
         {
+            textView.addTextChangedListener(new TextWatcher()
+            {
+                // afterTextChanged
+                @Override
+                public void afterTextChanged(Editable s)
+                {
+                    // Text changed
+                    changed = true;
+                    invalidateOptionsMenu();
+                }
+
+                // beforeTextChanged
+                @Override
+                public void beforeTextChanged(CharSequence s,
+                                              int start,
+                                              int count,
+                                              int after)
+                {
+                }
+
+                // onTextChanged
+                @Override
+                public void onTextChanged(CharSequence s,
+                                          int start,
+                                          int before,
+                                          int count)
+                {
+                }
+            });
+
             // onFocusChange
             textView.setOnFocusChangeListener((v, hasFocus) ->
             {
@@ -784,6 +842,43 @@ public class Notes extends Activity
         {
             viewSwitcher.setDisplayedChild(EDIT_TEXT);
             buttonSwitcher.setDisplayedChild(ACCEPT);
+        }
+    }
+
+    // openRecent
+    private void openRecent(MenuItem item)
+    {
+        String name = item.getTitle().toString();
+        File file = new File(name);
+
+        // Check absolute file
+        if (!file.isAbsolute())
+            file = new File(Environment.getExternalStorageDirectory(),
+                            File.separator + name);
+        // Check it exists
+        if (file.exists())
+        {
+            final Uri uri = Uri.fromFile(file);
+
+            if (changed)
+                alertDialog(R.string.openRecent, R.string.modified,
+                            R.string.saveNote, R.string.discard, (dialog, id) ->
+            {
+                switch (id)
+                {
+                case DialogInterface.BUTTON_POSITIVE:
+                    saveNote();
+                    readNote(uri);
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    changed = false;
+                    readNote(uri);
+                    break;
+                }
+            });
+            else
+                readNote(uri);
         }
     }
 
@@ -1222,7 +1317,7 @@ public class Notes extends Activity
                                           .WRITE_EXTERNAL_STORAGE) &&
                     grantResults[i] == PackageManager.PERMISSION_GRANTED)
                     // Granted, save file
-                    saveFile();
+                    saveNote();
             break;
 
         case REQUEST_READ:
@@ -1393,14 +1488,8 @@ public class Notes extends Activity
         }
     }
 
-    // save
+    // saveNote
     private void saveNote()
-    {
-        saveFile();
-    }
-
-    // saveFile
-    private void saveFile()
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
@@ -1496,7 +1585,7 @@ public class Notes extends Activity
                 setTitle(title);
 
                 path = file.getPath();
-                saveFile();
+                saveNote();
             }
         });
     }
@@ -1745,6 +1834,73 @@ public class Notes extends Activity
                 return;
 
             notes.loadText(result);
+        }
+    }
+
+    // GestureListener
+    private class GestureListener
+        extends GestureDetector.SimpleOnGestureListener
+    {
+        // onDown
+        @Override
+        public boolean onDown(MotionEvent e)
+        {
+            return true;
+        }
+
+        // onDoubleTap
+        @Override
+        public boolean onDoubleTap(MotionEvent e)
+        {
+            if (shown)
+            {
+                int[] l = new int[2];
+                markdownView.getLocationOnScreen(l);
+
+                // Get tap position
+                float y = e.getY();
+                y -= l[1];
+
+                int scrollY = markdownView.getScrollY();
+                int contentHeight = markdownView.getContentHeight();
+                float density = getResources().getDisplayMetrics().density;
+
+                // Get markdown position
+                final float p = (y + scrollY) / (contentHeight * density);
+
+                // Animation
+                animateEdit();
+
+                // Close text search
+                if (searchItem.isActionViewExpanded())
+                    searchItem.collapseActionView();
+
+                // Scroll after delay
+                textView.postDelayed(() ->
+                {
+                    int h = textView.getLayout().getHeight();
+                    int v = Math.round(h * p);
+
+                    // Get line
+                    int line = textView.getLayout().getLineForVertical(v);
+                    int offset = textView.getLayout()
+                        .getOffsetForHorizontal(line, 0);
+                    textView.setSelection(offset);
+
+                    // get text position
+                    int position = textView.getLayout().getLineBaseline(line);
+
+                    // Scroll to it
+                    int height = scrollView.getHeight();
+                    scrollView.smoothScrollTo(0, position - height / 2);
+                }, POSITION_DELAY);
+
+                shown = false;
+
+                return true;
+            }
+
+            return false;
         }
     }
 }
