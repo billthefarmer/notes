@@ -193,7 +193,6 @@ public class Notes extends Activity
     private View edit;
 
     private Set<String> pathSet;
-    private List<String> removeList;
 
     private String folder = NOTES_FOLDER;
     private String templateFile;
@@ -325,6 +324,18 @@ public class Notes extends Activity
     public void onPause()
     {
         super.onPause();
+
+        // Save current path
+        savePath(path);
+
+        SharedPreferences preferences =
+            PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        // Add the set of recent files
+        editor.putStringSet(Settings.PREF_PATHS, pathSet);
+
+        editor.apply();
     }
 
     // onCreateOptionsMenu
@@ -467,6 +478,14 @@ public class Notes extends Activity
             super.onBackPressed();
     }
 
+    // onNewIntent
+    @Override
+    public void onNewIntent(Intent intent)
+    {
+        if (BuildConfig.DEBUG)
+            Log.d(TAG, "New intent " + intent);
+    }
+
     // dispatchTouchEvent
     @Override
     public boolean dispatchTouchEvent(MotionEvent event)
@@ -497,7 +516,6 @@ public class Notes extends Activity
         pathSet = new HashSet<>();
         if (set != null)
             pathSet.addAll(set);
-        removeList = new ArrayList<>();
     }
 
     // setListeners
@@ -928,9 +946,6 @@ public class Notes extends Activity
     // clearList
     private void clearList()
     {
-        for (String path : pathSet)
-            removeList.add(path);
-
         pathSet.clear();
     }
 
@@ -1532,10 +1547,7 @@ public class Notes extends Activity
 
             // Remove old files
             if (count >= MAX_PATHS)
-            {
                 pathSet.remove(name);
-                removeList.add(name);
-            }
 
             count++;
         }
