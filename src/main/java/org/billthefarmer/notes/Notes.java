@@ -127,6 +127,7 @@ public class Notes extends Activity
 
     public final static String NOTES_FOLDER = "Notes";
     public final static String NOTES_FILE = "Notes.md";
+    public final static String NEW_FILE = "NewNote.md";
     public final static String NOTES_IMAGE = "Notes.png";
     public final static String TEMPLATE_FILE = "Template.md";
     public final static String TEXT_PLAIN = "text/plain";
@@ -544,6 +545,26 @@ public class Notes extends Activity
                 public boolean shouldOverrideUrlLoading(WebView view,
                                                         String url)
                 {
+                    File file = new File(url);
+                    if (!file.isAbsolute())
+                        file = new File(getHome(), url);
+
+                    if (file.exists())
+                    {
+                        readNote(Uri.fromFile(file));
+                        return true;
+                    }
+
+                    // Use external browser
+                    if (external)
+                    {
+                        Uri uri = Uri.parse(url);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        if (intent.resolveActivity(getPackageManager()) != null)
+                            startActivity(intent);
+                        return true;
+                    }
+
                     return false;
                 }
             });
@@ -873,8 +894,7 @@ public class Notes extends Activity
 
         // Check absolute file
         if (!file.isAbsolute())
-            file = new File(Environment.getExternalStorageDirectory(),
-                            File.separator + name);
+            file = new File(Environment.getExternalStorageDirectory(), name);
         // Check it exists
         if (file.exists())
         {
@@ -1112,32 +1132,36 @@ public class Notes extends Activity
             {
             case DialogInterface.BUTTON_POSITIVE:
                 saveNote();
-                textView.setText("");
-                changed = false;
-                // Check template
-                if (useTemplate)
-                    loadTemplate();
+                newFile();
                 break;
 
             case DialogInterface.BUTTON_NEGATIVE:
-                textView.setText("");
-                changed = false;
-                if (useTemplate)
-                    loadTemplate();
+                newFile();
                 break;
             }
         });
 
         else
-        {
-            textView.setText("");
-            changed = false;
-            if (useTemplate)
-                loadTemplate();
-        }
+            newFile();
 
         loadMarkdown();
         invalidateOptionsMenu();
+    }
+
+    // newFile
+    private void newFile()
+    {
+        textView.setText("");
+        changed = false;
+
+        file = new File(getHome(), NEW_FILE);
+        uri = Uri.fromFile(file);
+        path = uri.getPath();
+
+        setTitle(uri.getLastPathSegment());
+
+        if (useTemplate)
+            loadTemplate();
     }
 
     // loadTemplate
@@ -1156,6 +1180,15 @@ public class Notes extends Activity
                 return;
             }
         }
+
+        textView.setText(R.string.loading);
+
+        File file = new File(templateFile);
+        if (!file.isAbsolute())
+            file = new File(getHome(), templateFile);
+
+        ReadTask read = new ReadTask(this);
+        read.execute(Uri.fromFile(file));
 
         loadMarkdown();
     }
@@ -1402,8 +1435,7 @@ public class Notes extends Activity
             Uri defaultUri = Uri.fromFile(file);
             path = defaultUri.getPath();
 
-            String title = uri.getLastPathSegment();
-            setTitle(title);
+            setTitle(uri.getLastPathSegment());
         }
 
         // Read file
@@ -1412,8 +1444,7 @@ public class Notes extends Activity
             path = uri.getPath();
             file = new File(path);
 
-            String title = uri.getLastPathSegment();
-            setTitle(title);
+            setTitle(uri.getLastPathSegment());
         }
 
         textView.setText(R.string.loading);
@@ -1467,8 +1498,7 @@ public class Notes extends Activity
             if (text != null)
                 textView.append(text);
 
-            String title = uri.getLastPathSegment();
-            setTitle(title);
+            setTitle(uri.getLastPathSegment());
         }
     }
 
@@ -1601,8 +1631,7 @@ public class Notes extends Activity
 
                 // Set interface title
                 Uri uri = Uri.fromFile(file);
-                String title = uri.getLastPathSegment();
-                setTitle(title);
+                setTitle(uri.getLastPathSegment());
 
                 path = file.getPath();
                 saveNote();
