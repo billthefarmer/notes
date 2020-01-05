@@ -545,14 +545,17 @@ public class Notes extends Activity
                 public boolean shouldOverrideUrlLoading(WebView view,
                                                         String url)
                 {
-                    File file = new File(url);
-                    if (!file.isAbsolute())
-                        file = new File(getHome(), url);
-
-                    if (file.exists())
+                    // Local url
+                    if (FileUtils.isLocal(url))
                     {
-                        readNote(Uri.fromFile(file));
-                        return true;
+                        Uri uri = Uri.parse(url);
+                        File file = new File(uri.getPath());
+
+                        if (file.exists())
+                        {
+                            readNote(Uri.fromFile(file));
+                            return true;
+                        }
                     }
 
                     // Use external browser
