@@ -138,6 +138,7 @@ public class Notes extends Activity
     public final static String VIDEO = "video";
     public final static String MEDIA_TEMPLATE = "![%s](%s)\n";
     public final static String LINK_TEMPLATE = "[%s](%s)\n";
+    public final static String POSN_TEMPLATE = "[#]: # (%d)";
     public final static String AUDIO_TEMPLATE =
         "<audio controls src=\"%s\"></audio>\n";
     public final static String VIDEO_TEMPLATE =
@@ -160,6 +161,9 @@ public class Notes extends Activity
         Pattern.compile("geo:(-?\\d+[.]\\d+), ?(-?\\d+[.]\\d+).*");
     public final static Pattern MEDIA_PATTERN =
         Pattern.compile("!\\[(.*)\\]\\((.+)\\)", Pattern.MULTILINE);
+    public final static Pattern POSN_PATTERN =
+        Pattern.compile("^ ?\\[([<#>])\\]: ?#(?: ?\\((\\d+)\\))? *$",
+                        Pattern.MULTILINE);
 
     private final static int ADD_MEDIA = 1;
     private static final int EDIT_TEXT = 0;
@@ -243,6 +247,9 @@ public class Notes extends Activity
 
         if (savedInstanceState == null)
             defaultFile(null);
+
+        else
+            mediaCheck(getIntent());
 
         setListeners();
 
@@ -482,8 +489,7 @@ public class Notes extends Activity
     @Override
     public void onNewIntent(Intent intent)
     {
-        if (BuildConfig.DEBUG)
-            Log.d(TAG, "New intent " + intent);
+        mediaCheck(intent);   
     }
 
     // dispatchTouchEvent
@@ -1096,6 +1102,189 @@ public class Notes extends Activity
         loadMarkdown();
     }
 
+    // mediaCheck
+    private void mediaCheck(Intent intent)
+    {
+        // Check for sent media
+        if (Intent.ACTION_SEND.equals(intent.getAction()) ||
+            Intent.ACTION_VIEW.equals(intent.getAction()) ||
+            Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction()))
+            addMedia(intent);
+    }
+
+    // addMedia
+    private void addMedia(Intent intent)
+    {
+        String type = intent.getType();
+
+        if (type == null)
+        {
+            // Get uri
+            Uri uri = intent.getData();
+            if (GEO.equalsIgnoreCase(uri.getScheme()))
+                addMap(uri);
+        }
+
+        else if (type.equalsIgnoreCase(TEXT_PLAIN))
+        {
+            // Get the text
+            String text = intent.getStringExtra(Intent.EXTRA_TEXT);
+
+            // Check text
+            if (text != null)
+            {
+                // Check if it's an URL
+                Uri uri = Uri.parse(text);
+                if ((uri != null) && (uri.getScheme() != null) &&
+                        (uri.getScheme().equalsIgnoreCase(HTTP) ||
+                         uri.getScheme().equalsIgnoreCase(HTTPS)))
+                    addLink(uri, intent.getStringExtra(Intent.EXTRA_TITLE));
+
+                else
+                {
+                    textView.append(text);
+                    loadMarkdown();
+                }
+            }
+
+            // Get uri
+            Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+
+            // Check uri
+            if (uri != null)
+            {
+                // Resolve content uri
+                if (CONTENT.equalsIgnoreCase(uri.getScheme()))
+                    uri = resolveContent(uri);
+
+                textView.setSelection(textView.length());
+                addLink(uri, intent.getStringExtra(Intent.EXTRA_TITLE));
+            }
+        }
+
+        else if (type.startsWith(IMAGE) ||
+                 type.startsWith(AUDIO) ||
+                 type.startsWith(VIDEO))
+        {
+            if (Intent.ACTION_SEND.equals(intent.getAction()))
+            {
+                // Get the media uri
+                Uri media =
+                    intent.getParcelableExtra(Intent.EXTRA_STREAM);
+
+                // Resolve content uri
+                if (CONTENT.equalsIgnoreCase(media.getScheme()))
+                    media = resolveContent(media);
+
+                // Attempt to get web uri
+                String path = intent.getStringExtra(Intent.EXTRA_TEXT);
+
+                if (path != null)
+                {
+                    // Try to get the path as an uri
+                    Uri uri = Uri.parse(path);
+                    // Check if it's an URL
+                    if ((uri != null) &&
+                        (HTTP.equalsIgnoreCase(uri.getScheme()) ||
+                         HTTPS.equalsIgnoreCase(uri.getScheme())))
+                        media = uri;
+                }
+
+                addMedia(media);
+            }
+            else if (Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction()))
+            {
+                // Get the media
+                ArrayList<Uri> media =
+                    intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+                for (Uri uri : media)
+                {
+                    // Resolve content uri
+                    if (CONTENT.equalsIgnoreCase(uri.getScheme()))
+                        uri = resolveContent(uri);
+
+                    addMedia(uri);
+                }
+            }
+        }
+    }
+
+    // checkPosition
+    private void checkPosition(CharSequence text)
+    {
+        // Get a pattern and a matcher for position pattern
+        Matcher matcher = POSN_PATTERN.matcher(text);
+        // Check pattern
+        if (matcher.find())
+        {
+            switch (matcher.group(1))
+            {
+                // Start
+            case "<":
+                textView.setSelection(0);
+                break;
+
+                // End
+            case ">":
+                textView.setSelection(textView.length());
+                break;
+
+                // Saved position
+            case "#":
+                try
+                {
+                    textView.setSelection(Integer.parseInt(matcher.group(2)));
+                }
+
+                catch (Exception e)
+                {
+                    textView.setSelection(textView.length());
+                }
+                break;
+            }
+        }
+
+        else
+            textView.setSelection(textView.length());
+
+        // Scroll after delay
+        textView.postDelayed(() ->
+        {
+            // Get selection
+            int selection = textView.getSelectionStart();
+
+            // Get text position
+            int line = textView.getLayout().getLineForOffset(selection);
+            int position = textView.getLayout().getLineBaseline(line);
+
+            // Scroll to it
+            int height = scrollView.getHeight();
+            scrollView.smoothScrollTo(0, position - height / 2);
+        }, POSITION_DELAY);
+    }
+
+    // positionCheck
+    private CharSequence positionCheck(CharSequence text)
+    {
+        // Get a pattern and a matcher for position pattern
+        Matcher matcher = POSN_PATTERN.matcher(text);
+        // Check pattern
+        if (matcher.find())
+        {
+            // Save position
+            if ("#".equals(matcher.group(1)))
+            {
+                // Create replacement
+                String replace =
+                        String.format(Locale.ROOT, POSN_TEMPLATE,
+                                textView.getSelectionStart());
+                return matcher.replaceFirst(replace);
+            }
+        }
+
+        return text;
+    }
+
     // editStyles
     public void editStyles()
     {
@@ -1104,8 +1293,6 @@ public class Notes extends Activity
         // Get file provider uri
         Uri uri = FileProvider.getUriForFile
             (this, "org.billthefarmer.notes.fileprovider", file);
-        if (BuildConfig.DEBUG)
-            Log.d(TAG, "Path " + uri.getPath());
 
         Intent intent = new Intent(Intent.ACTION_EDIT);
         intent.setDataAndType(uri, TEXT_CSS);
@@ -1125,8 +1312,6 @@ public class Notes extends Activity
         // Get file provider uri
         Uri uri = FileProvider.getUriForFile
             (this, "org.billthefarmer.notes.fileprovider", file);
-        if (BuildConfig.DEBUG)
-            Log.d(TAG, "Path " + uri.getPath());
 
         Intent intent = new Intent(Intent.ACTION_EDIT);
         intent.setDataAndType(uri, TEXT_JAVASCRIPT);

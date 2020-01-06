@@ -9,15 +9,15 @@
       android:showAsAction="ifRoom"
       android:title="@string/newNote" />
   <item
-      android:id="@+id/openNote"
-      android:icon="@drawable/ic_action_collection_dark"
-      android:showAsAction="ifRoom"
-      android:title="@string/openNote" />
-  <item
       android:id="@+id/saveNote"
       android:icon="@drawable/ic_action_save"
       android:showAsAction="ifRoom"
       android:title="@string/saveNote" />
+  <item
+      android:id="@+id/openNote"
+      android:icon="@drawable/ic_action_collection_dark"
+      android:showAsAction="ifRoom"
+      android:title="@string/openNote" />
   <item
       android:id="@+id/search"
       android:actionViewClass="android.widget.SearchView"
