@@ -245,6 +245,9 @@ public class Notes extends Activity
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
 
+        if (BuildConfig.DEBUG)
+            Log.d(TAG, "onCreate " + getIntent());
+
         if (savedInstanceState == null)
             defaultFile(null);
 
@@ -276,6 +279,9 @@ public class Notes extends Activity
 
         setTitle(uri.getLastPathSegment());
 
+        if (BuildConfig.DEBUG)
+            Log.d(TAG, "onRestoreInstanceState " + getIntent());
+
         if (file.lastModified() > modified)
             alertDialog(R.string.appName, R.string.changedReload,
                         R.string.reload, R.string.cancel, (dialog, id) ->
@@ -305,6 +311,9 @@ public class Notes extends Activity
 
         // Clear cache
         markdownView.clearCache(true);
+
+        if (BuildConfig.DEBUG)
+            Log.d(TAG, "onResume " + getIntent());
 
         if (changed)
             loadMarkdown();
@@ -489,6 +498,9 @@ public class Notes extends Activity
     @Override
     public void onNewIntent(Intent intent)
     {
+        if (BuildConfig.DEBUG)
+            Log.d(TAG, "onNewIntent " + intent);
+
         mediaCheck(intent);   
     }
 
