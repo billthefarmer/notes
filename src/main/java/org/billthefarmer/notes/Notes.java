@@ -205,7 +205,6 @@ public class Notes extends Activity
     private File file;
     private String path;
     private Uri content;
-    private String append;
 
     private boolean shown = true;
     private boolean changed = false;
@@ -249,10 +248,17 @@ public class Notes extends Activity
             Log.d(TAG, "onCreate " + getIntent());
 
         if (savedInstanceState == null)
-            defaultFile(null);
+        {
+            Intent intent = getIntent();
+            if (checkMedia(intent))
+            {
+                newFile();
+                addMedia(getIntent());
+            }
 
-        else
-            mediaCheck(getIntent());
+            else
+                defaultFile();
+        }
 
         setListeners();
 
@@ -278,9 +284,6 @@ public class Notes extends Activity
         uri = Uri.fromFile(file);
 
         setTitle(uri.getLastPathSegment());
-
-        if (BuildConfig.DEBUG)
-            Log.d(TAG, "onRestoreInstanceState " + getIntent());
 
         if (file.lastModified() > modified)
             alertDialog(R.string.appName, R.string.changedReload,
@@ -311,9 +314,6 @@ public class Notes extends Activity
 
         // Clear cache
         markdownView.clearCache(true);
-
-        if (BuildConfig.DEBUG)
-            Log.d(TAG, "onResume " + getIntent());
 
         if (changed)
             loadMarkdown();
@@ -501,7 +501,8 @@ public class Notes extends Activity
         if (BuildConfig.DEBUG)
             Log.d(TAG, "onNewIntent " + intent);
 
-        mediaCheck(intent);   
+        if (checkMedia(intent))
+            addMedia(intent);
     }
 
     // dispatchTouchEvent
@@ -1101,27 +1102,23 @@ public class Notes extends Activity
         String mapText = String.format(MEDIA_TEMPLATE,
                                        OSM,
                                        uri.toString());
-        if (true)
-            textView.append(mapText);
 
-        else
-        {
-            Editable editable = textView.getEditableText();
-            int position = textView.getSelectionStart();
-            editable.insert(position, mapText);
-        }
-
+        Editable editable = textView.getEditableText();
+        int position = textView.getSelectionStart();
+        editable.insert(position, mapText);
         loadMarkdown();
     }
 
-    // mediaCheck
-    private void mediaCheck(Intent intent)
+    // checkMedia
+    private boolean checkMedia(Intent intent)
     {
         // Check for sent media
         if (Intent.ACTION_SEND.equals(intent.getAction()) ||
             Intent.ACTION_VIEW.equals(intent.getAction()) ||
             Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction()))
-            addMedia(intent);
+            return true;
+
+        return false;
     }
 
     // addMedia
@@ -1154,7 +1151,9 @@ public class Notes extends Activity
 
                 else
                 {
-                    textView.append(text);
+                    Editable editable = textView.getEditableText();
+                    int position = textView.getSelectionStart();
+                    editable.insert(position, text);
                     loadMarkdown();
                 }
             }
@@ -1169,7 +1168,6 @@ public class Notes extends Activity
                 if (CONTENT.equalsIgnoreCase(uri.getScheme()))
                     uri = resolveContent(uri);
 
-                textView.setSelection(textView.length());
                 addLink(uri, intent.getStringExtra(Intent.EXTRA_TITLE));
             }
         }
@@ -1354,6 +1352,9 @@ public class Notes extends Activity
                 newFile();
                 break;
             }
+
+            loadMarkdown();
+            invalidateOptionsMenu();
         });
 
         else
@@ -1695,26 +1696,16 @@ public class Notes extends Activity
     }
 
     // defaultFile
-    private void defaultFile(String text)
+    private void defaultFile()
     {
         file = getDefaultFile();
-
         uri = Uri.fromFile(file);
         path = uri.getPath();
 
         if (file.exists())
-        {
             readNote(uri);
-            append = text;
-        }
 
-        else
-        {
-            if (text != null)
-                textView.append(text);
-
-            setTitle(uri.getLastPathSegment());
-        }
+        setTitle(uri.getLastPathSegment());
     }
 
     // savePath
@@ -1942,16 +1933,7 @@ public class Notes extends Activity
         if (textView != null)
             textView.setText(text);
 
-        if (append != null)
-        {
-            textView.append(append);
-            append = null;
-            changed = true;
-        }
-
-        else
-            changed = false;
-
+        changed = false;
         loadMarkdown();
 
         // Dismiss keyboard
