@@ -83,7 +83,6 @@ an HTML5 media player, text clips will be added as above, URLs will be
 added as a link.
 
 ## LaTeX
-
 Notes doesn't support [LaTeX](https://en.wikipedia.org/wiki/LaTeX),
 but it is possible to use an external site to add LaTeX formatted
 images
