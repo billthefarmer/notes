@@ -1,9 +1,7 @@
-# ![Logo](src/main/res/drawable-hdpi/ic_launcher.png) Notes [![Build Status](https://travis-ci.org/billthefarmer/notes.svg?branch=master)](https://travis-ci.org/billthefarmer/notes)
+# Notes
+---
 
 Android notepad
-
-![Notes](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/Notes.png)
-![Notes](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/Notes-settings.png)
 
 * Notes saved in text files
 * Use markdown formatting
@@ -45,8 +43,8 @@ And on the menu:
 
 ## Help
 You may put a link `[Help](file:///android_asset/help.md)` to the help
-file in the app assets. The file will be loaded and may be saved using
-**Save as**.
+file in the app assets in a note. The file will be loaded and may be
+saved using the **Save as** menu entry.
 
 ## Double tap
 In the formatted view a double tap on the screen will switch to the

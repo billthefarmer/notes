@@ -56,6 +56,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.SearchView;
@@ -114,6 +115,7 @@ public class Notes extends Activity
     public final static String ZIP = ".zip";
     public final static String STYLES = "file:///android_asset/styles.css";
     public final static String SCRIPT = "file:///android_asset/script.js";
+    public final static String HELP = "file:///android_asset/help.md";
     public final static String CSS_STYLES = "css/styles.css";
     public final static String TEXT_CSS = "text/css";
     public final static String JS_SCRIPT = "js/script.js";
@@ -241,7 +243,10 @@ public class Notes extends Activity
 
         WebSettings settings = markdownView.getSettings();
         settings.setJavaScriptEnabled(true);
-        settings.setBuiltInZoomControls(true);
+        settings.setJavaScriptEnabled(true);
+        settings.setBlockNetworkImage(false);
+        settings.setLoadsImagesAutomatically(true);
+        // settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         settings.setDisplayZoomControls(false);
 
         if (BuildConfig.DEBUG)
@@ -551,7 +556,7 @@ public class Notes extends Activity
                 public void onPageFinished(WebView view, String url)
                 {
                     // Check if local
-                    if (FileUtils.isLocal(url))
+                    if (URLUtil.isFileUrl(url))
                     {
                         getActionBar().setDisplayHomeAsUpEnabled(false);
                         view.clearHistory();
@@ -582,10 +587,15 @@ public class Notes extends Activity
                 public boolean shouldOverrideUrlLoading(WebView view,
                                                         String url)
                 {
+                    if (BuildConfig.DEBUG)
+                        Log.d(TAG, "URL " + url);
+
+                    // Get uri
+                    Uri uri = Uri.parse(url);
+
                     // Local url
-                    if (FileUtils.isLocal(url))
+                    if (URLUtil.isFileUrl(url))
                     {
-                        Uri uri = Uri.parse(url);
                         File file = new File(uri.getPath());
 
                         if (file.exists())
@@ -595,10 +605,16 @@ public class Notes extends Activity
                         }
                     }
 
+                    // Asset url
+                    if (URLUtil.isAssetUrl(url))
+                    {
+                        loadAssetFile(uri.getLastPathSegment());
+                        return true;
+                    }
+
                     // Use external browser
                     if (external)
                     {
-                        Uri uri = Uri.parse(url);
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         if (intent.resolveActivity(getPackageManager()) != null)
                             startActivity(intent);
@@ -1925,6 +1941,47 @@ public class Notes extends Activity
         toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
+    }
+
+    private void loadAssetFile(String name)
+    {
+        CharSequence text = readAssetFile(name);
+        textView.setText(text);
+
+        file = new File(getHome(), name);
+        uri = Uri.fromFile(file);
+        path = uri.getPath();
+
+        loadMarkdown();
+        changed = false;
+    }
+
+    // readAssetFile
+    private CharSequence readAssetFile(String file)
+    {
+        StringBuilder text = new StringBuilder();
+        // Open file
+        try (InputStream input = getAssets().open(file);
+             BufferedReader reader = new
+             BufferedReader(new InputStreamReader(input)))
+        {
+            String line;
+            while ((line = reader.readLine()) != null)
+            {
+                text.append(line);
+                text.append(System.getProperty("line.separator"));
+            }
+
+            return text;
+        }
+
+        catch (Exception e)
+        {
+            alertDialog(R.string.appName, e.getMessage(), R.string.ok);
+            e.printStackTrace();
+        }
+
+        return text;
     }
 
     // loadText
