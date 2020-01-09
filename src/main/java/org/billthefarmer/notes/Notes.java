@@ -500,9 +500,6 @@ public class Notes extends Activity
     @Override
     public void onNewIntent(Intent intent)
     {
-        if (BuildConfig.DEBUG)
-            Log.d(TAG, "onNewIntent " + intent);
-
         if (checkMedia(intent))
             addMedia(intent);
     }
@@ -2339,13 +2336,15 @@ public class Notes extends Activity
         {
             if (shown)
             {
-                int[] l = new int[2];
-                markdownView.getLocationOnScreen(l);
+                // Get location
+                int[] location = new int[2];
+                markdownView.getLocationOnScreen(location);
 
                 // Get tap position
                 float y = e.getY();
-                y -= l[1];
+                y -= location[1];
 
+                // Get scroll position
                 int scrollY = markdownView.getScrollY();
                 int contentHeight = markdownView.getContentHeight();
                 float density = getResources().getDisplayMetrics().density;
@@ -2381,7 +2380,6 @@ public class Notes extends Activity
                 }, POSITION_DELAY);
 
                 shown = false;
-
                 return true;
             }
 
