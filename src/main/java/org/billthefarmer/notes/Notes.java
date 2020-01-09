@@ -243,10 +243,7 @@ public class Notes extends Activity
 
         WebSettings settings = markdownView.getSettings();
         settings.setJavaScriptEnabled(true);
-        settings.setJavaScriptEnabled(true);
-        settings.setBlockNetworkImage(false);
-        settings.setLoadsImagesAutomatically(true);
-        // settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
 
         if (BuildConfig.DEBUG)
@@ -545,8 +542,6 @@ public class Notes extends Activity
     // setListeners
     private void setListeners()
     {
-        if (textView != null)
-
         if (markdownView != null)
         {
             markdownView.setWebViewClient(new WebViewClient()
@@ -600,7 +595,7 @@ public class Notes extends Activity
 
                         if (file.exists())
                         {
-                            readNote(Uri.fromFile(file));
+                            getNote(Uri.fromFile(file));
                             return true;
                         }
                     }
@@ -608,7 +603,7 @@ public class Notes extends Activity
                     // Asset url
                     if (URLUtil.isAssetUrl(url))
                     {
-                        loadAssetFile(uri.getLastPathSegment());
+                        getAssetFile(uri.getLastPathSegment());
                         return true;
                     }
 
@@ -639,12 +634,8 @@ public class Notes extends Activity
             // On click
             accept.setOnClickListener(v ->
             {
-                // Check flag
-                if (changed)
-                {
-                    // Get text
-                    loadMarkdown();
-                }
+                // Get text
+                loadMarkdown();
 
                 // Animation
                 animateAccept();
@@ -1634,6 +1625,30 @@ public class Notes extends Activity
         }
     }
 
+    private void getNote(Uri uri)
+    {
+        // Check if file changed
+        if (changed)
+            alertDialog(R.string.openNote, R.string.modified,
+                        R.string.saveNote, R.string.discard, (dialog, id) ->
+        {
+            switch (id)
+            {
+            case DialogInterface.BUTTON_POSITIVE:
+                saveNote();
+                readNote(uri);
+                break;
+
+            case DialogInterface.BUTTON_NEGATIVE:
+                readNote(uri);
+                break;
+            }
+        });
+
+        else
+            readNote(uri);
+    }
+
     // readNote
     private void readNote(Uri uri)
     {
@@ -1943,6 +1958,30 @@ public class Notes extends Activity
         toast.show();
     }
 
+    private void getAssetFile(String name)
+    {
+        // Check if file changed
+        if (changed)
+            alertDialog(R.string.openNote, R.string.modified,
+                        R.string.saveNote, R.string.discard, (dialog, id) ->
+            {
+                switch (id)
+                {
+                case DialogInterface.BUTTON_POSITIVE:
+                    saveNote();
+                    loadAssetFile(name);
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    loadAssetFile(name);
+                    break;
+                }
+            });
+
+        else
+            loadAssetFile(name);
+    }
+
     private void loadAssetFile(String name)
     {
         CharSequence text = readAssetFile(name);
@@ -1952,8 +1991,10 @@ public class Notes extends Activity
         uri = Uri.fromFile(file);
         path = uri.getPath();
 
+        setTitle(name);
         loadMarkdown();
         changed = false;
+        invalidateOptionsMenu();
     }
 
     // readAssetFile

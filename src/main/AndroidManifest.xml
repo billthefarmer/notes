@@ -58,6 +58,7 @@
 
     <activity
         android:name="Editor"
+        android:label="@string/editorName"
         android:windowSoftInputMode="stateHidden|adjustResize">
       <intent-filter
           android:scheme="http"
@@ -69,7 +70,13 @@
         <data android:mimeType="text/*" />
       </intent-filter>
     </activity>
-
+    <!--
+    <activity-alias
+      android:name="NotesEditor"
+      android:targetActivity="Editor" >
+      . . .
+    </activity-alias>
+    -->
     <activity
         android:name="Settings"
         android:label="@string/settings" />

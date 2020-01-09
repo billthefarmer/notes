@@ -2,6 +2,7 @@
 <resources>
 
   <string name="appName">Notes</string>
+  <string name="editorName">Notes Editor</string>
 
   <string name="newNote">New</string>
   <string name="openNote">Open</string>
