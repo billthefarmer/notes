@@ -9,6 +9,7 @@ Android notepad
 * Display media
 * Display [OpenStreetMap](http://www.openstreetmap.org/) maps
 * Share notes
+* Add date and time
 * Add media from media providers
 * Receive media from other apps
 * Receive geo uris from other apps

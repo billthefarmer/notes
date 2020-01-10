@@ -1,7 +1,18 @@
-Notepad
+Notepad with markdown formatting
 
-* Template file
-* Add media
-* Add maps
-* Share
-* Back navigation
+ * Notes saved in text files
+ * Use markdown formatting
+ * Optional note template
+ * Display media
+ * Display OpenStreetMap maps
+ * Share notes
+ * Add date and time
+ * Add media from media providers
+ * Receive media from other apps
+ * Receive geo uris from other apps
+ * Incremental search of notes
+ * Dark or light theme for editing
+ * Optional CSS styles
+ * Optional JavaScript scripts
+ * Back up notes to a zip file
+ * Optional edit cursor position control
