@@ -3,7 +3,10 @@
 Android notepad
 
 ![Notes](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/Notes.png)
-![Notes](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/Notes-settings.png)
+![Settings](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/Notes-settings.png)
+
+![Open](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/Notes-open.png)
+![Recent](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/Notes-recent.png)
 
 * Notes saved in text files
 * Use markdown formatting
