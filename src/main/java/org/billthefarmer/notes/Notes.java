@@ -454,8 +454,8 @@ public class Notes extends Activity
         case R.id.shareNote:
             shareNote();
             break;
-        case R.id.addTime:
-            addTime();
+        case R.id.addDate:
+            addDate();
             break;
         case R.id.addMedia:
             addMedia();
@@ -1009,14 +1009,15 @@ public class Notes extends Activity
         startActivity(Intent.createChooser(intent, null));
     }
 
-    // addTime
-    public void addTime()
+    // addDate
+    public void addDate()
     {
-        DateFormat format = DateFormat.getTimeInstance(DateFormat.SHORT);
-        String time = format.format(new Date());
+        DateFormat format = DateFormat.getDateTimeInstance(DateFormat.LONG,
+                                                           DateFormat.SHORT);
+        String date = format.format(new Date());
         Editable editable = textView.getEditableText();
         int position = textView.getSelectionStart();
-        editable.insert(position, time);
+        editable.insert(position, date);
         loadMarkdown();
     }
 

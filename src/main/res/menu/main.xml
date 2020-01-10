@@ -46,10 +46,10 @@
       android:showAsAction="ifRoom"
       android:title="@string/share" />
   <item
-      android:id="@+id/addTime"
+      android:id="@+id/addDate"
       android:icon="@drawable/ic_action_time"
       android:showAsAction="never"
-      android:title="@string/addTime" />
+      android:title="@string/addDate" />
   <item
       android:id="@+id/addMedia"
       android:icon="@drawable/ic_action_picture"

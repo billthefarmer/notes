@@ -34,7 +34,7 @@ And on the menu:
   * **Clear list** &ndash; Clear list of recent files
 * **Share** &ndash; Share note
 * **Save as** &ndash; Save note in another file
-* **Add time** &ndash; Add the current time
+* **Add date** &ndash; Add the current date and time
 * **Add media** &ndash; Add media from media providers
 * **Edit styles** &ndash; show an editor to edit the custom styles
 * **Edit script** &ndash; show an editor to edit custom javascript
