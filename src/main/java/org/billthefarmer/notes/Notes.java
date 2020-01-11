@@ -551,6 +551,7 @@ public class Notes extends Activity
                     if (URLUtil.isFileUrl(url))
                     {
                         getActionBar().setDisplayHomeAsUpEnabled(false);
+                        setTitle(uri.getLastPathSegment());
                         view.clearHistory();
                     }
 
