@@ -124,8 +124,6 @@ public class Notes extends Activity
     public final static String FOLDER = "Folder:  ";
     public final static String FILE_PROVIDER =
         "org.billthefarmer.notes.fileprovider";
-    public final static String FILE_URI =
-        "org.billthefarmer.notes.Uri";
 
     public final static String NOTES_FOLDER = "Notes";
     public final static String NOTES_FILE = "Notes.md";
@@ -1305,38 +1303,18 @@ public class Notes extends Activity
     public void editStyles()
     {
         File file = new File(getHome(), CSS_STYLES);
-
-        // Get file provider uri
-        Uri uri = FileProvider.getUriForFile
-            (this, "org.billthefarmer.notes.fileprovider", file);
-
-        Intent intent = new Intent(Intent.ACTION_EDIT);
-        intent.setDataAndType(uri, TEXT_CSS);
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION |
-                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-        Uri extra = Uri.fromFile(file);
-        intent.putExtra(FILE_URI, extra);
-        startActivity(intent);
+        Uri uri = Uri.fromFile(file);
+        startActivity(new Intent(Intent.ACTION_EDIT, uri,
+                                 this, Editor.class));
     }
 
     // editScript
     public void editScript()
     {
         File file = new File(getHome(), JS_SCRIPT);
-
-        // Get file provider uri
-        Uri uri = FileProvider.getUriForFile
-            (this, "org.billthefarmer.notes.fileprovider", file);
-
-        Intent intent = new Intent(Intent.ACTION_EDIT);
-        intent.setDataAndType(uri, TEXT_JAVASCRIPT);
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION |
-                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-        Uri extra = Uri.fromFile(file);
-        intent.putExtra(FILE_URI, extra);
-        startActivity(intent);
+        Uri uri = Uri.fromFile(file);
+        startActivity(new Intent(Intent.ACTION_EDIT, uri,
+                                 this, Editor.class));
     }
 
     // newNote
