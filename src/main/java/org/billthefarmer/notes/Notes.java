@@ -244,9 +244,6 @@ public class Notes extends Activity
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
 
-        if (BuildConfig.DEBUG)
-            Log.d(TAG, "onCreate " + getIntent());
-
         if (savedInstanceState == null)
         {
             Intent intent = getIntent();
@@ -578,9 +575,6 @@ public class Notes extends Activity
                 public boolean shouldOverrideUrlLoading(WebView view,
                                                         String url)
                 {
-                    if (BuildConfig.DEBUG)
-                        Log.d(TAG, "URL " + url);
-
                     // Get uri
                     Uri uri = Uri.parse(url);
 
@@ -1304,8 +1298,7 @@ public class Notes extends Activity
     {
         File file = new File(getHome(), CSS_STYLES);
         Uri uri = Uri.fromFile(file);
-        startActivity(new Intent(Intent.ACTION_EDIT, uri,
-                                 this, Editor.class));
+        startActivity(new Intent(Intent.ACTION_EDIT, uri, this, Editor.class));
     }
 
     // editScript
@@ -1313,8 +1306,7 @@ public class Notes extends Activity
     {
         File file = new File(getHome(), JS_SCRIPT);
         Uri uri = Uri.fromFile(file);
-        startActivity(new Intent(Intent.ACTION_EDIT, uri,
-                                 this, Editor.class));
+        startActivity(new Intent(Intent.ACTION_EDIT, uri, this, Editor.class));
     }
 
     // newNote

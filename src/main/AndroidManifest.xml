@@ -58,7 +58,6 @@
 
     <activity
         android:name="Editor"
-        android:label="@string/editorName"
         android:windowSoftInputMode="stateHidden|adjustResize">
       <intent-filter
           android:scheme="http"
