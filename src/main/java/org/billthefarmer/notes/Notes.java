@@ -127,7 +127,7 @@ public class Notes extends Activity
 
     public final static String NOTES_FOLDER = "Notes";
     public final static String NOTES_FILE = "Notes.md";
-    public final static String NEW_FILE = "NewNote.md";
+    public final static String NEW_FILE = "Untitled.md";
     public final static String NOTES_IMAGE = "Notes.png";
     public final static String TEMPLATE_FILE = "Template.md";
     public final static String TEXT_PLAIN = "text/plain";
