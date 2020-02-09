@@ -1908,14 +1908,14 @@ public class Notes extends Activity
     }
 
     // showToast
-    void showToast(int id)
+    private void showToast(int id)
     {
         String text = getString(id);
         showToast(text);
     }
 
     // showToast
-    void showToast(String text)
+    private void showToast(String text)
     {
         // Cancel the last one
         if (toast != null)
