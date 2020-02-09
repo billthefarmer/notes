@@ -163,6 +163,12 @@ check and minimise your code. It will handle multiple input files.
 You may create a backup of all your notes in a zip file. The file
 will have the same name as the notes folder, default `Notes.zip`.
 
+## Sync
+Android cloud storage apps when last tested appeared not to be capable
+of syncing a real storage folder on the device. However
+[Syncthing](https://syncthing.net) does just that and can sync your
+notes folder with other devices and desktop computers.
+
 ## Removable SD cards
 Android allows removable SD cards to be used like a USB stick or as
 part of the device storage. Storing notes on a removable SD card not
