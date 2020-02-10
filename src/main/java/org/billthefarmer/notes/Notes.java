@@ -1657,6 +1657,7 @@ public class Notes extends Activity
         // Read file
         else
         {
+            this.uri = uri;
             path = uri.getPath();
             file = new File(path);
 
