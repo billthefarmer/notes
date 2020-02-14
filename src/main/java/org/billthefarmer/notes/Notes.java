@@ -970,9 +970,10 @@ public class Notes extends Activity
     public void shareNote()
     {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_SUBJECT,
-                        getString(R.string.appName) + ": " +
-                        getTitle().toString());
+        String title =
+            String.format("%s: %s", getString(R.string.appName), getTitle());
+        intent.putExtra(Intent.EXTRA_TITLE, title);
+        intent.putExtra(Intent.EXTRA_SUBJECT, title);
         if (shown)
         {
             intent.setType(IMAGE_PNG);
