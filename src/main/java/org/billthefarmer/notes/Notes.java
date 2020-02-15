@@ -28,8 +28,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -51,12 +51,14 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.URLUtil;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.SearchView;
@@ -177,6 +179,7 @@ public class Notes extends Activity
     private final static int REQUEST_TEMPLATE = 4;
 
     private final static int BUFFER_SIZE = 4096;
+    private final static int VISIBLE_DELAY = 2048;
     private final static int POSITION_DELAY = 128;
     private final static int MAX_PATHS = 10;
 
@@ -208,6 +211,9 @@ public class Notes extends Activity
 
     private boolean shown = true;
     private boolean changed = false;
+
+    private boolean scrollUp = false;
+    private boolean scrollDn = false;
 
     private boolean external = false;
     private boolean useTemplate = false;
@@ -610,11 +616,60 @@ public class Notes extends Activity
                 }
             });
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            {
+                final Runnable showEdit = () ->
+                {
+                    startAnimation(edit, R.anim.fade_in, View.VISIBLE);
+                    scrollUp = false;
+                };
+
+                // onScrollChange
+                markdownView.setOnScrollChangeListener((v, x, y, oldX, oldY) ->
+                {
+                    // Scroll up
+                    if (y > oldY)
+                    {
+                        if (!scrollUp)
+                        {
+                            // Hide button
+                            // edit.setVisibility(View.INVISIBLE);
+                            startAnimation(edit, R.anim.fade_out,
+                                           View.INVISIBLE);
+
+                            // Set flags
+                            scrollUp = true;
+                            scrollDn = false;
+                        }
+
+                        // Show button delayed
+                        markdownView.removeCallbacks(showEdit);
+                        markdownView.postDelayed(showEdit, VISIBLE_DELAY);
+                    }
+
+                    else if (!scrollDn)
+                    {
+                        // Set flags
+                        scrollUp = false;
+                        scrollDn = true;
+
+                        // Show button
+                        if (edit.getVisibility() != View.VISIBLE)
+                        {
+                            // edit.setVisibility(View.VISIBLE);
+                            startAnimation(edit, R.anim.fade_in, View.VISIBLE);
+                            markdownView.removeCallbacks(showEdit);
+                        }
+                   }
+                });
+            }
+
             // On long click
             markdownView.setOnLongClickListener(v ->
             {
-                // Reveal button
-                edit.setVisibility(View.VISIBLE);
+                // Show button
+                startAnimation(edit, R.anim.fade_in, View.VISIBLE);
+                scrollUp = false;
                 return false;
             });
         }
@@ -642,6 +697,7 @@ public class Notes extends Activity
             {
                 // Hide button
                 v.setVisibility(View.INVISIBLE);
+                scrollUp = true;
                 return true;
             });
         }
@@ -681,6 +737,7 @@ public class Notes extends Activity
             {
                 // Hide button
                 v.setVisibility(View.INVISIBLE);
+                scrollUp = true;
                 return true;
             });
         }
@@ -730,11 +787,62 @@ public class Notes extends Activity
             // On long click
             textView.setOnLongClickListener(v ->
             {
-                // Reveal button
-                accept.setVisibility(View.VISIBLE);
+                // Show button
+                startAnimation(accept, R.anim.fade_in, View.VISIBLE);
+                scrollUp = false;
                 return false;
             });
         }
+
+        if (scrollView != null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            {
+                final Runnable showAccept = () ->
+                {
+                    startAnimation(accept, R.anim.fade_in, View.VISIBLE);
+                    scrollUp = false;
+                };
+
+                // onScrollChange
+                scrollView.setOnScrollChangeListener((v, x, y, oldX, oldY) ->
+                {
+                    // Scroll up
+                    if (y > oldY)
+                    {
+                        if (!scrollUp)
+                        {
+                            // Hide button
+                            // accept.setVisibility(View.INVISIBLE);
+                            startAnimation(accept, R.anim.fade_out,
+                                           View.INVISIBLE);
+
+                            // Set flags
+                            scrollUp = true;
+                            scrollDn = false;
+                        }
+
+                        // Show button delayed
+                        scrollView.removeCallbacks(showAccept);
+                        scrollView.postDelayed(showAccept, VISIBLE_DELAY);
+                    }
+
+                    else if (!scrollDn)
+                    {
+                        // Set flags
+                        scrollUp = false;
+                        scrollDn = true;
+
+                        // Show button
+                        if (accept.getVisibility() != View.VISIBLE)
+                        {
+                            // accept.setVisibility(View.VISIBLE);
+                            startAnimation(accept, R.anim.fade_in,
+                                           View.VISIBLE);
+                            scrollView.removeCallbacks(showAccept);
+                        }
+                    }
+                });
+            }
     }
 
     // animateAccept
@@ -751,6 +859,14 @@ public class Notes extends Activity
         // Animation
         viewSwitcher.setDisplayedChild(EDIT_TEXT);
         buttonSwitcher.setDisplayedChild(ACCEPT);
+    }
+
+    // startAnimation
+    private void startAnimation(View view, int anim, int visibility)
+    {
+        Animation animation = AnimationUtils.loadAnimation(this, anim);
+        view.startAnimation(animation);
+        view.setVisibility(visibility);
     }
 
     // loadMarkdown
