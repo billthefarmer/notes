@@ -671,6 +671,7 @@ public class Notes extends Activity
                 if (edit.getVisibility() != View.VISIBLE)
                     startAnimation(edit, R.anim.fade_in, View.VISIBLE);
                 scrollUp = false;
+                scrollDn = false;
                 return false;
             });
         }
@@ -699,6 +700,7 @@ public class Notes extends Activity
                 // Hide button
                 v.setVisibility(View.INVISIBLE);
                 scrollUp = true;
+                scrollDn = false;
                 return true;
             });
         }
@@ -739,6 +741,7 @@ public class Notes extends Activity
                 // Hide button
                 v.setVisibility(View.INVISIBLE);
                 scrollUp = true;
+                scrollDn = false;
                 return true;
             });
         }
@@ -761,18 +764,14 @@ public class Notes extends Activity
                 public void beforeTextChanged(CharSequence s,
                                               int start,
                                               int count,
-                                              int after)
-                {
-                }
+                                              int after) {}
 
                 // onTextChanged
                 @Override
                 public void onTextChanged(CharSequence s,
                                           int start,
                                           int before,
-                                          int count)
-                {
-                }
+                                          int count) {}
             });
 
             // onFocusChange
@@ -792,6 +791,7 @@ public class Notes extends Activity
                 if (accept.getVisibility() != View.VISIBLE)
                     startAnimation(accept, R.anim.fade_in, View.VISIBLE);
                 scrollUp = false;
+                scrollDn = false;
                 return false;
             });
         }
