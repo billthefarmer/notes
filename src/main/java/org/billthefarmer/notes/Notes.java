@@ -668,7 +668,8 @@ public class Notes extends Activity
             markdownView.setOnLongClickListener(v ->
             {
                 // Show button
-                startAnimation(edit, R.anim.fade_in, View.VISIBLE);
+                if (edit.getVisibility() != View.VISIBLE)
+                    startAnimation(edit, R.anim.fade_in, View.VISIBLE);
                 scrollUp = false;
                 return false;
             });
@@ -788,7 +789,8 @@ public class Notes extends Activity
             textView.setOnLongClickListener(v ->
             {
                 // Show button
-                startAnimation(accept, R.anim.fade_in, View.VISIBLE);
+                if (accept.getVisibility() != View.VISIBLE)
+                    startAnimation(accept, R.anim.fade_in, View.VISIBLE);
                 scrollUp = false;
                 return false;
             });
