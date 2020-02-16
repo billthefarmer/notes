@@ -622,6 +622,7 @@ public class Notes extends Activity
                 {
                     startAnimation(edit, R.anim.fade_in, View.VISIBLE);
                     scrollUp = false;
+                    scrollDn = false;
                 };
 
                 // onScrollChange

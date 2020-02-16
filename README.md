@@ -103,7 +103,8 @@ Notes doesn't support [LaTeX](https://en.wikipedia.org/wiki/LaTeX),
 but it is possible to use an external site to add LaTeX formatted
 images.
 
-    ![Math](http://www.sciweavers.org/tex2img.php?eq=\sum_{i=1}^{n}x_{i}^{2}&bc=cornsilk&fc=black&im=jpg&fs=24&ff=arev)
+    ![Math](http://www.sciweavers.org/tex2img.php?eq=\sum_{i=1}^{n}x_{i}^{2}
+        &bc=cornsilk&fc=black&im=jpg&fs=24&ff=arev)
 
     \sum_{i=1}^{n}x_{i}^{2}
 
@@ -173,7 +174,7 @@ of syncing a real storage folder on the device. However
 [Syncthing](https://syncthing.net) does just that and can sync your
 notes folder with other devices and desktop computers.
 
-## Removable SD cards
+## SD cards
 Android allows removable SD cards to be used like a USB stick or as
 part of the device storage. Storing notes on a removable SD card not
 part of the device storage may work on some devices, but is not
