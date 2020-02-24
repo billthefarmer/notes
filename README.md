@@ -1,4 +1,4 @@
-# ![Logo](src/main/res/drawable-hdpi/ic_launcher.png) Notes [![Build Status](https://travis-ci.org/billthefarmer/notes.svg?branch=master)](https://travis-ci.org/billthefarmer/notes) [![Release](https://img.shields.io/github/release/billthefarmer/notes.svg?logo=github)](https://github.com/billthefarmer/notes/releases)
+# ![Logo](src/main/res/drawable-hdpi/ic_launcher.png) Notes [![Build Status](https://travis-ci.org/billthefarmer/notes.svg?branch=master)](https://travis-ci.org/billthefarmer/notes) [![Release](https://img.shields.io/github/release/billthefarmer/notes.svg?logo=github)](https://github.com/billthefarmer/notes/releases) [![Available on F-Droid](https://f-droid.org/wiki/images/c/ca/F-Droid-button_available-on_smaller.png)](https://f-droid.org/packages/org.billthefarmer.notes)
 
 Android notebook
 
@@ -12,7 +12,7 @@ Android notebook
 * Use markdown formatting
 * Optional note template
 * Display media
-* Display [OpenStreetMap](http://www.openstreetmap.org/) maps
+* Display [OpenStreetMap](http://www.openstreetmap.org) maps
 * Share notes
 * Add date and time
 * Add media from media providers
