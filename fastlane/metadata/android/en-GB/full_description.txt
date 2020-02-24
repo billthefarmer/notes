@@ -1,4 +1,4 @@
-Notepad with markdown formatting
+Notebook with markdown formatting
 
  * Notes saved in text files
  * Use markdown formatting

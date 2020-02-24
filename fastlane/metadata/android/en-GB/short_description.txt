@@ -1,1 +1,1 @@
-Notepad with markdown formatting
+Notebook with markdown formatting
