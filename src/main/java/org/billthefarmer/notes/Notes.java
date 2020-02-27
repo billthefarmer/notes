@@ -181,6 +181,7 @@ public class Notes extends Activity
     private final static int BUFFER_SIZE = 4096;
     private final static int VISIBLE_DELAY = 2048;
     private final static int POSITION_DELAY = 128;
+    private final static int UPDATE_DELAY = 128;
     private final static int MAX_PATHS = 10;
 
     private EditText textView;
@@ -479,7 +480,7 @@ public class Notes extends Activity
         }
 
         // Close text search
-        if (searchItem.isActionViewExpanded())
+        if (searchItem != null && searchItem.isActionViewExpanded())
             searchItem.collapseActionView();
 
         return true;
@@ -689,7 +690,7 @@ public class Notes extends Activity
                 animateAccept();
 
                 // Close text search
-                if (searchItem.isActionViewExpanded())
+                if (searchItem != null && searchItem.isActionViewExpanded())
                     searchItem.collapseActionView();
 
                 shown = true;
@@ -715,7 +716,7 @@ public class Notes extends Activity
                 animateEdit();
 
                 // Close text search
-                if (searchItem.isActionViewExpanded())
+                if (searchItem != null && searchItem.isActionViewExpanded())
                     searchItem.collapseActionView();
 
                 // Scroll after delay
@@ -756,8 +757,11 @@ public class Notes extends Activity
                 public void afterTextChanged(Editable s)
                 {
                     // Text changed
-                    changed = true;
-                    invalidateOptionsMenu();
+                    if (!changed)
+                    {
+                        changed = true;
+                        invalidateOptionsMenu();
+                    }
                 }
 
                 // beforeTextChanged
@@ -765,7 +769,24 @@ public class Notes extends Activity
                 public void beforeTextChanged(CharSequence s,
                                               int start,
                                               int count,
-                                              int after) {}
+                                              int after)
+                {
+                    if (searchItem != null &&
+                        searchItem.isActionViewExpanded())
+                    {
+                        final CharSequence query = searchView.getQuery();
+
+                        textView.postDelayed(() ->
+                        {
+                            if (searchItem != null &&
+                                searchItem.isActionViewExpanded())
+                            {
+                                if (query != null)
+                                    searchView.setQuery(query, false);
+                            }
+                        }, UPDATE_DELAY);
+                    }
+                }
 
                 // onTextChanged
                 @Override
@@ -2449,7 +2470,7 @@ public class Notes extends Activity
                 animateEdit();
 
                 // Close text search
-                if (searchItem.isActionViewExpanded())
+                if (searchItem != null && searchItem.isActionViewExpanded())
                     searchItem.collapseActionView();
 
                 // Scroll after delay
