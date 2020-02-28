@@ -376,17 +376,14 @@ public class Notes extends Activity
         searchItem = menu.findItem(R.id.search);
 
         // Set up search view
-        if (searchItem != null)
-        {
-            searchView = (SearchView) searchItem.getActionView();
+        searchView = (SearchView) searchItem.getActionView();
 
-            // Set up search view options and listener
-            if (searchView != null)
-            {
-                searchView.setSubmitButtonEnabled(true);
-                searchView.setImeOptions(EditorInfo.IME_ACTION_GO);
-                searchView.setOnQueryTextListener(new QueryTextListener());
-            }
+        // Set up search view options and listener
+        if (searchView != null)
+        {
+            searchView.setSubmitButtonEnabled(true);
+            searchView.setImeOptions(EditorInfo.IME_ACTION_GO);
+            searchView.setOnQueryTextListener(new QueryTextListener());
         }
 
         // Get a list of recent files
@@ -1179,7 +1176,7 @@ public class Notes extends Activity
         int line = textView.getLayout().getLineForOffset(position);
         int start = textView.getLayout().getLineStart(line);
         if (start == position)
-            editable.insert(position, "#### ");
+            editable.insert(position, "\b");
         loadMarkdown();
     }
 
