@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="appName">Notizen</string>
+
+  <string name="newNote">Neu</string>
+  <string name="openNote">Öffne</string>
+  <string name="openRecent">Öffne letzte</string>
+  <string name="clearList">Liste löschen</string>
+  <string name="saveNote">Speichern</string>
+  <string name="saveAs">Speichern als</string>
+  <string name="search">Suchen…</string>
+  <string name="share">Teilen…</string>
+  <string name="addDate">Datum hinzufügen</string>
+  <string name="addMedia">Medien hinzufügen</string>
+  <string name="editStyles">Stile bearbeiten…</string>
+  <string name="editScript">Skript bearbeiten…</string>
+  <string name="backup">Sicherung</string>
+  <string name="start">Sicherung beginnen</string>
+  <string name="complete">Sicherung abgeschlossen</string>
+  <string name="settings">Einstellungen</string>
+  <string name="folder">Ordner</string>
+  <string name="media">Medien</string>
+  <string name="pref_external">Browser</string>
+  <string name="pref_external_summ">
+    Browser für externe Links verwenden
+  </string>
+  <string name="theme">Thema</string>
+  <string name="pref_dark_theme">Dunkel</string>
+  <string name="pref_dark_theme_summ">
+    Dunkles Thema für die Bearbeitung verwenden
+  </string>
+  <string name="template">Vorlage</string>
+  <string name="pref_use_template">Benutze Vorlage</string>
+  <string name="pref_use_template_summ">
+    Benutze Volage für Notizen
+  </string>
+  <string name="pref_template_file">Vorlagendatei</string>
+  <string name="about">Über</string>
+  <string name="pref_about_summ">Notizen <a href="https://github.com/billthefarmer/notes/releases/latest">Version %s</a></string>
+  <string name="built">Erstellt %s</string>
+  <string name="licence">Lizenz <a href="https://www.gnu.org/licenses/gpl.txt">GNU GPLv3</a>
+  </string>
+  <string name="copyright">Urheberrecht  \u00A9 2020 <a href="https://billthefarmer.github.io">Bill Farmer</a>\nMarkdown-Ansicht von <a href="https://github.com/falnatsheh/MarkdownView">Markdown View</a>\nDeutsche Übersetzung von <a href="https://github.com/mondlicht-und-sterne">mondstern</a>
+  </string>
+
+  <string name="choose">Wählen einen Dateinamen</string>
+  <string name="loading">Laden…</string>
+
+  <string name="modified">
+    Du hast ungespeicherte Änderungen. Mövhtest Du Deine Änderungen speichern?
+  </string>
+
+  <string name="changedReload">
+    Diese Datei hat sich geändert, möchten Du diese neu laden?
+  </string>
+
+  <string name="changedOverwrite">
+    Diese Datei hat sich geändert, möchten Du diese überschreiben?
+  </string>
+
+  <string name="ok">OK</string>
+  <string name="reload">Neu laden</string>
+  <string name="overwrite">Überschreiben</string>
+  <string name="discard">Verwerfen</string>
+  <string name="cancel">Abbrechen</string>
+
+</resources>

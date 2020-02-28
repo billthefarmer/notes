@@ -41,7 +41,7 @@
   <string name="built">Built %s</string>
   <string name="licence">Licence <a href="https://www.gnu.org/licenses/gpl.txt">GNU GPLv3</a>
   </string>
-  <string name="copyright">Copyright \u00A9 2020 <a href="https://billthefarmer.github.io">Bill Farmer</a>\nMarkdown view by <a href="https://github.com/falnatsheh/MarkdownView">Markdown View</a>
+  <string name="copyright">Copyright \u00A9 2020 <a href="https://billthefarmer.github.io">Bill Farmer</a>\nMarkdown view by <a href="https://github.com/falnatsheh/MarkdownView">Markdown View</a>\nGerman translation by <a href="https://github.com/mondlicht-und-sterne">mondstern</a>
   </string>
 
   <string name="choose">Choose a file name</string>
