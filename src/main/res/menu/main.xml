@@ -20,9 +20,9 @@
       android:title="@string/openNote" />
   <item
       android:id="@+id/search"
-      android:actionViewClass="android.widget.SearchView"
       android:icon="@drawable/ic_action_search"
       android:showAsAction="ifRoom|collapseActionView"
+      android:actionViewClass="android.widget.SearchView"
       android:title="@string/search" />
   <item
       android:id="@+id/saveAs"

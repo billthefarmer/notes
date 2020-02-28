@@ -354,7 +354,6 @@ public class Notes extends Activity
 
         // Add the set of recent files
         editor.putStringSet(Settings.PREF_PATHS, pathSet);
-
         editor.apply();
     }
 
@@ -365,20 +364,6 @@ public class Notes extends Activity
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
 
-        searchItem = menu.findItem(R.id.search);
-
-        // Set up search view
-        if (searchItem != null)
-            searchView = (SearchView) searchItem.getActionView();
-
-        // Set up search view options and listener
-        if (searchView != null)
-        {
-            searchView.setSubmitButtonEnabled(true);
-            searchView.setImeOptions(EditorInfo.IME_ACTION_GO);
-            searchView.setOnQueryTextListener(new QueryTextListener());
-        }
-
         return true;
     }
 
@@ -387,6 +372,22 @@ public class Notes extends Activity
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         menu.findItem(R.id.saveNote).setVisible(changed);
+
+        searchItem = menu.findItem(R.id.search);
+
+        // Set up search view
+        if (searchItem != null)
+        {
+            searchView = (SearchView) searchItem.getActionView();
+
+            // Set up search view options and listener
+            if (searchView != null)
+            {
+                searchView.setSubmitButtonEnabled(true);
+                searchView.setImeOptions(EditorInfo.IME_ACTION_GO);
+                searchView.setOnQueryTextListener(new QueryTextListener());
+            }
+        }
 
         // Get a list of recent files
         List<Long> list = new ArrayList<>();
@@ -493,6 +494,24 @@ public class Notes extends Activity
         // External
         if (markdownView.canGoBack())
             markdownView.goBack();
+
+        // Changed
+        else if (changed)
+            alertDialog(R.string.appName, R.string.modified,
+                        R.string.saveNote, R.string.discard, (dialog, id) ->
+            {
+                switch (id)
+                {
+                case DialogInterface.BUTTON_POSITIVE:
+                    saveNote();
+                    super.onBackPressed();
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    changed = false;
+                    super.onBackPressed();
+                    break;
+                }
+            });
 
         else
             super.onBackPressed();
@@ -684,7 +703,8 @@ public class Notes extends Activity
             accept.setOnClickListener(v ->
             {
                 // Get text
-                loadMarkdown();
+                if (changed)
+                    loadMarkdown();
 
                 // Animation
                 animateAccept();
@@ -1146,12 +1166,20 @@ public class Notes extends Activity
     // addDate
     public void addDate()
     {
-        DateFormat format = DateFormat.getDateTimeInstance(DateFormat.LONG,
-                                                           DateFormat.SHORT);
+        DateFormat format =
+            DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT);
+
+        // Insert date
         String date = format.format(new Date());
         Editable editable = textView.getEditableText();
         int position = textView.getSelectionStart();
         editable.insert(position, date);
+
+        // Check if line start
+        int line = textView.getLayout().getLineForOffset(position);
+        int start = textView.getLayout().getLineStart(line);
+        if (start == position)
+            editable.insert(position, "#### ");
         loadMarkdown();
     }
 
