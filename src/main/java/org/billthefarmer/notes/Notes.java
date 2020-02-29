@@ -196,6 +196,9 @@ public class Notes extends Activity
     private SearchView searchView;
     private MenuItem searchItem;
 
+    private Runnable showEdit;
+    private Runnable showAccept;
+
     private Toast toast;
     private View accept;
     private View edit;
@@ -635,7 +638,7 @@ public class Notes extends Activity
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             {
-                final Runnable showEdit = () ->
+                showEdit = () ->
                 {
                     startAnimation(edit, R.anim.fade_in, View.VISIBLE);
                     scrollUp = false;
@@ -838,7 +841,7 @@ public class Notes extends Activity
         if (scrollView != null)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             {
-                final Runnable showAccept = () ->
+                showAccept = () ->
                 {
                     startAnimation(accept, R.anim.fade_in, View.VISIBLE);
                     scrollUp = false;
@@ -2498,6 +2501,10 @@ public class Notes extends Activity
 
                 // Get markdown position
                 final float p = (y + scrollY) / (contentHeight * density);
+
+                // Remove callbacks
+                if (showEdit != null)
+                    markdownView.removeCallbacks(showEdit);
 
                 // Animation
                 animateEdit();
