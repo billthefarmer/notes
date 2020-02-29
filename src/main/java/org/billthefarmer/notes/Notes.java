@@ -145,7 +145,6 @@ public class Notes extends Activity
         "<audio controls src=\"%s\"></audio>\n";
     public final static String VIDEO_TEMPLATE =
         "<video controls src=\"%s\"></video>\n";
-    public final static String GEO_TEMPLATE = "![osm](geo:%f,%f)";
     public final static String MAP_TEMPLATE =
         "<iframe width=\"560\" height=\"420\" " +
         "src=\"https://www.openstreetmap.org/export/embed.html?" +
@@ -162,9 +161,6 @@ public class Notes extends Activity
 
     public final static Pattern GEO_PATTERN =
         Pattern.compile("geo:(-?\\d+[.]\\d+), ?(-?\\d+[.]\\d+).*");
-    public final static Pattern MAP_PATTERN =
-        Pattern.compile("\\[(?:osm:)?(-?\\d+[,.]\\d+)[,;] ?(-?\\d+[,.]\\d+)\\]",
-                        Pattern.MULTILINE);
     public final static Pattern MEDIA_PATTERN =
         Pattern.compile("!\\[(.*)\\]\\((.+)\\)", Pattern.MULTILINE);
     public final static Pattern POSN_PATTERN =
@@ -1067,68 +1063,6 @@ public class Notes extends Activity
         return buffer;
     }
 
-    // mapCheck
-    private CharSequence mapCheck(CharSequence text)
-    {
-        StringBuffer buffer = new StringBuffer();
-
-        Matcher matcher = MAP_PATTERN.matcher(text);
-
-        // Find matches
-        while (matcher.find())
-        {
-            double lat;
-            double lng;
-
-            try
-            {
-                lat = Double.parseDouble(matcher.group(1));
-                lng = Double.parseDouble(matcher.group(2));
-            }
-
-            // Ignore parse error
-            catch (Exception e)
-            {
-                continue;
-            }
-
-            // Create replacement iframe
-            String replace =
-                String.format(Locale.ENGLISH, GEO_TEMPLATE,
-                              lat, lng);
-
-            // Substitute replacement
-            matcher.appendReplacement(buffer, replace);
-        }
-
-        // Append rest of entry
-        matcher.appendTail(buffer);
-
-        return buffer;
-    }
-
-    // positionCheck
-    private CharSequence positionCheck(CharSequence text)
-    {
-        // Get a pattern and a matcher for position pattern
-        Matcher matcher = POSN_PATTERN.matcher(text);
-        // Check pattern
-        if (matcher.find())
-        {
-            // Save position
-            if ("#".equals(matcher.group(1)))
-            {
-                // Create replacement
-                String replace =
-                        String.format(Locale.ROOT, POSN_TEMPLATE,
-                                textView.getSelectionStart());
-                return matcher.replaceFirst(replace);
-            }
-        }
-
-        return text;
-    }
-
     // setVisibility
     private void setVisibility()
     {
@@ -1501,6 +1435,28 @@ public class Notes extends Activity
             int height = scrollView.getHeight();
             scrollView.smoothScrollTo(0, position - height / 2);
         }, POSITION_DELAY);
+    }
+
+    // positionCheck
+    private CharSequence positionCheck(CharSequence text)
+    {
+        // Get a pattern and a matcher for position pattern
+        Matcher matcher = POSN_PATTERN.matcher(text);
+        // Check pattern
+        if (matcher.find())
+        {
+            // Save position
+            if ("#".equals(matcher.group(1)))
+            {
+                // Create replacement
+                String replace =
+                        String.format(Locale.ROOT, POSN_TEMPLATE,
+                                textView.getSelectionStart());
+                return matcher.replaceFirst(replace);
+            }
+        }
+
+        return text;
     }
 
     // editStyles
@@ -1994,9 +1950,6 @@ public class Notes extends Activity
     {
         CharSequence text = textView.getText();
 
-        // Check for maps
-        text = mapCheck(text);
-
         // Check for cursor position
         text = positionCheck(text);
 
@@ -2007,9 +1960,6 @@ public class Notes extends Activity
     private void saveFile(Uri uri)
     {
         CharSequence text = textView.getText();
-
-        // Check for maps
-        text = mapCheck(text);
 
         // Check for cursor position
         text = positionCheck(text);
