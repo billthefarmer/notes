@@ -22,7 +22,7 @@ Android notebook
 
 ## Toolbar
 
-The toolbar items are, from left to right:
+The toolbar items which won’t necessarily all appear at once:
 
 * **New** &ndash; Start a new note
 * **Save** &ndash; Save note
