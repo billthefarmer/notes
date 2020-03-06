@@ -376,9 +376,8 @@ public class Notes extends Activity
     {
         menu.findItem(R.id.saveNote).setVisible(changed);
 
-        searchItem = menu.findItem(R.id.search);
-
         // Set up search view
+        searchItem = menu.findItem(R.id.search);
         searchView = (SearchView) searchItem.getActionView();
 
         // Set up search view options and listener
