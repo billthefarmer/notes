@@ -19,6 +19,7 @@ Android notebook
 * Receive media from other apps
 * Receive geo uris from other apps
 * Incremental search of notes
+* 
 * Dark or light theme for editing
 * Optional CSS styles
 * Optional JavaScript scripts
@@ -36,6 +37,7 @@ The toolbar items which won’t necessarily all appear at once:
 
 And on the menu:
 
+* **Find all** &ndash; Find all notes containing search text
 * **Open recent** &ndash; Pop up a list of recent files
   * **Clear list** &ndash; Clear list of recent files
 * **Share** &ndash; Share note
@@ -74,6 +76,13 @@ button. Scrolling down restores it.
 You may search notes, the search will update as text is entered into
 the search field. Use the search widget or keyboard action button to
 find the next match.
+
+## Find all
+You may find all notes that contain the current search
+text. This menu item will only appear while the search widget is
+active. A dialog will pop up with a list of matching notes. Touch an
+entry to open that note. You may repeat this or refine the search
+text to find the desired note.
 
 ## Template
 You may use a note template. If a template is set it will be copied to

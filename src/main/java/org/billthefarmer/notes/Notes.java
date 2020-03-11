@@ -490,7 +490,8 @@ public class Notes extends Activity
         }
 
         // Close text search
-        if (searchItem != null && searchItem.isActionViewExpanded())
+        if (searchItem != null && searchItem.isActionViewExpanded() &&
+                item.getItemId() != R.id.findAll)
             searchItem.collapseActionView();
 
         return true;
@@ -2359,6 +2360,7 @@ public class Notes extends Activity
             extends AsyncTask<String, Void, List<File>>
     {
         private WeakReference<Notes> notesWeakReference;
+        private String search;
 
         // FindTask
         public FindTask(Notes notes)
@@ -2376,8 +2378,9 @@ public class Notes extends Activity
             if (notes == null)
                 return matchList;
 
+            search = params[0];
             Pattern pattern =
-                Pattern.compile(params[0], Pattern.CASE_INSENSITIVE |
+                Pattern.compile(search, Pattern.CASE_INSENSITIVE |
                                 Pattern.LITERAL | Pattern.UNICODE_CASE);
             // Get entry list
             List<File> entries = new ArrayList<>();
@@ -2419,7 +2422,7 @@ public class Notes extends Activity
                         path.replaceFirst(Environment
                                           .getExternalStorageDirectory()
                                           .getPath() + File.separator, "");
-  
+
                     choiceList.add(name);
                 }
 
@@ -2430,6 +2433,12 @@ public class Notes extends Activity
                     Uri uri = Uri.fromFile(file);
                     // Open the entry chosen
                     notes.readNote(uri);
+
+                    // Put the search text back - why it
+                    // disappears I have no idea or why I have to
+                    // do it after a delay
+                    notes.searchView.postDelayed(() ->
+                      notes.searchView.setQuery(search, false), FIND_DELAY);
                 });
             }
 
