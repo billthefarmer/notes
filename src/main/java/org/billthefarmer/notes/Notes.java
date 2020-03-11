@@ -182,6 +182,7 @@ public class Notes extends Activity
     private final static int VISIBLE_DELAY = 2048;
     private final static int POSITION_DELAY = 128;
     private final static int UPDATE_DELAY = 128;
+    private final static int FIND_DELAY = 128;
     private final static int MAX_PATHS = 10;
 
     private EditText textView;
@@ -388,6 +389,12 @@ public class Notes extends Activity
             searchView.setOnQueryTextListener(new QueryTextListener());
         }
 
+        // Show find all item
+        if (menu.findItem(R.id.search).isActionViewExpanded())
+            menu.findItem(R.id.findAll).setVisible(true);
+        else
+            menu.findItem(R.id.findAll).setVisible(false);
+
         // Get a list of recent files
         List<Long> list = new ArrayList<>();
         Map<Long, String> map = new HashMap<>();
@@ -446,6 +453,9 @@ public class Notes extends Activity
             break;
         case R.id.saveNote:
             saveNote();
+            break;
+        case R.id.findAll:
+            findAll();
             break;
         case R.id.saveAs:
             saveAs();
@@ -930,6 +940,16 @@ public class Notes extends Activity
     private String getBaseUrl()
     {
         return Uri.fromFile(getHome()).toString() + File.separator;
+    }
+
+    // findAll
+    public void findAll()
+    {
+        // Get search string
+        String search = searchView.getQuery().toString();
+
+        FindTask findTask = new FindTask(this);
+        findTask.execute(search);
     }
 
     // backup
@@ -2287,6 +2307,137 @@ public class Notes extends Activity
         }
     }
 
+    // listNotes
+    private static void listNotes(File directory, List<File> fileList)
+    {
+        // Get all entry files from a directory.
+        File[] files = directory.listFiles();
+        if (files != null)
+            for (File file : files)
+            {
+                if (file.isFile())
+                {
+                    String type = FileUtils.getMimeType(file);
+                    if (type == null || type.startsWith(TEXT))
+                        fileList.add(file);
+                }
+
+                else if (file.isDirectory())
+                    listNotes(file, fileList);
+            }
+    }
+
+    // readFile
+    private static CharSequence readFile(File file)
+    {
+        StringBuilder text = new StringBuilder();
+        // Open file
+        try (BufferedReader reader = new
+             BufferedReader(new FileReader(file)))
+        {
+            String line;
+            while ((line = reader.readLine()) != null)
+            {
+                text.append(line);
+                text.append(System.getProperty("line.separator"));
+            }
+
+            return text;
+        }
+
+        catch (Exception e)
+        {
+            // alertDialog(R.string.appName, e.getMessage(), R.string.ok);
+            e.printStackTrace();
+        }
+
+        return text;
+    }
+
+    // FindTask
+    private static class FindTask
+            extends AsyncTask<String, Void, List<File>>
+    {
+        private WeakReference<Notes> notesWeakReference;
+
+        // FindTask
+        public FindTask(Notes notes)
+        {
+            notesWeakReference = new WeakReference<>(notes);
+        }
+
+        // doInBackground
+        @Override
+        protected List<File> doInBackground(String... params)
+        {
+            // Create a list of matches
+            List<File> matchList = new ArrayList<>();
+            final Notes notes = notesWeakReference.get();
+            if (notes == null)
+                return matchList;
+
+            Pattern pattern =
+                Pattern.compile(params[0], Pattern.CASE_INSENSITIVE |
+                                Pattern.LITERAL | Pattern.UNICODE_CASE);
+            // Get entry list
+            List<File> entries = new ArrayList<>();
+            listNotes(notes.getHome(), entries);
+
+            // Check the entries
+            for (File file : entries)
+            {
+                CharSequence content = readFile(file);
+                Matcher matcher = pattern.matcher(content);
+                if (matcher.find())
+                    matchList.add(file);
+            }
+
+            return matchList;
+        }
+
+        // onPostExecute
+        @Override
+        protected void onPostExecute(List<File> matchList)
+        {
+            final Notes notes = notesWeakReference.get();
+            if (notes == null)
+                return;
+
+            // Build dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(notes);
+            builder.setTitle(R.string.findAll);
+
+            // If found populate dialog
+            if (!matchList.isEmpty())
+            {
+                List<String> choiceList = new ArrayList<>();
+                for (File file : matchList)
+                {
+                    // Remove path prefix
+                    String path = file.getPath();
+                    String name =
+                        path.replaceFirst(Environment
+                                          .getExternalStorageDirectory()
+                                          .getPath() + File.separator, "");
+  
+                    choiceList.add(name);
+                }
+
+                String[] choices = choiceList.toArray(new String[0]);
+                builder.setItems(choices, (dialog, which) ->
+                {
+                    File file = matchList.get(which);
+                    Uri uri = Uri.fromFile(file);
+                    // Open the entry chosen
+                    notes.readNote(uri);
+                });
+            }
+
+            builder.setNegativeButton(android.R.string.cancel, null);
+            builder.show();
+        }
+    }
+
     // listFiles
     private static void listFiles(File directory, List<File> fileList)
     {
@@ -2313,7 +2464,6 @@ public class Notes extends Activity
             extends AsyncTask<Void, Void, Void>
     {
         private WeakReference<Notes> notesWeakReference;
-        private String search;
 
         // ZipTask
         public ZipTask(Notes notes)
