@@ -19,7 +19,6 @@ Android notebook
 * Receive media from other apps
 * Receive geo uris from other apps
 * Incremental search of notes
-* 
 * Dark or light theme for editing
 * Optional CSS styles
 * Optional JavaScript scripts
@@ -78,11 +77,11 @@ the search field. Use the search widget or keyboard action button to
 find the next match.
 
 ## Find all
-You may find all notes that contain the current search
-text. This menu item will only appear while the search widget is
-active. A dialog will pop up with a list of matching notes. Touch an
-entry to open that note. You may repeat this or refine the search
-text to find the desired note.
+You may find all notes that contain the current search text. This menu
+item will only appear while the search widget is active. A dialog will
+pop up with a list of matching notes. Touch an entry to open that
+note. You may repeat this or refine the search text to find the
+desired note.
 
 ## Template
 You may use a note template. If a template is set it will be copied to

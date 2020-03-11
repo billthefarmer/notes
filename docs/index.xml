@@ -7,7 +7,7 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <copyright>Copyright &amp;copy; 2020 Bill Farmer</copyright>
-    <lastBuildDate>Sun, 16 Feb 2020 15:29:30 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 11 Mar 2020 21:19:28 +0000</lastBuildDate>
     
 	<atom:link href="https://billthefarmer.github.io/notes/index.xml" rel="self" type="application/rss+xml" />
     
@@ -29,7 +29,7 @@
       <guid>https://billthefarmer.github.io/notes/using/toolbar/</guid>
       <description>The toolbar items which won&amp;rsquo;t necessarily all appear at once:
  New – Start a new note Save – Save note Open – Open an existing note Search – incremental search of note  And on the menu:
- Open recent – Pop up a list of recent files  Clear list – Clear list of recent files   Share – Share note Save as – Save note in another file Add date – Add the current date and time Add media – Add media from media providers Edit styles – show an editor to edit the custom styles Edit script – show an editor to edit custom javascript Backup – backup notes to a zip file Settings – Show the settings  </description>
+ Find all – Find all notes containing search text Open recent – Pop up a list of recent files  Clear list – Clear list of recent files   Share – Share note Save as – Save note in another file Add date – Add the current date and time Add media – Add media from media providers Edit styles – show an editor to edit the custom styles Edit script – show an editor to edit custom javascript Backup – backup notes to a zip file Settings – Show the settings  </description>
     </item>
     
     <item>
@@ -76,6 +76,15 @@ See Markdown for markdown syntax.</description>
       
       <guid>https://billthefarmer.github.io/notes/using/search/</guid>
       <description>You may search notes, the search will update as text is entered into the search field. Use the search widget or keyboard action button to find the next match.</description>
+    </item>
+    
+    <item>
+      <title>Find All</title>
+      <link>https://billthefarmer.github.io/notes/using/find-all/</link>
+      <pubDate>Wed, 11 Mar 2020 21:19:28 +0000</pubDate>
+      
+      <guid>https://billthefarmer.github.io/notes/using/find-all/</guid>
+      <description>You may find all notes that contain the current search text. This menu item will only appear while the search widget is active. A dialog will pop up with a list of matching notes. Touch an entry to open that note. You may repeat this or refine the search text to find the desired note.</description>
     </item>
     
     <item>
