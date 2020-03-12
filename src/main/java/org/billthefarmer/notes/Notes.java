@@ -381,7 +381,7 @@ public class Notes extends Activity
         searchItem = menu.findItem(R.id.search);
         searchView = (SearchView) searchItem.getActionView();
 
-        // Set up search view options and listener
+        // Set up search view options
         if (searchView != null)
         {
             searchView.setSubmitButtonEnabled(true);
