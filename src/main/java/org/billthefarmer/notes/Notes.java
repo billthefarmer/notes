@@ -109,6 +109,7 @@ public class Notes extends Activity
     public final static String TAG = "Notes";
 
     public final static String CHANGED = "changed";
+    public final static String DISPLAY = "display";
     public final static String CONTENT = "content";
     public final static String MODIFIED = "modified";
     public final static String SHOWN = "shown";
@@ -216,6 +217,7 @@ public class Notes extends Activity
 
     private boolean shown = true;
     private boolean changed = false;
+    private boolean display = false;
 
     private boolean scrollUp = false;
     private boolean scrollDn = false;
@@ -284,6 +286,7 @@ public class Notes extends Activity
         path = savedInstanceState.getString(PATH);
         shown = savedInstanceState.getBoolean(SHOWN);
         changed = savedInstanceState.getBoolean(CHANGED);
+        display = savedInstanceState.getBoolean(DISPLAY);
         modified = savedInstanceState.getLong(MODIFIED);
         content = savedInstanceState.getParcelable(CONTENT);
         invalidateOptionsMenu();
@@ -323,7 +326,7 @@ public class Notes extends Activity
         // Clear cache
         markdownView.clearCache(true);
 
-        if (changed)
+        if (display)
             loadMarkdown();
 
         setVisibility();
@@ -339,6 +342,7 @@ public class Notes extends Activity
         outState.putParcelable(CONTENT, content);
         outState.putLong(MODIFIED, modified);
         outState.putBoolean(CHANGED, changed);
+        outState.putBoolean(DISPLAY, display);
         outState.putBoolean(SHOWN, shown);
         outState.putString(PATH, path);
     }
@@ -713,7 +717,7 @@ public class Notes extends Activity
             accept.setOnClickListener(v ->
             {
                 // Get text
-                if (changed)
+                if (display)
                     loadMarkdown();
 
                 // Animation
@@ -792,6 +796,9 @@ public class Notes extends Activity
                         changed = true;
                         invalidateOptionsMenu();
                     }
+
+                    if (!display)
+                        display = true;
                 }
 
                 // beforeTextChanged
@@ -928,6 +935,7 @@ public class Notes extends Activity
     {
         CharSequence text = textView.getText();
         loadMarkdown(text);
+        display = false;
     }
 
     // loadMarkdown
