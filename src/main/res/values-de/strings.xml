@@ -38,11 +38,11 @@
   </string>
   <string name="pref_template_file">Vorlagendatei</string>
   <string name="about">Über</string>
-  <string name="pref_about_summ">Notizen <a href="https://github.com/billthefarmer/notes/releases/latest">Version %s</a></string>
+  <string name="pref_about_summ"><a href="https://github.com/billthefarmer/notes/releases/latest">Version %s</a></string>
   <string name="built">Erstellt %s</string>
   <string name="licence">Lizenz <a href="https://www.gnu.org/licenses/gpl.txt">GNU GPLv3</a>
   </string>
-  <string name="copyright">Urheberrecht  \u00A9 2020 <a href="https://billthefarmer.github.io">Bill Farmer</a>\nMarkdown-Ansicht von <a href="https://github.com/falnatsheh/MarkdownView">Markdown View</a>\nDeutsche Übersetzung von <a href="https://github.com/mondlicht-und-sterne">mondstern</a>
+  <string name="copyright">Urheberrecht \u00A9 2020 <a href="https://billthefarmer.github.io">Bill Farmer</a>\n\nMarkdown-Ansicht von <a href="https://github.com/falnatsheh/MarkdownView">Markdown View</a>, Deutsche Übersetzung von <a href="https://github.com/mondlicht-und-sterne">mondstern</a>
   </string>
 
   <string name="choose">Wählen einen Dateinamen</string>

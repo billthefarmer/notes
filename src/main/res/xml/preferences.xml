@@ -71,7 +71,7 @@
       android:title="@string/about">
 
     <org.billthefarmer.notes.AboutPreference
-        android:dialogIcon="?attr/pref_about"
+        android:dialogTitle="@string/appName"
         android:dialogLayout="@layout/about"
         android:icon="?attr/pref_about"
         android:key="pref_about"

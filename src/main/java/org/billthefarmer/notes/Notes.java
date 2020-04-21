@@ -385,7 +385,7 @@ public class Notes extends Activity
         searchItem = menu.findItem(R.id.search);
         searchView = (SearchView) searchItem.getActionView();
 
-        // Set up search view options
+        // Set up search view options and listener
         if (searchView != null)
         {
             searchView.setSubmitButtonEnabled(true);
@@ -2356,7 +2356,6 @@ public class Notes extends Activity
 
         catch (Exception e)
         {
-            // alertDialog(R.string.appName, e.getMessage(), R.string.ok);
             e.printStackTrace();
         }
 
