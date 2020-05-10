@@ -17,6 +17,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
+//  Bill Farmer	 william j farmer [at] yahoo [dot] co [dot] uk.
+//
 ////////////////////////////////////////////////////////////////////////////////
 
 package org.billthefarmer.notes;
