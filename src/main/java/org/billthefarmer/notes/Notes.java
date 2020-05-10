@@ -950,7 +950,7 @@ public class Notes extends Activity
     // getBaseUrl
     private String getBaseUrl()
     {
-        return Uri.fromFile(file).toString() + File.separator;
+        return Uri.fromFile(file.getParentFile()).toString() + File.separator;
     }
 
     // findAll

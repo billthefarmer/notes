@@ -31,8 +31,8 @@ android {
         applicationId "org.billthefarmer.notes"
         minSdkVersion 14
         targetSdkVersion 28
-        versionName "1.04"
-        versionCode 104
+        versionName "1.05"
+        versionCode 105
 
         buildConfigField "long", "BUILT", System.currentTimeMillis() + "L"
     }
