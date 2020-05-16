@@ -165,7 +165,7 @@ public class Notes extends Activity
     public final static Pattern GEO_PATTERN =
         Pattern.compile("geo:(-?\\d+[.]\\d+), ?(-?\\d+[.]\\d+).*");
     public final static Pattern MEDIA_PATTERN =
-        Pattern.compile("!\\[(.*)\\]\\((.+)\\)", Pattern.MULTILINE);
+        Pattern.compile("!\\[(.*?)\\]\\((.+?)\\)", Pattern.MULTILINE);
     public final static Pattern POSN_PATTERN =
         Pattern.compile("^ ?\\[([<#>])\\]: ?#(?: ?\\((\\d+)\\))? *$",
                         Pattern.MULTILINE);
