@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.3'
+        classpath 'com.android.tools.build:gradle:4.0.0'
     }
 }
 
@@ -31,8 +31,8 @@ android {
         applicationId "org.billthefarmer.notes"
         minSdkVersion 14
         targetSdkVersion 28
-        versionName "1.05"
-        versionCode 105
+        versionName "1.06"
+        versionCode 106
 
         buildConfigField "long", "BUILT", System.currentTimeMillis() + "L"
     }
@@ -44,7 +44,7 @@ android {
 
     lintOptions {
         disable 'IconDensities', 'ContentDescription', 'SetJavaScriptEnabled',
-            'UnusedAttribute'
+            'UnusedAttribute', 'OldTargetApi'
         // abortOnError false
     }
 }
