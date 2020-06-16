@@ -1182,12 +1182,16 @@ public class Notes extends Activity
             Uri imageUri = FileProvider
                 .getUriForFile(this, FILE_PROVIDER, image);
             intent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            intent.putExtra(Intent.EXTRA_TEXT, textView.getText());
         }
 
         else
         {
             intent.setType(TEXT_PLAIN);
-            intent.putExtra(Intent.EXTRA_TEXT, textView.getText().toString());
+            Uri fileUri = FileProvider
+                .getUriForFile(this, FILE_PROVIDER, file);
+            intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+            intent.putExtra(Intent.EXTRA_TEXT, textView.getText());
         }
 
         startActivity(Intent.createChooser(intent, null));
@@ -1567,7 +1571,6 @@ public class Notes extends Activity
                     {Manifest.permission.WRITE_EXTERNAL_STORAGE,
                      Manifest.permission.READ_EXTERNAL_STORAGE},
                                    REQUEST_TEMPLATE);
-
                 return;
             }
         }
