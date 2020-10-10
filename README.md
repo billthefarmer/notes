@@ -156,10 +156,12 @@ use the editor `accept` tick button to save the edits.
 syntax errors in a styles file may cause unpredictable results and
 affect all notes. See [CSS Tutorial](https://www.w3schools.com/Css).
 
-You may include the built in styles file with an `@import` statement
-`@import "file:///android_asset/styles.css";` or
-`@import url("file:///android_asset/styles.css");`, which should be on
-the first line.
+You may include one of the built in styles file with an `@import`
+statement `@import "file:///android_asset/styles.css";` or `@import
+"file:///android_asset/styles_dark.css";` or `@import
+url("file:///android_asset/styles.css");` or `@import
+url("file:///android_asset/styles_dark.css");`, which should be on the
+first line.
 
 ## Javascript
 You may add custom javascript to be loaded into all notes by placing a

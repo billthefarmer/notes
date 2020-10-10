@@ -119,6 +119,8 @@ public class Notes extends Activity
 
     public final static String ZIP = ".zip";
     public final static String STYLES = "file:///android_asset/styles.css";
+    public final static String STYLES_DARK =
+        "file:///android_asset/styles_dark.css";
     public final static String SCRIPT = "file:///android_asset/script.js";
     public final static String HELP = "file:///android_asset/help.md";
     public final static String CSS_STYLES = "css/styles.css";
@@ -1001,7 +1003,7 @@ public class Notes extends Activity
         if (cssFile.exists())
             return Uri.fromFile(cssFile).toString();
 
-        return STYLES;
+        return darkTheme? STYLES_DARK: STYLES;
     }
 
     // getScript
