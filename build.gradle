@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.2'
+        classpath 'com.android.tools.build:gradle:4.1.0'
     }
 }
 
@@ -25,7 +25,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
-    buildToolsVersion '30.0.2'
+    buildToolsVersion '29.0.3'
 
     defaultConfig {
         applicationId "org.billthefarmer.notes"
@@ -44,7 +44,7 @@ android {
 
     lintOptions {
         disable 'IconDensities', 'ContentDescription', 'SetJavaScriptEnabled',
-            'UnusedAttribute', 'OldTargetApi'
+            'UnusedAttribute', 'OldTargetApi', 'NonConstantResourceId'
         // abortOnError false
     }
 }

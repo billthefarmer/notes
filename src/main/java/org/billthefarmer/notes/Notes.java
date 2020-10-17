@@ -87,6 +87,7 @@ import java.lang.ref.WeakReference;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -171,6 +172,8 @@ public class Notes extends Activity
     public final static Pattern POSN_PATTERN =
         Pattern.compile("^ ?\\[([<#>])\\]: ?#(?: ?\\((\\d+)\\))? *$",
                         Pattern.MULTILINE);
+    public final static Pattern DATE_PATTERN =
+        Pattern.compile("{{date *?(.+?)}}", Pattern.MULTILINE);
 
     private final static int ADD_MEDIA = 1;
     private static final int EDIT_TEXT = 0;
@@ -228,6 +231,7 @@ public class Notes extends Activity
 
     private boolean external = false;
     private boolean useTemplate = false;
+    private boolean loadTemplate = false;
     private boolean darkTheme = false;
 
     private long modified;
@@ -1583,6 +1587,7 @@ public class Notes extends Activity
         if (!file.isAbsolute())
             file = new File(getHome(), templateFile);
 
+        loadTemplate = true;
         ReadTask read = new ReadTask(this);
         read.execute(Uri.fromFile(file));
 
@@ -2210,6 +2215,12 @@ public class Notes extends Activity
     // loadText
     private void loadText(CharSequence text)
     {
+        if (loadTemplate)
+        {
+            text = dateCheck(text);
+            loadTemplate = false;
+        }
+
         if (textView != null)
             textView.setText(text);
 
@@ -2221,6 +2232,42 @@ public class Notes extends Activity
 
         // Update menu
         invalidateOptionsMenu();
+    }
+
+    private CharSequence dateCheck(CharSequence text)
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        Matcher matcher = DATE_PATTERN.matcher(text);
+
+        // Find matches
+        while (matcher.find())
+        {
+            if (matcher.group(1) == null)
+            {
+
+                DateFormat format =
+                    DateFormat.getDateTimeInstance(DateFormat.LONG,
+                                                   DateFormat.SHORT);
+                // Create date
+                String date = format.format(new Date());
+                matcher.appendReplacement(buffer, date);
+            }
+
+            else
+            {
+                DateFormat format = new SimpleDateFormat(matcher.group(1),
+                                                         Locale.getDefault());
+                // Create date
+                String date = format.format(new Date());
+                matcher.appendReplacement(buffer, date);
+            }
+        }
+
+        // Append rest of entry
+        matcher.appendTail(buffer);
+
+        return buffer;
     }
 
     // QueryTextListener
