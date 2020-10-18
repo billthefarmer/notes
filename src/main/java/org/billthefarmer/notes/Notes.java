@@ -120,8 +120,6 @@ public class Notes extends Activity
 
     public final static String ZIP = ".zip";
     public final static String STYLES = "file:///android_asset/styles.css";
-    public final static String STYLES_DARK =
-        "file:///android_asset/styles_dark.css";
     public final static String SCRIPT = "file:///android_asset/script.js";
     public final static String HELP = "file:///android_asset/help.md";
     public final static String CSS_STYLES = "css/styles.css";
@@ -159,6 +157,8 @@ public class Notes extends Activity
         "<a href=\"https://www.openstreetmap.org/#map=16/%f/%f\">" +
         "View Larger Map</a></small>\n";
 
+    public final static String DATE_FORMAT = "EEEE d MMMM yyyy HH:mm";
+
     public final static String GEO = "geo";
     public final static String OSM = "osm";
     public final static String HTTP = "http";
@@ -173,7 +173,7 @@ public class Notes extends Activity
         Pattern.compile("^ ?\\[([<#>])\\]: ?#(?: ?\\((\\d+)\\))? *$",
                         Pattern.MULTILINE);
     public final static Pattern DATE_PATTERN =
-        Pattern.compile("{{date *?(.+?)}}", Pattern.MULTILINE);
+        Pattern.compile("<<date *?(.*?)>>", Pattern.MULTILINE);
 
     private final static int ADD_MEDIA = 1;
     private static final int EDIT_TEXT = 0;
@@ -1007,7 +1007,7 @@ public class Notes extends Activity
         if (cssFile.exists())
             return Uri.fromFile(cssFile).toString();
 
-        return darkTheme? STYLES_DARK: STYLES;
+        return STYLES;
     }
 
     // getScript
@@ -1206,8 +1206,8 @@ public class Notes extends Activity
     // addDate
     public void addDate()
     {
-        DateFormat format =
-            DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT);
+        DateFormat format = new
+            SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
 
         // Insert date
         String date = format.format(new Date());
@@ -1215,11 +1215,6 @@ public class Notes extends Activity
         int position = textView.getSelectionStart();
         editable.insert(position, date);
 
-        // Check if line start
-        int line = textView.getLayout().getLineForOffset(position);
-        int start = textView.getLayout().getLineStart(line);
-        if (start == position)
-            editable.insert(position, "\b");
         loadMarkdown();
     }
 
@@ -2243,12 +2238,11 @@ public class Notes extends Activity
         // Find matches
         while (matcher.find())
         {
-            if (matcher.group(1) == null)
+            if (matcher.group(1).isEmpty())
             {
 
-                DateFormat format =
-                    DateFormat.getDateTimeInstance(DateFormat.LONG,
-                                                   DateFormat.SHORT);
+                DateFormat format = new
+                    SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
                 // Create date
                 String date = format.format(new Date());
                 matcher.appendReplacement(buffer, date);
@@ -2256,11 +2250,20 @@ public class Notes extends Activity
 
             else
             {
-                DateFormat format = new SimpleDateFormat(matcher.group(1),
-                                                         Locale.getDefault());
-                // Create date
-                String date = format.format(new Date());
-                matcher.appendReplacement(buffer, date);
+                try
+                {
+                    DateFormat format = new
+                        SimpleDateFormat(matcher.group(1), Locale.getDefault());
+                    // Create date
+                    String date = format.format(new Date());
+                    matcher.appendReplacement(buffer, date);
+                }
+
+                catch (Exception e)
+                {
+                    alertDialog(R.string.appName, e.getMessage(), R.string.ok);
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -2666,10 +2669,9 @@ public class Notes extends Activity
 
             catch (Exception e)
             {
-                notes.textView.post(() ->
-                                     notes.alertDialog(R.string.appName,
-                                                        e.getMessage(),
-                                                        R.string.ok));
+                notes.runOnUiThread(() ->
+                    notes.alertDialog(R.string.appName, e.getMessage(),
+                                      R.string.ok));
                 e.printStackTrace();
             }
 

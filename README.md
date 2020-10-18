@@ -85,7 +85,11 @@ desired note.
 
 ## Template
 You may use a note template. If a template is set it will be copied to
-a new note.
+a new note. A date code &ndash; (`<<date>>`) may be inserted into the
+template which will be converted into the current date and
+time. alternatively a date template may be added to the code &ndash;
+(`<<date EEEE d MMMM yyyy HH:mm>>`) for a custom date format. See
+[here](https://developer.android.com/reference/java/text/SimpleDateFormat#date-and-time-patterns) for the format documentation.
 
 ## Text
 You may receive text clips from another app. The text will be added at
@@ -156,11 +160,9 @@ use the editor `accept` tick button to save the edits.
 syntax errors in a styles file may cause unpredictable results and
 affect all notes. See [CSS Tutorial](https://www.w3schools.com/Css).
 
-You may include one of the built in styles file with an `@import`
-statement `@import "file:///android_asset/styles.css";` or `@import
-"file:///android_asset/styles_dark.css";` or `@import
-url("file:///android_asset/styles.css");` or `@import
-url("file:///android_asset/styles_dark.css");`, which should be on the
+You may include the built in styles file with an `@import` statement
+`@import "file:///android_asset/styles.css";` or `@import
+url("file:///android_asset/styles.css");`, which should be on the
 first line.
 
 ## Javascript
