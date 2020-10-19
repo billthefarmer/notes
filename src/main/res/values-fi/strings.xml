@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="appName">Muistiinpanot</string>
+
+  <string name="newNote">Uusi</string>
+  <string name="openNote">Avaa</string>
+  <string name="openRecent">Avaa viimeaikainen</string>
+  <string name="clearList">Tyhjennä lista</string>
+  <string name="saveNote">Tallenna</string>
+  <string name="saveAs">Tallenna nimellä</string>
+  <string name="search">Hae…</string>
+  <string name="findAll">Etsi kaikki…</string>
+  <string name="share">Jaa…</string>
+  <string name="addDate">Lisää päivämäärä</string>
+  <string name="addMedia">Lisää media…</string>
+  <string name="editStyles">Muokkaa tyyliä…</string>
+  <string name="editScript">Muokkaa skriptiä…</string>
+  <string name="backup">Varmuuskopioi</string>
+  <string name="start">Aloita varmuuskopiointi</string>
+  <string name="complete">Varmuuskopionti valmis</string>
+  <string name="settings">Asetukset</string>
+  <string name="folder">Kansio</string>
+  <string name="media">Media</string>
+  <string name="pref_external">Selain</string>
+  <string name="pref_external_summ">
+    Käytä selainta ulkoisten linkkien avaamiseen
+  </string>
+  <string name="theme">Teema</string>
+  <string name="pref_dark_theme">Tumma</string>
+  <string name="pref_dark_theme_summ">
+    Käytä tummaa teemaa muokatessa
+  </string>
+  <string name="template">Malline</string>
+  <string name="pref_use_template">Käytä mallia</string>
+  <string name="pref_use_template_summ">
+    Käytä mallia uusien dokumenttien pohjana
+  </string>
+  <string name="pref_template_file">Mallitiedosto</string>
+  <string name="about">Tietoa</string>
+  <string name="pref_about_summ"><a href="https://github.com/billthefarmer/notes/releases/latest">Versio %s</a></string>
+  <string name="built">Koontiversio %s</string>
+  <string name="licence">Lisenssi <a href="https://www.gnu.org/licenses/gpl.txt">GNU GPLv3</a>
+  </string>
+  <string name="copyright">Tekijänoikeus \u00A9 2020 <a href="https://billthefarmer.github.io">Bill Farmer</a>\n\nMarkdown-näkymä: <a href="https://github.com/falnatsheh/MarkdownView">Markdown View</a>, saksankielinen käännös: <a href="https://github.com/mondlicht-und-sterne">mondstern</a>, käännös brasilianportugaliksi <a href="https://github.com/aevw">aevw</a>, suomenkielinen käännös <a href="https://github.com/Rigo-V">Rigo-V</a>
+  </string>
+
+  <string name="choose">Valitse tiedostonimi</string>
+  <string name="loading">Ladataan…</string>
+
+  <string name="modified">
+    Sinulla on tallentamattomia muutoksia. Haluatko tallentaa muutokset?
+  </string>
+
+  <string name="changedReload">
+    Tiedosto on muuttunut. Haluatko ladata sen uudestaan?
+  </string>
+
+  <string name="changedOverwrite">
+    Tiedosto on muuttunut, haluatko kirjoittaa sen päälle?
+  </string>
+
+  <string name="ok">OK</string>
+  <string name="reload">Lataa uudestaan</string>
+  <string name="overwrite">Päällekirjoita</string>
+  <string name="discard">Hylkää</string>
+  <string name="cancel">Peruuta</string>
+
+</resources>
