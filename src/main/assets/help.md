@@ -82,9 +82,9 @@ text to find the desired note.
 You may use a note template. If a template is set it will be copied to
 a new note. A date code &ndash; `<<date>>` may be inserted into the
 template which will be converted into the current date and
-time. Alternatively a date template may be added to the code &ndash;
+time. Alternatively a date pattern may be added to the code &ndash;
 `<<date EEEE d MMMM yyyy HH:mm>>` for a custom date format. See
-[here](https://developer.android.com/reference/java/text/SimpleDateFormat#date-and-time-patterns) for the format documentation.
+[here](https://developer.android.com/reference/java/text/SimpleDateFormat#date-and-time-patterns) for the pattern documentation.
 
 ## Text
 You may receive text clips from another app. The text will be added at
