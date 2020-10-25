@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="appName">Notlar</string>
+
+  <string name="newNote">Yeni</string>
+  <string name="openNote">Aç</string>
+  <string name="openRecent">Son açılanlar</string>
+  <string name="clearList">Listeyi sil</string>
+  <string name="saveNote">Kaydet</string>
+  <string name="saveAs">Farklı kaydet</string>
+  <string name="search">Ara…</string>
+  <string name="findAll">Hepsini bul…</string>
+  <string name="share">Paylaş…</string>
+  <string name="addDate">Tarih ekle</string>
+  <string name="addMedia">Resim ekle…</string>
+  <string name="editStyles">CSS düzenle…</string>
+  <string name="editScript">JS düzenle…</string>
+  <string name="backup">Yedekle</string>
+  <string name="start">Yedekleme başladı</string>
+  <string name="complete">Yedekleme tamamlandı</string>
+  <string name="settings">Ayarlar</string>
+  <string name="folder">Klasör</string>
+  <string name="media">Resim</string>
+  <string name="pref_external">Tarayıcı</string>
+  <string name="pref_external_summ">
+    Harici link\'ler için tarayıcı kullan
+  </string>
+  <string name="theme">Tema</string>
+  <string name="pref_dark_theme">Karanlık tema</string>
+  <string name="pref_dark_theme_summ">
+    Düzenleme yaparken karanlık tema kullan
+  </string>
+  <string name="template">Şablon</string>
+  <string name="pref_use_template">Şablon kullan</string>
+  <string name="pref_use_template_summ">
+    Notlar için şablon kullan
+  </string>
+  <string name="pref_template_file">Şablon dosyası</string>
+  <string name="about">Hakkında</string>
+  <string name="pref_about_summ"><a href="https://github.com/billthefarmer/notes/releases/latest">Sürüm %s</a></string>
+  <string name="built">Kurulum %s</string>
+  <string name="licence">Lisans <a href="https://www.gnu.org/licenses/gpl.txt">GNU GPLv3</a>
+  </string>
+  <string name="copyright">Telif Hakkı \u00A9 2020 <a href="https://billthefarmer.github.io">Bill Farmer</a>\n\nMarkdown görünümü <a href="https://github.com/falnatsheh/MarkdownView">Markdown Görünümü</a>, Almanca çeviri <a href="https://github.com/mondlicht-und-sterne">mondstern</a>, Brezilya Portekizcesi çevirisi <a href="https://github.com/aevw">aevw</a>, Fince çeviri <a href="https://github.com/Rigo-V">Rigo-V</a>, Türkçe çeviri <a href="https://github.com/berkaygunduzz">Berkay Gündüz</a>
+  </string>
+
+  <string name="choose">Dosya ismini giriniz</string>
+  <string name="loading">Yükleniyor…</string>
+
+  <string name="modified">
+    Kaydedilmemiş değişiklikleriniz var. Değişiklikleri kaydetmek ister misiniz?
+  </string>
+
+  <string name="changedReload">
+    Bu dosya değiştirildi, yeniden yüklemek ister misiniz?
+  </string>
+
+  <string name="changedOverwrite">
+    Bu dosya değiştirildi, üzerine yazmak ister misiniz?
+  </string>
+
+  <string name="ok">Tamam</string>
+  <string name="reload">Yeniden yükle</string>
+  <string name="overwrite">Üzerine yaz</string>
+  <string name="discard">Yoksay</string>
+  <string name="cancel">İptal</string>
+
+</resources>

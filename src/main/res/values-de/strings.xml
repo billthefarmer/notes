@@ -42,7 +42,7 @@
   <string name="built">Erstellt %s</string>
   <string name="licence">Lizenz <a href="https://www.gnu.org/licenses/gpl.txt">GNU GPLv3</a>
   </string>
-  <string name="copyright">Urheberrecht \u00A9 2020 <a href="https://billthefarmer.github.io">Bill Farmer</a>\n\nMarkdown-Ansicht von <a href="https://github.com/falnatsheh/MarkdownView">Markdown View</a>, Deutsche Übersetzung von <a href="https://github.com/mondlicht-und-sterne">mondstern</a>
+  <string name="copyright">Urheberrecht \u00A9 2020 <a href="https://billthefarmer.github.io">Bill Farmer</a>\n\nMarkdown-Ansicht von <a href="https://github.com/falnatsheh/MarkdownView">Markdown View</a>, Deutsche Übersetzung von <a href="https://github.com/mondlicht-und-sterne">mondstern</a>, Türkische Übersetzung von <a href="https://github.com/berkaygunduzz">Berkay Gündüz</a>
   </string>
 
   <string name="choose">Wählen einen Dateinamen</string>
