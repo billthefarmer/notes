@@ -42,7 +42,7 @@
   <string name="built">Koontiversio %s</string>
   <string name="licence">Lisenssi <a href="https://www.gnu.org/licenses/gpl.txt">GNU GPLv3</a>
   </string>
-  <string name="copyright">Tekijänoikeus \u00A9 2020 <a href="https://billthefarmer.github.io">Bill Farmer</a>\n\nMarkdown-näkymä: <a href="https://github.com/falnatsheh/MarkdownView">Markdown View</a>, saksankielinen käännös: <a href="https://github.com/mondlicht-und-sterne">mondstern</a>, käännös brasilianportugaliksi <a href="https://github.com/aevw">aevw</a>, suomenkielinen käännös <a href="https://github.com/Rigo-V">Rigo-V</a>, turkinkielinen käännös <a href="https://github.com/berkaygunduzz">Berkay Gündüz</a>
+  <string name="copyright">Tekijänoikeus \u00A9 2020 <a href="https://billthefarmer.github.io">Bill Farmer</a>\n\nMarkdown-näkymä: <a href="https://github.com/falnatsheh/MarkdownView">Markdown View</a>, saksankielinen käännös: <a href="https://github.com/mondlicht-und-sterne">mondstern</a>, käännös brasilianportugaliksi <a href="https://github.com/aevw">aevw</a>, suomennos <a href="https://github.com/Rigo-V">Rigo-V</a>, turkinkielinen käännös <a href="https://github.com/berkaygunduzz">Berkay Gündüz</a>
   </string>
 
   <string name="choose">Valitse tiedostonimi</string>
