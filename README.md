@@ -125,6 +125,13 @@ images.
 If you don't intend to change the image, you can copy it and use that
 instead, which will then work offline.
 
+## Svgbob
+Notes doesn't support text diagrams, but will display SVG images
+produced by an online editor [Svgbob
+Editor](https://svgbob-editor.netlify.app/).
+
+![Svgbob](https://github.com/billthefarmer/billthefarmer.github.io/raw/master/images/diary/bob.svg)
+
 ## Links
 You may put external links in notes, so
 `[DuckDuckGo](https://duckduckgo.com)` will show a link to

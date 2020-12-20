@@ -46,6 +46,15 @@
     </item>
     
     <item>
+      <title>Svgbob</title>
+      <link>https://billthefarmer.github.io/notes/content/svgbob/</link>
+      <pubDate>Sun, 20 Dec 2020 11:42:03 +0000</pubDate>
+      
+      <guid>https://billthefarmer.github.io/notes/content/svgbob/</guid>
+      <description>Notes doesn&amp;rsquo;t support text diagrams, but will display SVG images produced by an online editor Svgbob Editor.</description>
+    </item>
+    
+    <item>
       <title>Links</title>
       <link>https://billthefarmer.github.io/notes/content/links/</link>
       <pubDate>Sat, 15 Feb 2020 19:46:28 +0000</pubDate>
