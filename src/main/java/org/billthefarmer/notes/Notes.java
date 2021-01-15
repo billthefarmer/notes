@@ -1946,7 +1946,7 @@ public class Notes extends Activity
         }
     }
 
-    // save
+    // saveCheck
     private void saveCheck()
     {
         if (NEW_FILE.equals(uri.getLastPathSegment()))
