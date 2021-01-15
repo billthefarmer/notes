@@ -464,7 +464,7 @@ public class Notes extends Activity
             openNote();
             break;
         case R.id.saveNote:
-            saveNote();
+            saveCheck();
             break;
         case R.id.findAll:
             findAll();
@@ -1944,6 +1944,16 @@ public class Notes extends Activity
 
             count++;
         }
+    }
+
+    // save
+    private void saveCheck()
+    {
+        if (NEW_FILE.equals(uri.getLastPathSegment()))
+            saveAs();
+
+        else
+            saveNote();
     }
 
     // saveNote
