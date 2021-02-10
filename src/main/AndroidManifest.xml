@@ -61,7 +61,6 @@
         android:name="Editor"
         android:windowSoftInputMode="stateHidden|adjustResize">
       <intent-filter
-          android:scheme="http"
           tools:ignore="AppLinkUrlError">
         <action android:name="android.intent.action.VIEW" />
         <action android:name="android.intent.action.EDIT" />
