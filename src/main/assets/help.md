@@ -72,11 +72,11 @@ the search field. Use the search widget or keyboard action button to
 find the next match.
 
 ## Find all
-You may find all notes that contain the current search
-text. This menu item will only appear while the search widget is
-active. A dialog will pop up with a list of matching notes. Touch an
-entry to open that note. You may repeat this or refine the search
-text to find the desired note.
+You may find all notes that contain the current search text. This menu
+item will only appear while the search widget is active. A dialog will
+pop up with a list of matching notes. Touch an entry to open that
+note. You may repeat this or refine the search text to find the
+desired note.
 
 ## Template
 You may use a note template. If a template is set it will be copied to
@@ -161,11 +161,9 @@ use the editor `accept` tick button to save the edits.
 syntax errors in a styles file may cause unpredictable results and
 affect all notes. See [CSS Tutorial](https://www.w3schools.com/Css).
 
-You may include one of the built in styles file with an `@import`
-statement `@import "file:///android_asset/styles.css";` or `@import
-"file:///android_asset/styles_dark.css";` or `@import
-url("file:///android_asset/styles.css");` or `@import
-url("file:///android_asset/styles_dark.css");`, which should be on the
+You may include the built in styles file with an `@import` statement
+`@import "file:///android_asset/styles.css";` or `@import
+url("file:///android_asset/styles.css");`, which should be on the
 first line.
 
 ## Javascript
