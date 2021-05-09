@@ -138,6 +138,7 @@ public class Notes extends Activity
     public final static String TEMPLATE_FILE = "Template.md";
     public final static String TEXT_PLAIN = "text/plain";
     public final static String IMAGE_PNG = "image/png";
+    public final static String TEXT_WILD = "text/*";
     public final static String WILD_WILD = "*/*";
     public final static String IMAGE = "image";
     public final static String AUDIO = "audio";
@@ -175,11 +176,14 @@ public class Notes extends Activity
     public final static Pattern DATE_PATTERN =
         Pattern.compile("<<date *?(.*?)>>", Pattern.MULTILINE);
 
-    private final static int ADD_MEDIA = 1;
+    private final static int ADD_MEDIA = 3;
     private static final int EDIT_TEXT = 0;
     private static final int MARKDOWN = 1;
     private static final int ACCEPT = 0;
     private static final int EDIT = 1;
+
+    private final static int OPEN_DOCUMENT   = 1;
+    private final static int CREATE_DOCUMENT = 2;
 
     private final static int REQUEST_READ = 1;
     private final static int REQUEST_SAVE = 2;
@@ -187,6 +191,7 @@ public class Notes extends Activity
     private final static int REQUEST_TEMPLATE = 4;
 
     private final static int BUFFER_SIZE = 4096;
+    private final static int LARGE_SIZE = 262144;
     private final static int VISIBLE_DELAY = 2048;
     private final static int POSITION_DELAY = 128;
     private final static int UPDATE_DELAY = 128;
@@ -1236,8 +1241,19 @@ public class Notes extends Activity
         if (resultCode != RESULT_OK)
             return;
 
-        if (requestCode == ADD_MEDIA)
+        switch (requestCode)
         {
+        case OPEN_DOCUMENT:
+            content = data.getData();
+            readNote(content);
+            break;
+
+        case CREATE_DOCUMENT:
+            content = data.getData();
+            saveNote();
+            break;
+
+        case ADD_MEDIA:
             // Get uri
             Uri uri = data.getData();
 
@@ -1267,6 +1283,7 @@ public class Notes extends Activity
                 else
                     addLink(uri, uri.getLastPathSegment());
             }
+            break;
         }
     }
 
@@ -1560,6 +1577,12 @@ public class Notes extends Activity
             loadTemplate();
     }
 
+    // getNewFile
+    private File getNewFile()
+    {
+        return new File(getHome(), NEW_FILE);
+    }
+
     // loadTemplate
     private void loadTemplate()
     {
@@ -1679,6 +1702,16 @@ public class Notes extends Activity
         String title = FOLDER + dir.getPath();
         openDialog(title, list, (dialog, which) ->
         {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
+                DialogInterface.BUTTON_NEUTRAL == which)
+            {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.setType(TEXT_WILD);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(intent, OPEN_DOCUMENT);
+                return;
+            }
+
             File selection = list.get(which);
             if (selection.isDirectory())
                 getNote(selection);
@@ -1744,7 +1777,10 @@ public class Notes extends Activity
         FileAdapter adapter = new FileAdapter(builder.getContext(), list);
         builder.setAdapter(adapter, listener);
 
-        // Add the button
+        // Add storage button
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            builder.setNeutralButton(R.string.storage, listener);
+        // Add cancel button
         builder.setNegativeButton(R.string.cancel, null);
 
         // Create the Dialog
@@ -1949,7 +1985,9 @@ public class Notes extends Activity
     // saveCheck
     private void saveCheck()
     {
-        if (NEW_FILE.equals(uri.getLastPathSegment()))
+        Uri uri = Uri.fromFile(file);
+        Uri newUri = Uri.fromFile(getNewFile());
+        if (newUri.getPath().equals(uri.getPath()))
             saveAs();
 
         else
@@ -2029,6 +2067,15 @@ public class Notes extends Activity
     // saveAs
     private void saveAs()
     {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        {
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            intent.setType(TEXT_WILD);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            startActivityForResult(intent, CREATE_DOCUMENT);
+            return;
+        }
+
         // Remove path prefix
         String name =
             path.replaceFirst(Environment
@@ -2416,6 +2463,8 @@ public class Notes extends Activity
             {
                 text.append(line);
                 text.append(System.getProperty("line.separator"));
+                if (text.length() >= LARGE_SIZE)
+                    break;
             }
 
             return text;
@@ -2674,6 +2723,8 @@ public class Notes extends Activity
                 {
                     stringBuilder.append(line);
                     stringBuilder.append(System.getProperty("line.separator"));
+                    if (stringBuilder.length() >= LARGE_SIZE)
+                        break;
                 }
             }
 
