@@ -2067,15 +2067,6 @@ public class Notes extends Activity
     // saveAs
     private void saveAs()
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-        {
-            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-            intent.setType(TEXT_WILD);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            startActivityForResult(intent, CREATE_DOCUMENT);
-            return;
-        }
-
         // Remove path prefix
         String name =
             path.replaceFirst(Environment
@@ -2108,6 +2099,17 @@ public class Notes extends Activity
 
                 path = file.getPath();
                 saveNote();
+                break;
+
+            case DialogInterface.BUTTON_NEUTRAL:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                {
+                    Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                    intent.setType(TEXT_WILD);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    startActivityForResult(intent, CREATE_DOCUMENT);
+                }
+                break;
             }
         });
     }
@@ -2123,6 +2125,8 @@ public class Notes extends Activity
         // Add the buttons
         builder.setPositiveButton(R.string.saveNote, listener);
         builder.setNegativeButton(R.string.cancel, listener);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            builder.setNeutralButton(R.string.storage, listener);
 
         // Create edit text
         Context context = builder.getContext();
