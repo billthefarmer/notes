@@ -165,6 +165,7 @@ public class Notes extends Activity
     public final static String HTTP = "http";
     public final static String TEXT = "text";
     public final static String HTTPS = "https";
+    private final static String MAILTO = "mailto";
 
     public final static Pattern GEO_PATTERN =
         Pattern.compile("geo:(-?\\d+[.]\\d+), ?(-?\\d+[.]\\d+).*");
@@ -650,8 +651,8 @@ public class Notes extends Activity
                         return true;
                     }
 
-                    // Use external browser
-                    if (external)
+                    // Email url or use external browser
+                    if (external || MAILTO.equalsIgnoreCase(uri.getScheme()))
                     {
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         if (intent.resolveActivity(getPackageManager()) != null)
