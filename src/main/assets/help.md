@@ -192,9 +192,11 @@ notes folder with other devices and desktop computers.
 
 ## Removable SD cards
 Android allows removable SD cards to be used like a USB stick or as
-part of the device storage. Storing notes on a removable SD card not
-part of the device storage may work on some devices, but is not
-supported. Adding media may also work, but may not be persistent.
+part of the device storage. Notes opened using the chooser on a
+removable SD card may not save successfully using the save button. Use
+the **Save as** menu item and the **Storage** button to save it using
+the android file manager. Alternatively use the **Storage** button on
+the chooser dialog to open the Note using the android file manager.
 
 ## Settings
 * **Folder** &ndash; Change notes storage folder. Caution &ndash;
