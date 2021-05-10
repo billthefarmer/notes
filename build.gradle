@@ -30,8 +30,8 @@ android {
         applicationId "org.billthefarmer.notes"
         minSdkVersion 14
         targetSdkVersion 28
-        versionName "1.13"
-        versionCode 113
+        versionName "1.14"
+        versionCode 114
 
         buildConfigField "long", "BUILT", System.currentTimeMillis() + "L"
     }
@@ -50,5 +50,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.billthefarmer:MarkdownView:v1.06'
+    implementation 'com.github.billthefarmer:MarkdownView:v1.07'
 }
