@@ -1,153 +1,93 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>https://billthefarmer.github.io/notes/introduction/</loc>
     <lastmod>2020-02-14T13:05:17+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/introduction/features/</loc>
     <lastmod>2020-02-15T19:08:26+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/using/</loc>
     <lastmod>2020-02-14T13:05:31+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/using/toolbar/</loc>
     <lastmod>2020-02-15T19:13:22+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/using/help/</loc>
     <lastmod>2020-02-15T19:28:52+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/using/double-tap/</loc>
     <lastmod>2020-02-15T19:26:11+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/using/editing/</loc>
     <lastmod>2020-02-15T19:29:43+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/using/scrolling/</loc>
     <lastmod>2020-02-15T19:30:01+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/using/search/</loc>
     <lastmod>2020-02-15T19:38:51+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/using/find-all/</loc>
     <lastmod>2020-03-11T21:19:28+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/content/</loc>
     <lastmod>2020-02-16T15:00:19+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/content/template/</loc>
     <lastmod>2020-02-15T19:39:03+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/content/text/</loc>
     <lastmod>2020-02-15T19:39:20+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/content/media/</loc>
     <lastmod>2020-02-15T19:39:29+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/content/latex/</loc>
     <lastmod>2020-02-15T19:46:17+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/content/svgbob/</loc>
     <lastmod>2020-12-20T11:42:03+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/content/links/</loc>
     <lastmod>2020-02-15T19:46:28+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/content/maps/</loc>
     <lastmod>2020-02-15T19:46:42+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/content/cursor-position/</loc>
     <lastmod>2020-02-15T19:47:02+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/content/styles/</loc>
     <lastmod>2020-02-16T15:16:49+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/content/scripts/</loc>
     <lastmod>2020-02-16T15:17:12+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/manage/</loc>
     <lastmod>2020-02-16T15:21:16+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/manage/backup/</loc>
     <lastmod>2020-02-16T15:21:07+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/manage/sync/</loc>
     <lastmod>2020-02-16T15:21:42+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/manage/sd-cards/</loc>
     <lastmod>2020-02-16T15:22:08+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/settings/</loc>
     <lastmod>2020-02-16T15:29:30+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/settings/settings/</loc>
     <lastmod>2020-02-16T15:22:26+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/</loc>
     <lastmod>2020-12-20T11:42:03+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/categories/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://billthefarmer.github.io/notes/tags/</loc>
   </url>
-  
 </urlset>
