@@ -308,7 +308,11 @@ public class Notes extends Activity
         file = new File(path);
         uri = Uri.fromFile(file);
 
-        setTitle(uri.getLastPathSegment());
+        if (content != null)
+            setTitle(FileUtils.getDisplayName(this, content, null, null));
+
+        else
+            setTitle(uri.getLastPathSegment());
 
         if (file.lastModified() > modified)
             alertDialog(R.string.appName, R.string.changedReload,
@@ -1878,21 +1882,24 @@ public class Notes extends Activity
             }
         }
 
-        content = null;
-
         // Attempt to resolve content uri
         if (CONTENT.equalsIgnoreCase(uri.getScheme()))
+        {
+            content = uri;
             uri = resolveContent(uri);
+        }
+
+        else
+            content = null;
 
         // Read into default file if unresolved
         if (CONTENT.equalsIgnoreCase(uri.getScheme()))
         {
-            content = uri;
             file = getDefaultFile();
             Uri defaultUri = Uri.fromFile(file);
             path = defaultUri.getPath();
 
-            setTitle(uri.getLastPathSegment());
+            setTitle(FileUtils.getDisplayName(this, content, null, null));
         }
 
         // Read file
