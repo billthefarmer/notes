@@ -1255,6 +1255,7 @@ public class Notes extends Activity
 
         case CREATE_DOCUMENT:
             content = data.getData();
+            setTitle(FileUtils.getDisplayName(this, content, null, null));
             saveNote();
             break;
 
