@@ -1734,7 +1734,7 @@ public class Notes extends Activity
                 for (int i = 0; i <= which - FOLDER_OFFSET; i++)
                     file = new File(file, dirList.get(i));
                 if (file.isDirectory())
-                getNote(file);
+                    getNote(file);
                 return;
             }
 
