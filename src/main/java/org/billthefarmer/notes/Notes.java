@@ -53,6 +53,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -61,7 +62,10 @@ import android.webkit.URLUtil;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -194,6 +198,7 @@ public class Notes extends Activity
     private final static int BUFFER_SIZE = 4096;
     private final static int LARGE_SIZE = 262144;
     private final static int VISIBLE_DELAY = 2048;
+    private final static int FOLDER_OFFSET = 0x7d000000;
     private final static int POSITION_DELAY = 128;
     private final static int UPDATE_DELAY = 128;
     private final static int FIND_DELAY = 128;
@@ -1700,17 +1705,22 @@ public class Notes extends Activity
     private void getNote(File dir)
     {
         // Get list of files
-        List<File> list = getList(dir);
-        if (list == null)
+        List<File> fileList = getList(dir);
+        if (fileList == null)
             return;
 
+        // Get list of folders
+        List<String> dirList = new ArrayList<String>();
+        dirList.add(File.separator);
+        dirList.addAll(Uri.fromFile(dir).getPathSegments());
+
         // Pop up dialog
-        String title = FOLDER + dir.getPath();
-        openDialog(title, list, (dialog, which) ->
+        openDialog(dirList, fileList, (dialog, which) ->
         {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
                 DialogInterface.BUTTON_NEUTRAL == which)
             {
+                // Use storage
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.setType(TEXT_WILD);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -1718,7 +1728,17 @@ public class Notes extends Activity
                 return;
             }
 
-            File selection = list.get(which);
+            if (FOLDER_OFFSET <= which)
+            {
+                File file = new File(File.separator);
+                for (int i = 0; i <= which - FOLDER_OFFSET; i++)
+                    file = new File(file, dirList.get(i));
+                if (file.isDirectory())
+                getNote(file);
+                return;
+            }
+
+            File selection = fileList.get(which);
             if (selection.isDirectory())
                 getNote(selection);
 
@@ -1773,14 +1793,14 @@ public class Notes extends Activity
     }
 
     // openDialog
-    private void openDialog(String title, List<File> list,
+    private void openDialog(List<String> dirList, List<File> fileList,
                             DialogInterface.OnClickListener listener)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(title);
+        builder.setTitle(FOLDER);
 
         // Add the adapter
-        FileAdapter adapter = new FileAdapter(builder.getContext(), list);
+        FileAdapter adapter = new FileAdapter(builder.getContext(), fileList);
         builder.setAdapter(adapter, listener);
 
         // Add storage button
@@ -1792,6 +1812,39 @@ public class Notes extends Activity
         // Create the Dialog
         AlertDialog dialog = builder.create();
         dialog.show();
+
+        // Find the content view
+        View view = dialog.findViewById(android.R.id.content);
+        // Find the title view
+        while (view instanceof ViewGroup)
+            view = ((ViewGroup)view).getChildAt(0);
+        // Get the parent view
+        ViewGroup parent = (ViewGroup) view.getParent();
+        // Replace content with scroll view
+        parent.removeAllViews();
+        HorizontalScrollView scroll = new
+            HorizontalScrollView(dialog.getContext());
+        parent.addView(scroll);
+        // Add a row of folder buttons
+        LinearLayout layout = new LinearLayout(dialog.getContext());
+        scroll.addView(layout);
+        for (String dir: dirList)
+        {
+            Button button = new Button(dialog.getContext());
+            button.setId(dirList.indexOf(dir) + FOLDER_OFFSET);
+            button.setText(dir);
+            button.setOnClickListener((v) ->
+            {
+                listener.onClick(dialog, v.getId());
+                dialog.dismiss();
+            });
+            layout.addView(button);
+        }
+        // Scroll to the end
+        scroll.postDelayed(() ->
+        {
+            scroll.fullScroll(View.FOCUS_RIGHT);
+        }, POSITION_DELAY);
     }
 
     // onRequestPermissionsResult
