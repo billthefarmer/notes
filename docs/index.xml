@@ -200,7 +200,7 @@ If you want to use javascript libraries or write a large script it might be a go
       <pubDate>Sun, 16 Feb 2020 15:22:08 +0000</pubDate>
       
       <guid>https://billthefarmer.github.io/notes/manage/sd-cards/</guid>
-      <description>Android allows removable SD cards to be used like a USB stick or as part of the device storage. Storing notes on a removable SD card not part of the device storage may work on some devices, but is not supported. Adding media may also work, but may not be persistent.</description>
+      <description>Android allows removable SD cards to be used like a USB stick or as part of the device storage. Notes opened using the chooser on a removable SD card may not save successfully using the save button. Use the Save as menu item and the Storage button to save it using the android file manager. Alternatively use the Storage button on the chooser dialog to open the Note using the android file manager.</description>
     </item>
     
     <item>
