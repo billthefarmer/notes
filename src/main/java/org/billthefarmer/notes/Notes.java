@@ -181,14 +181,15 @@ public class Notes extends Activity
     public final static Pattern DATE_PATTERN =
         Pattern.compile("<<date *?(.*?)>>", Pattern.MULTILINE);
 
-    private final static int ADD_MEDIA = 3;
+    private final static int OPEN_DOCUMENT   = 1;
+    private final static int CREATE_DOCUMENT = 2;
+    private final static int ADD_MEDIA   = 3;
+    private final static int EDIT_STYLES = 4;
+
     private static final int EDIT_TEXT = 0;
     private static final int MARKDOWN = 1;
     private static final int ACCEPT = 0;
     private static final int EDIT = 1;
-
-    private final static int OPEN_DOCUMENT   = 1;
-    private final static int CREATE_DOCUMENT = 2;
 
     private final static int REQUEST_READ = 1;
     private final static int REQUEST_SAVE = 2;
@@ -1295,6 +1296,10 @@ public class Notes extends Activity
                     addLink(uri, uri.getLastPathSegment());
             }
             break;
+
+        case EDIT_STYLES:
+            markdownView.reload();
+            break;
         }
     }
 
@@ -1530,7 +1535,8 @@ public class Notes extends Activity
     {
         File file = new File(getHome(), CSS_STYLES);
         Uri uri = Uri.fromFile(file);
-        startActivity(new Intent(Intent.ACTION_EDIT, uri, this, Editor.class));
+        startActivityForResult(new Intent(Intent.ACTION_EDIT, uri,
+                                          this, Editor.class), EDIT_STYLES);
     }
 
     // editScript
@@ -1538,7 +1544,8 @@ public class Notes extends Activity
     {
         File file = new File(getHome(), JS_SCRIPT);
         Uri uri = Uri.fromFile(file);
-        startActivity(new Intent(Intent.ACTION_EDIT, uri, this, Editor.class));
+        startActivityForResult(new Intent(Intent.ACTION_EDIT, uri,
+                                          this, Editor.class), EDIT_STYLES);
     }
 
     // newNote
