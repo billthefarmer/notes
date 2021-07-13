@@ -2120,7 +2120,7 @@ public class Notes extends Activity
         text = positionCheck(text);
 
         try (OutputStream outputStream =
-             getContentResolver().openOutputStream(uri))
+             getContentResolver().openOutputStream(uri, "rwt"))
         {
             write(text, outputStream);
         }
@@ -2216,6 +2216,7 @@ public class Notes extends Activity
         try (FileWriter writer = new FileWriter(file))
         {
             writer.append(text);
+            writer.flush();
         }
 
         catch (Exception e)
@@ -2237,6 +2238,7 @@ public class Notes extends Activity
         try (OutputStreamWriter writer = new OutputStreamWriter(os))
         {
             writer.append(text);
+            writer.flush();
         }
 
         catch (Exception e)
@@ -2786,10 +2788,9 @@ public class Notes extends Activity
             if (notes == null)
                 return stringBuilder;
 
-            try (InputStream inputStream = notes.getContentResolver()
-                 .openInputStream(uris[0]);
-                 BufferedReader reader = new BufferedReader
-                 (new InputStreamReader(inputStream)))
+            try (BufferedReader reader = new BufferedReader
+                 (new InputStreamReader(notes.getContentResolver()
+                                        .openInputStream(uris[0]))))
             {
                 String line;
                 while ((line = reader.readLine()) != null)
