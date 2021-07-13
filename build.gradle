@@ -50,5 +50,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.billthefarmer:MarkdownView:v1.08'
+    implementation 'com.github.billthefarmer:MarkdownView:v1.09'
 }
