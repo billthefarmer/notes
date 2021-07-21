@@ -47,6 +47,7 @@ import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -569,6 +570,40 @@ public class Notes extends Activity
     {
         gestureDetector.onTouchEvent(event);
         return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        // Check Ctrl key
+        if (event.isCtrlPressed())
+        {
+            switch (keyCode)
+            {
+                // New
+            case KeyEvent.KEYCODE_N:
+                newNote();
+                break;
+                // Open
+            case KeyEvent.KEYCODE_O:
+                openNote();
+                break;
+                // Save, Save as
+            case KeyEvent.KEYCODE_S:
+                if (event.isShiftPressed())
+                    saveAs();
+                else
+                    saveCheck();
+                break;
+
+            default:
+                return super.onKeyDown(keyCode, event);
+            }
+
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 
     // getPreferences
