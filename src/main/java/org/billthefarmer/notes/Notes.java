@@ -580,6 +580,14 @@ public class Notes extends Activity
         {
             switch (keyCode)
             {
+                // Accept
+            case KeyEvent.KEYCODE_A:
+                accept.performClick();
+                break;
+                // Edit
+            case KeyEvent.KEYCODE_E:
+                edit.performClick();
+                break;
                 // New
             case KeyEvent.KEYCODE_N:
                 newNote();
