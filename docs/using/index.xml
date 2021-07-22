@@ -74,5 +74,15 @@ See Markdown for markdown syntax.</description>
       <description>You may find all notes that contain the current search text. This menu item will only appear while the search widget is active. A dialog will pop up with a list of matching notes. Touch an entry to open that note. You may repeat this or refine the search text to find the desired note.</description>
     </item>
     
+    <item>
+      <title>Keyboard Shortcuts</title>
+      <link>https://billthefarmer.github.io/notes/using/keyboard-shortcuts/</link>
+      <pubDate>Thu, 22 Jul 2021 12:18:09 +0100</pubDate>
+      
+      <guid>https://billthefarmer.github.io/notes/using/keyboard-shortcuts/</guid>
+      <description>When using an external keyboard, some keyboard shortcuts are implemented:
+ Ctrl+N – New file Ctrl+O – Open file Ctrl+S – Save file Ctrl+Shift+S – Save as  </description>
+    </item>
+    
   </channel>
 </rss>
