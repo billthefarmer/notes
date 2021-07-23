@@ -281,10 +281,13 @@ public class Notes extends Activity
         if (savedInstanceState == null)
         {
             Intent intent = getIntent();
-            if (checkMedia(intent))
+            if (checkText(intent))
+                getNote(intent);
+
+            else if (checkMedia(intent))
             {
                 newFile();
-                addMedia(getIntent());
+                addMedia(intent);
             }
 
             else
@@ -560,7 +563,10 @@ public class Notes extends Activity
     @Override
     public void onNewIntent(Intent intent)
     {
-        if (checkMedia(intent))
+        if (checkText(intent))
+            getNote(intent);
+
+        else if (checkMedia(intent))
             addMedia(intent);
     }
 
@@ -1387,6 +1393,21 @@ public class Notes extends Activity
         loadMarkdown();
     }
 
+    // checkText
+    private boolean checkText(Intent intent)
+    {
+        // Get type
+        String type = intent.getType();
+
+        // Check for view/edit text
+        if ((Intent.ACTION_VIEW.equals(intent.getAction()) ||
+             Intent.ACTION_EDIT.equals(intent.getAction())) &&
+            type != null && type.startsWith(TEXT))
+            return true;
+
+        return false;
+    }
+
     // checkMedia
     private boolean checkMedia(Intent intent)
     {
@@ -1943,6 +1964,13 @@ public class Notes extends Activity
         }
     }
 
+    // getNote
+    private void getNote(Intent intent)
+    {
+        getNote(intent.getData());
+    }
+
+    // getNote
     private void getNote(Uri uri)
     {
         // Check if file changed
