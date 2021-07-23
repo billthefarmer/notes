@@ -1396,13 +1396,23 @@ public class Notes extends Activity
     // checkText
     private boolean checkText(Intent intent)
     {
-        // Get type
-        String type = intent.getType();
+        // Check action
+        if (!Intent.ACTION_VIEW.equals(intent.getAction()) &&
+            !Intent.ACTION_EDIT.equals(intent.getAction()))
+            return false;
 
-        // Check for view/edit text
-        if ((Intent.ACTION_VIEW.equals(intent.getAction()) ||
-             Intent.ACTION_EDIT.equals(intent.getAction())) &&
-            type != null && type.startsWith(TEXT))
+        // Get Uri
+        Uri uri = intent.getData();
+        if (uri == null)
+            return false;
+
+        // Get name
+        String name = FileUtils.getDisplayName(this, uri, null, null);
+        if (name == null)
+            return false;
+
+        // Check extension
+        if (name.matches(".+\\.txt|.+\\.text|.+\\.md|.+\\.markdown"))
             return true;
 
         return false;
