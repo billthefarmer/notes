@@ -162,7 +162,8 @@ public class Notes extends Activity
         "</iframe><br/><small>" +
         "<a href=\"https://www.openstreetmap.org/#map=16/%f/%f\">" +
         "View Larger Map</a></small>\n";
-
+    public final static String TEXT_MATCH =
+        ".+\\.txt|.+\\.text|.+\\.md|.+\\.markdown";
     public final static String DATE_FORMAT = "EEEE d MMMM yyyy HH:mm";
 
     public final static String GEO = "geo";
@@ -186,6 +187,7 @@ public class Notes extends Activity
     private final static int CREATE_DOCUMENT = 2;
     private final static int ADD_MEDIA   = 3;
     private final static int EDIT_STYLES = 4;
+    private final static int EDIT_SCRIPT = 5;
 
     private static final int EDIT_TEXT = 0;
     private static final int MARKDOWN = 1;
@@ -1304,49 +1306,55 @@ public class Notes extends Activity
         switch (requestCode)
         {
         case OPEN_DOCUMENT:
+            // Check data
+            if (data == null || data.getData() == null)
+                return;
+
             content = data.getData();
             readNote(content);
             break;
 
         case CREATE_DOCUMENT:
+            // Check data
+            if (data == null || data.getData() == null)
+                return;
+
             content = data.getData();
             setTitle(FileUtils.getDisplayName(this, content, null, null));
             saveNote();
             break;
 
         case ADD_MEDIA:
+            // Check data
+            if (data == null)
+                return;
+
             // Get uri
             Uri uri = data.getData();
+            if (uri == null)
+                return;
 
             // Resolve content uri
             if (CONTENT.equalsIgnoreCase(uri.getScheme()))
                 uri = resolveContent(uri);
 
-            if (uri != null)
-            {
-                String type;
+            // Get type
+            String type = data.getType();
 
-                // Get type
-                if (CONTENT.equalsIgnoreCase(uri.getScheme()))
-                    type = getContentResolver().getType(uri);
+            if (type == null)
+                addLink(uri, uri.getLastPathSegment());
 
-                else
-                    type = FileUtils.getMimeType(this, uri);
+            else if (type.startsWith(IMAGE) ||
+                     type.startsWith(AUDIO) ||
+                     type.startsWith(VIDEO))
+                addMedia(uri);
 
-                if (type == null)
-                    addLink(uri, uri.getLastPathSegment());
-
-                else if (type.startsWith(IMAGE) ||
-                         type.startsWith(AUDIO) ||
-                         type.startsWith(VIDEO))
-                    addMedia(uri);
-
-                else
-                    addLink(uri, uri.getLastPathSegment());
-            }
+            else
+                addLink(uri, uri.getLastPathSegment());
             break;
 
         case EDIT_STYLES:
+        case EDIT_SCRIPT:
             markdownView.reload();
             break;
         }
@@ -1412,7 +1420,7 @@ public class Notes extends Activity
             return false;
 
         // Check extension
-        if (name.matches(".+\\.txt|.+\\.text|.+\\.md|.+\\.markdown"))
+        if (name.matches(TEXT_MATCH))
             return true;
 
         return false;
@@ -1421,10 +1429,27 @@ public class Notes extends Activity
     // checkMedia
     private boolean checkMedia(Intent intent)
     {
-        // Check for sent media
-        if (Intent.ACTION_SEND.equals(intent.getAction()) ||
-            Intent.ACTION_VIEW.equals(intent.getAction()) ||
-            Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction()))
+        // Check action
+        if (!Intent.ACTION_SEND.equals(intent.getAction()) &&
+            !Intent.ACTION_VIEW.equals(intent.getAction()) &&
+            !Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction()))
+            return false;
+
+        // Check type
+        String type = intent.getType();
+        if (type != null && (type.startsWith(IMAGE) ||
+                             type.startsWith(AUDIO) ||
+                             type.startsWith(VIDEO) ||
+                             type.equalsIgnoreCase(TEXT_PLAIN)))
+            return true;
+
+        // Get Uri
+        Uri uri = intent.getData();
+        if (uri == null)
+            return false;
+
+        // Check scheme
+        if (GEO.equalsIgnoreCase(uri.getScheme()))
             return true;
 
         return false;
@@ -1433,6 +1458,7 @@ public class Notes extends Activity
     // addMedia
     private void addMedia(Intent intent)
     {
+        // Get type
         String type = intent.getType();
 
         if (type == null)
@@ -1619,7 +1645,7 @@ public class Notes extends Activity
         File file = new File(getHome(), JS_SCRIPT);
         Uri uri = Uri.fromFile(file);
         startActivityForResult(new Intent(Intent.ACTION_EDIT, uri,
-                                          this, Editor.class), EDIT_STYLES);
+                                          this, Editor.class), EDIT_SCRIPT);
     }
 
     // newNote
