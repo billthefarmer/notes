@@ -1338,11 +1338,15 @@ public class Notes extends Activity
             if (CONTENT.equalsIgnoreCase(uri.getScheme()))
                 uri = resolveContent(uri);
 
+            String title = (CONTENT.equalsIgnoreCase(uri.getScheme()))?
+                FileUtils.getDisplayName(this, uri, null, null):
+                uri.getLastPathSegment();
+
             // Get type
             String type = data.getType();
 
             if (type == null)
-                addLink(uri, uri.getLastPathSegment());
+                addLink(uri, title);
 
             else if (type.startsWith(IMAGE) ||
                      type.startsWith(AUDIO) ||
@@ -1350,7 +1354,7 @@ public class Notes extends Activity
                 addMedia(uri);
 
             else
-                addLink(uri, uri.getLastPathSegment());
+                addLink(uri, title);
             break;
 
         case EDIT_STYLES:
@@ -1361,43 +1365,50 @@ public class Notes extends Activity
     }
 
     // addMedia
-    private void addMedia(Uri media)
+    private void addMedia(Uri uri)
     {
-        String name = media.getLastPathSegment();
-        String mediaText = String.format(MEDIA_TEMPLATE,
-                                         name,
-                                         media.toString());
+        String title = (CONTENT.equalsIgnoreCase(uri.getScheme()))?
+            FileUtils.getDisplayName(this, uri, null, null):
+            uri.getLastPathSegment();
+
+        String text = String.format(MEDIA_TEMPLATE,
+                                    title,
+                                    uri.toString());
 
         Editable editable = textView.getEditableText();
         int position = textView.getSelectionStart();
-        editable.insert(position, mediaText);
+        editable.insert(position, text);
         loadMarkdown();
     }
 
     // addLink
     private void addLink(Uri uri, String title)
     {
-        if ((title == null) || (title.length() == 0))
-            title = uri.getLastPathSegment();
+        if (title == null)
+            title = (CONTENT.equalsIgnoreCase(uri.getScheme()))?
+                FileUtils.getDisplayName(this, uri, null, null):
+                uri.getLastPathSegment();
 
-        String url = uri.toString();
-        String linkText = String.format(LINK_TEMPLATE, title, url);
+        String text = String.format(LINK_TEMPLATE,
+                                    title,
+                                    uri.toString());
+
         Editable editable = textView.getEditableText();
         int position = textView.getSelectionStart();
-        editable.insert(position, linkText);
+        editable.insert(position, text);
         loadMarkdown();
     }
 
     // addMap
     private void addMap(Uri uri)
     {
-        String mapText = String.format(MEDIA_TEMPLATE,
-                                       OSM,
-                                       uri.toString());
+        String text = String.format(MEDIA_TEMPLATE,
+                                    OSM,
+                                    uri.toString());
 
         Editable editable = textView.getEditableText();
         int position = textView.getSelectionStart();
-        editable.insert(position, mapText);
+        editable.insert(position, text);
         loadMarkdown();
     }
 

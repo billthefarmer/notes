@@ -194,7 +194,8 @@ public class FileUtils
     public static String getMimeType(File file)
     {
 
-        String extension = getExtension(file.getName());
+        String extension =
+            getExtension(file.getName()).toLowerCase(Locale.getDefault());
 
         if (extension.length() > 0)
             return MimeTypeMap.getSingleton()
