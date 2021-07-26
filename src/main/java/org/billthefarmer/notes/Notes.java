@@ -580,46 +580,46 @@ public class Notes extends Activity
         return super.dispatchTouchEvent(event);
     }
 
+    // dispatchKeyEvent
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)
+    public boolean dispatchKeyEvent(KeyEvent event)
     {
         // Check Ctrl key
         if (event.isCtrlPressed())
         {
-            switch (keyCode)
+            switch (event.getAction())
             {
-                // Accept
-            case KeyEvent.KEYCODE_A:
-                accept.performClick();
-                break;
-                // Edit
-            case KeyEvent.KEYCODE_E:
-                edit.performClick();
-                break;
-                // New
-            case KeyEvent.KEYCODE_N:
-                newNote();
-                break;
-                // Open
-            case KeyEvent.KEYCODE_O:
-                openNote();
-                break;
-                // Save, Save as
-            case KeyEvent.KEYCODE_S:
-                if (event.isShiftPressed())
-                    saveAs();
-                else
-                    saveCheck();
-                break;
-
-            default:
-                return super.onKeyDown(keyCode, event);
+            case KeyEvent.ACTION_DOWN:
+                switch (event.getKeyCode())
+                {
+                    // Accept
+                case KeyEvent.KEYCODE_A:
+                    accept.performClick();
+                    break;
+                    // Edit
+                case KeyEvent.KEYCODE_E:
+                    edit.performClick();
+                    break;
+                    // New
+                case KeyEvent.KEYCODE_N:
+                    newNote();
+                    break;
+                    // Open
+                case KeyEvent.KEYCODE_O:
+                    openNote();
+                    break;
+                    // Save, Save as
+                case KeyEvent.KEYCODE_S:
+                    if (event.isShiftPressed())
+                        saveAs();
+                    else
+                        saveCheck();
+                    break;
+                }
             }
-
-            return true;
         }
 
-        return super.onKeyDown(keyCode, event);
+        return super.dispatchKeyEvent(event);
     }
 
     // getPreferences
