@@ -413,6 +413,8 @@ public class Notes extends Activity
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         menu.findItem(R.id.saveNote).setVisible(changed);
+        menu.findItem(R.id.printNote)
+            .setVisible(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
 
         // Set up search view
         searchItem = menu.findItem(R.id.search);
