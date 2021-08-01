@@ -40,6 +40,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.print.PrintAttributes;
+import android.print.PrintDocumentAdapter;
+import android.print.PrintManager;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -496,6 +499,9 @@ public class Notes extends Activity
             break;
         case R.id.clearList:
             clearList();
+            break;
+        case R.id.printNote:
+            printNote();
             break;
         case R.id.shareNote:
             shareNote();
@@ -1226,6 +1232,29 @@ public class Notes extends Activity
     private void clearList()
     {
         pathSet.clear();
+    }
+
+    // printNote
+    private void printNote()
+    {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+            return;
+
+        // Get a PrintManager instance
+        PrintManager printManager = (PrintManager)
+            getSystemService(PRINT_SERVICE);
+
+        String jobName = getString(R.string.appName) + " Document";
+
+        // Get a print adapter instance
+        PrintDocumentAdapter printAdapter =
+            markdownView.createPrintDocumentAdapter(jobName);
+
+        // Create a print job with name and adapter instance
+        printManager.print(jobName, printAdapter,
+                           new PrintAttributes.Builder()
+                           .setMediaSize(PrintAttributes.MediaSize.ISO_A4)
+                           .build());
     }
 
     // shareNote

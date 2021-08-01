@@ -45,6 +45,11 @@
     </menu>
   </item>
   <item
+      android:id="@+id/printNote"
+      android:icon="@drawable/ic_action_print"
+      android:showAsAction="ifRoom"
+      android:title="@string/print" />
+  <item
       android:id="@+id/shareNote"
       android:icon="@drawable/ic_action_share"
       android:showAsAction="ifRoom"
