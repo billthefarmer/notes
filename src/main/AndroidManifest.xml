@@ -27,7 +27,7 @@
         android:name="Notes"
         android:label="@string/appName"
         android:launchMode="singleTask"
-        android:exported="false"
+        android:exported="true"
         android:windowSoftInputMode="stateHidden|adjustResize">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
