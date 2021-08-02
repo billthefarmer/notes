@@ -78,6 +78,16 @@ pop up with a list of matching notes. Touch an entry to open that
 note. You may repeat this or refine the search text to find the
 desired note.
 
+## Keyboard shortcuts
+When using an external keyboard, some keyboard shortcuts are
+implemented:
+ * Ctrl+D &ndash; Done
+ * Ctrl+E &ndash; Edit
+ * Ctrl+N &ndash; New file
+ * Ctrl+O &ndash; Open file
+ * Ctrl+S &ndash; Save file
+ * Ctrl+Shift+S &ndash; Save as
+
 ## Template
 You may use a note template. If a template is set it will be copied to
 a new note. A date code &ndash; `<<date>>` may be inserted into the

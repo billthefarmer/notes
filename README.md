@@ -86,7 +86,7 @@ desired note.
 ## Keyboard shortcuts
 When using an external keyboard, some keyboard shortcuts are
 implemented:
- * Ctrl+A &ndash; Accept
+ * Ctrl+D &ndash; Done
  * Ctrl+E &ndash; Edit
  * Ctrl+N &ndash; New file
  * Ctrl+O &ndash; Open file

@@ -601,7 +601,7 @@ public class Notes extends Activity
                 switch (event.getKeyCode())
                 {
                     // Accept
-                case KeyEvent.KEYCODE_A:
+                case KeyEvent.KEYCODE_D:
                     accept.performClick();
                     break;
                     // Edit
