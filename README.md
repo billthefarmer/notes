@@ -13,6 +13,7 @@ Android notebook
 * Optional note template
 * Display media
 * Display [OpenStreetMap](https://www.openstreetmap.org) maps
+* Print notes
 * Share notes
 * Add date and time
 * Add media from media providers
@@ -39,6 +40,7 @@ And on the menu:
 * **Find all** &ndash; Find all notes containing search text
 * **Open recent** &ndash; Pop up a list of recent files
   * **Clear list** &ndash; Clear list of recent files
+* **Print** &ndash; Print note
 * **Share** &ndash; Share note
 * **Save as** &ndash; Save note in another file
 * **Add date** &ndash; Add the current date and time
@@ -74,7 +76,9 @@ button. Scrolling down restores it.
 ## Search
 You may search notes, the search will update as text is entered into
 the search field. Use the search widget or keyboard action button to
-find the next match.
+find the next match. To find and edit text, search in the markdown
+view, and then double tap where you want to edit. This will switch to
+the edit view at about the right place.
 
 ## Find all
 You may find all notes that contain the current search text. This menu
