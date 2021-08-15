@@ -14,7 +14,7 @@
       <pubDate>Sat, 15 Feb 2020 19:08:26 +0000</pubDate>
       
       <guid>https://billthefarmer.github.io/notes/introduction/features/</guid>
-      <description> Notes saved in text files Use markdown formatting Optional note template Display media Display OpenStreetMap maps Share notes Add date and time Add media from media providers Receive media from other apps Receive geo uris from other apps Incremental search of notes Dark or light theme for editing Optional CSS styles Optional JavaScript scripts Back up notes to a zip file Optional edit cursor position control  </description>
+      <description> Notes saved in text files Use markdown formatting Optional note template Display media Display OpenStreetMap maps Print notes Share notes Add date and time Add media from media providers Receive media from other apps Receive geo uris from other apps Incremental search of notes Dark or light theme for editing Optional CSS styles Optional JavaScript scripts Back up notes to a zip file Optional edit cursor position control  </description>
     </item>
     
     <item>
@@ -25,7 +25,7 @@
       <guid>https://billthefarmer.github.io/notes/using/toolbar/</guid>
       <description>The toolbar items which won&amp;rsquo;t necessarily all appear at once:
  New – Start a new note Save – Save note Open – Open an existing note Search – incremental search of note  And on the menu:
- Find all – Find all notes containing search text Open recent – Pop up a list of recent files  Clear list – Clear list of recent files   Share – Share note Save as – Save note in another file Add date – Add the current date and time Add media – Add media from media providers Edit styles – show an editor to edit the custom styles Edit script – show an editor to edit custom javascript Backup – backup notes to a zip file Settings – Show the settings  </description>
+ Find all – Find all notes containing search text Open recent – Pop up a list of recent files  Clear list – Clear list of recent files   Print – Print note Share – Share note Save as – Save note in another file Add date – Add the current date and time Add media – Add media from media providers Edit styles – show an editor to edit the custom styles Edit script – show an editor to edit custom javascript Backup – backup notes to a zip file Settings – Show the settings  </description>
     </item>
     
     <item>

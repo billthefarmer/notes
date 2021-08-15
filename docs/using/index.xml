@@ -16,7 +16,7 @@
       <guid>https://billthefarmer.github.io/notes/using/toolbar/</guid>
       <description>The toolbar items which won&amp;rsquo;t necessarily all appear at once:
  New – Start a new note Save – Save note Open – Open an existing note Search – incremental search of note  And on the menu:
- Find all – Find all notes containing search text Open recent – Pop up a list of recent files  Clear list – Clear list of recent files   Share – Share note Save as – Save note in another file Add date – Add the current date and time Add media – Add media from media providers Edit styles – show an editor to edit the custom styles Edit script – show an editor to edit custom javascript Backup – backup notes to a zip file Settings – Show the settings  </description>
+ Find all – Find all notes containing search text Open recent – Pop up a list of recent files  Clear list – Clear list of recent files   Print – Print note Share – Share note Save as – Save note in another file Add date – Add the current date and time Add media – Add media from media providers Edit styles – show an editor to edit the custom styles Edit script – show an editor to edit custom javascript Backup – backup notes to a zip file Settings – Show the settings  </description>
     </item>
     
     <item>
