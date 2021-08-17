@@ -1286,7 +1286,7 @@ public class Notes extends Activity
             Uri imageUri = FileProvider
                 .getUriForFile(this, FILE_PROVIDER, image);
             intent.putExtra(Intent.EXTRA_STREAM, imageUri);
-            intent.putExtra(Intent.EXTRA_TEXT, textView.getText());
+            intent.putExtra(Intent.EXTRA_TEXT, textView.getText().toString());
         }
 
         else
@@ -1295,7 +1295,7 @@ public class Notes extends Activity
             Uri fileUri = FileProvider
                 .getUriForFile(this, FILE_PROVIDER, file);
             intent.putExtra(Intent.EXTRA_STREAM, fileUri);
-            intent.putExtra(Intent.EXTRA_TEXT, textView.getText());
+            intent.putExtra(Intent.EXTRA_TEXT, textView.getText().toString());
         }
 
         startActivity(Intent.createChooser(intent, null));
