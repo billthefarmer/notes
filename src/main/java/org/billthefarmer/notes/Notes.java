@@ -77,6 +77,9 @@ import android.widget.ViewSwitcher;
 
 import android.support.v4.content.FileProvider;
 
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
+
 import org.billthefarmer.markdown.MarkdownView;
 
 import java.io.BufferedInputStream;
@@ -2679,9 +2682,17 @@ public class Notes extends Activity
     {
         StringBuilder text = new StringBuilder();
         // Open file
-        try (BufferedReader reader = new
-             BufferedReader(new FileReader(file)))
+        try (BufferedInputStream in = new
+             BufferedInputStream(new FileInputStream(file)))
         {
+            BufferedReader reader = new
+                BufferedReader(new InputStreamReader(in));
+
+            CharsetMatch match = new
+                CharsetDetector().setText(in).detect();
+            if (match != null)
+                reader = new BufferedReader(match.getReader());
+
             String line;
             while ((line = reader.readLine()) != null)
             {
@@ -2937,10 +2948,20 @@ public class Notes extends Activity
             if (notes == null)
                 return stringBuilder;
 
-            try (BufferedReader reader = new BufferedReader
-                 (new InputStreamReader(notes.getContentResolver()
-                                        .openInputStream(uris[0]))))
+            try (BufferedInputStream in = new BufferedInputStream
+                 (notes.getContentResolver().openInputStream(uris[0])))
             {
+                BufferedReader reader = new
+                    BufferedReader(new InputStreamReader(in));
+
+                CharsetMatch match = new CharsetDetector().setText(in).detect();
+
+                if (match != null)
+                    reader = new BufferedReader(match.getReader());
+
+                if (BuildConfig.DEBUG && match != null)
+                    Log.d(TAG, "Charset " + match.getName());
+
                 String line;
                 while ((line = reader.readLine()) != null)
                 {
@@ -2954,7 +2975,8 @@ public class Notes extends Activity
             catch (Exception e)
             {
                 notes.runOnUiThread(() ->
-                    notes.alertDialog(R.string.appName, e.getMessage(),
+                    notes.alertDialog(R.string.appName,
+                                      e.getMessage(),
                                       R.string.ok));
                 e.printStackTrace();
             }
