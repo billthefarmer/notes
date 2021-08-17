@@ -47,19 +47,19 @@
   <string name="copyright">Urheberrecht \u00A9 2020 <a href="https://billthefarmer.github.io">Bill Farmer</a>\n\nMarkdown-Ansicht von <a href="https://github.com/falnatsheh/MarkdownView">Markdown View</a>, Deutsche Übersetzung von <a href="https://github.com/mondlicht-und-sterne">mondstern</a>, Türkische Übersetzung von <a href="https://github.com/berkaygunduzz">Berkay Gündüz</a>
   </string>
 
-  <string name="choose">Wählen einen Dateinamen</string>
+  <string name="choose">Wähle einen Dateinamen</string>
   <string name="loading">Laden…</string>
 
   <string name="modified">
-    Du hast ungespeicherte Änderungen. Mövhtest Du Deine Änderungen speichern?
+    Du hast ungespeicherte Änderungen. Möchtest Du Deine Änderungen speichern?
   </string>
 
   <string name="changedReload">
-    Diese Datei hat sich geändert, möchten Du diese neu laden?
+    Diese Datei hat sich geändert, möchtest Du sie neu laden?
   </string>
 
   <string name="changedOverwrite">
-    Diese Datei hat sich geändert, möchten Du diese überschreiben?
+    Diese Datei hat sich geändert, möchtest Du sie überschreiben?
   </string>
 
   <string name="ok">OK</string>
