@@ -1274,10 +1274,11 @@ public class Notes extends Activity
         if (shown)
         {
             intent.setType(IMAGE_PNG);
-            View v = markdownView.getRootView();
-            v.setDrawingCacheEnabled(true);
-            Bitmap bitmap = Bitmap.createBitmap(v.getDrawingCache());
-            v.setDrawingCacheEnabled(false);
+
+            // View v = markdownView.getRootView();
+            markdownView.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(markdownView.getDrawingCache());
+            markdownView.setDrawingCacheEnabled(false);
 
             File image = new File(getCacheDir(), NOTES_IMAGE);
             try (FileOutputStream out = new FileOutputStream(image))
@@ -1286,6 +1287,7 @@ public class Notes extends Activity
             }
 
             catch (Exception e) {}
+
             Uri imageUri = FileProvider
                 .getUriForFile(this, FILE_PROVIDER, image);
             intent.putExtra(Intent.EXTRA_STREAM, imageUri);
