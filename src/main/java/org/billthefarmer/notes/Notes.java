@@ -1568,7 +1568,7 @@ public class Notes extends Activity
                     media = resolveContent(media);
 
                 if (media != null)
-                    addMedia(media, true);
+                    addMedia(media);
 
                 else
                 {
@@ -1583,7 +1583,7 @@ public class Notes extends Activity
                         if ((media != null) &&
                             (HTTP.equalsIgnoreCase(media.getScheme()) ||
                              HTTPS.equalsIgnoreCase(media.getScheme())))
-                            addMedia(media, true);
+                            addMedia(media);
                     }
                 }
             }
