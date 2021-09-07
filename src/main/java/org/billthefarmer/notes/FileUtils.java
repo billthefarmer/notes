@@ -126,6 +126,23 @@ public class FileUtils
     }
 
     /**
+     * Gets the path of a file without the extension.
+     *
+     * @param path
+     * @return Path of the file without extension; null if path was
+     *         null.
+     */
+    public static String getPathWithoutExtension(String path)
+    {
+        if (path == null)
+        {
+            return null;
+        }
+
+        return path.substring(0, path.length() - getExtension(path).length());
+    }
+
+    /**
      * @return Whether the URI is a local one.
      */
     public static boolean isLocal(String url)
@@ -209,6 +226,9 @@ public class FileUtils
      */
     public static String getMimeType(Context context, Uri uri)
     {
+        if (getPath(context, uri) == null)
+            return null;
+
         File file = new File(getPath(context, uri));
         return getMimeType(file);
     }

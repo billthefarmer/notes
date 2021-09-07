@@ -1275,7 +1275,6 @@ public class Notes extends Activity
         {
             intent.setType(IMAGE_PNG);
 
-            // View v = markdownView.getRootView();
             markdownView.setDrawingCacheEnabled(true);
             Bitmap bitmap = Bitmap.createBitmap(markdownView.getDrawingCache());
             markdownView.setDrawingCacheEnabled(false);
@@ -1568,21 +1567,25 @@ public class Notes extends Activity
                 if (CONTENT.equalsIgnoreCase(media.getScheme()))
                     media = resolveContent(media);
 
-                // Attempt to get web uri
-                String path = intent.getStringExtra(Intent.EXTRA_TEXT);
+                if (media != null)
+                    addMedia(media, true);
 
-                if (path != null)
+                else
                 {
-                    // Try to get the path as an uri
-                    Uri uri = Uri.parse(path);
-                    // Check if it's an URL
-                    if ((uri != null) &&
-                        (HTTP.equalsIgnoreCase(uri.getScheme()) ||
-                         HTTPS.equalsIgnoreCase(uri.getScheme())))
-                        media = uri;
-                }
+                    // Attempt to get web uri
+                    String path = intent.getStringExtra(Intent.EXTRA_TEXT);
 
-                addMedia(media);
+                    if (path != null)
+                    {
+                        // Try to get the path as an uri
+                        media = Uri.parse(path);
+                        // Check if it's an URL
+                        if ((media != null) &&
+                            (HTTP.equalsIgnoreCase(media.getScheme()) ||
+                             HTTPS.equalsIgnoreCase(media.getScheme())))
+                            addMedia(media, true);
+                    }
+                }
             }
             else if (Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction()))
             {
@@ -2175,6 +2178,9 @@ public class Notes extends Activity
     // savePath
     private void savePath(String path)
     {
+        if (path == null)
+            return;
+
         // Save the current position
         pathSet.add(path);
 
