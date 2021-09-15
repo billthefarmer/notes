@@ -1378,7 +1378,9 @@ public class Notes extends Activity
                 uri.getLastPathSegment();
 
             // Get type
-            String type = data.getType();
+            String type = (CONTENT.equalsIgnoreCase(uri.getScheme()))?
+                getContentResolver().getType(uri):
+                FileUtils.getMimeType(this, uri);
 
             if (type == null)
                 addLink(uri, title);
