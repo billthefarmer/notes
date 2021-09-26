@@ -2519,6 +2519,9 @@ public class Notes extends Activity
         // Dismiss keyboard
         textView.clearFocus();
 
+        // Check position
+        checkPosition(text);
+
         // Update menu
         invalidateOptionsMenu();
     }
