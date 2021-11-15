@@ -45,6 +45,8 @@ import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
 import android.text.Editable;
 import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.util.Log;
@@ -469,7 +471,8 @@ public class Notes extends Activity
                 path.replaceFirst(Environment
                                   .getExternalStorageDirectory()
                                   .getPath() + File.separator, "");
-            sub.add(name);
+            sub.add(Menu.NONE, R.id.fileItem, Menu.NONE, TextUtils.ellipsize
+                    (name, new TextPaint(), 192, TextUtils.TruncateAt.MIDDLE));
         }
 
         // Add clear list item
@@ -529,7 +532,7 @@ public class Notes extends Activity
         case R.id.settings:
             settings();
             break;
-        default:
+        case R.id.fileItem:
             openRecent(item);
             break;
         }
@@ -2478,9 +2481,8 @@ public class Notes extends Activity
     {
         StringBuilder text = new StringBuilder();
         // Open file
-        try (InputStream input = getAssets().open(file);
-             BufferedReader reader = new
-             BufferedReader(new InputStreamReader(input)))
+        try (BufferedReader reader = new BufferedReader
+             (new InputStreamReader(getAssets().open(file))))
         {
             String line;
             while ((line = reader.readLine()) != null)
