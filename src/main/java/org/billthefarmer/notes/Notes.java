@@ -208,6 +208,7 @@ public class Notes extends Activity
     private final static int REQUEST_TEMPLATE = 4;
 
     private final static int BUFFER_SIZE = 4096;
+    private final static int MENU_SIZE = 192;
     private final static int LARGE_SIZE = 262144;
     private final static int VISIBLE_DELAY = 2048;
     private final static int FOLDER_OFFSET = 0x7d000000;
@@ -471,8 +472,13 @@ public class Notes extends Activity
                 path.replaceFirst(Environment
                                   .getExternalStorageDirectory()
                                   .getPath() + File.separator, "");
+            // Create item
             sub.add(Menu.NONE, R.id.fileItem, Menu.NONE, TextUtils.ellipsize
-                    (name, new TextPaint(), 192, TextUtils.TruncateAt.MIDDLE));
+                    (name, new TextPaint(), MENU_SIZE,
+                     TextUtils.TruncateAt.MIDDLE))
+                // Use condensed title to save path as API doesn't
+                // work as documented
+                .setTitleCondensed(name);
         }
 
         // Add clear list item
@@ -1203,7 +1209,8 @@ public class Notes extends Activity
     // openRecent
     private void openRecent(MenuItem item)
     {
-        String name = item.getTitle().toString();
+        // Get path from condensed title
+        String name = item.getTitleCondensed().toString();
         File file = new File(name);
 
         // Check absolute file
