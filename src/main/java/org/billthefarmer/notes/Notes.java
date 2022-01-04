@@ -79,10 +79,9 @@ import android.widget.ViewSwitcher;
 
 import android.support.v4.content.FileProvider;
 
-import com.ibm.icu.text.CharsetDetector;
-import com.ibm.icu.text.CharsetMatch;
-
 import org.billthefarmer.markdown.MarkdownView;
+
+import org.mozilla.universalchardet.CharsetDetector;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -2710,10 +2709,14 @@ public class Notes extends Activity
             BufferedReader reader = new
                 BufferedReader(new InputStreamReader(in));
 
-            CharsetMatch match = new
-                CharsetDetector().setText(in).detect();
+            String match = CharsetDetector.detectCharset
+                (new FileInputStream(file));
             if (match != null)
-                reader = new BufferedReader(match.getReader());
+                reader = new BufferedReader
+                    (new InputStreamReader(in, match));
+
+            if (BuildConfig.DEBUG && match != null)
+                Log.d(TAG, "Charset " + match);
 
             String line;
             while ((line = reader.readLine()) != null)
@@ -2976,13 +2979,15 @@ public class Notes extends Activity
                 BufferedReader reader = new
                     BufferedReader(new InputStreamReader(in));
 
-                CharsetMatch match = new CharsetDetector().setText(in).detect();
+                String match = CharsetDetector.detectCharset
+                    (notes.getContentResolver().openInputStream(uris[0]));
 
                 if (match != null)
-                    reader = new BufferedReader(match.getReader());
+                    reader = new BufferedReader
+                        (new InputStreamReader(in, match));
 
                 if (BuildConfig.DEBUG && match != null)
-                    Log.d(TAG, "Charset " + match.getName());
+                    Log.d(TAG, "Charset " + match);
 
                 String line;
                 while ((line = reader.readLine()) != null)
