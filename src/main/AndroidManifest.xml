@@ -25,7 +25,6 @@
 
     <activity
         android:name="Notes"
-        android:label="@string/appName"
         android:launchMode="singleTask"
         android:exported="true"
         android:windowSoftInputMode="stateHidden|adjustResize">
