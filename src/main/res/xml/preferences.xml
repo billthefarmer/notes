@@ -39,6 +39,28 @@
   </PreferenceCategory>
 
   <PreferenceCategory
+      android:key="pref_new_category"
+      android:title="@string/new_note_name">
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:icon="?attr/pref_use_template"
+        android:key="pref_new_template"
+        android:persistent="true"
+        android:summary="@string/pref_new_template_summ"
+        android:title="@string/pref_use_template" />
+
+    <EditTextPreference
+        android:dependency="pref_new_template"
+        android:defaultValue="Untitled.md"
+        android:icon="?attr/pref_template_file"
+        android:key="pref_new_name"
+        android:persistent="true"
+        android:title="@string/pref_new_name" />
+
+  </PreferenceCategory>
+
+  <PreferenceCategory
       android:key="pref_media_category"
       android:title="@string/media">
 

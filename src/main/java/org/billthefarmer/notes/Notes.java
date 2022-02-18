@@ -172,6 +172,7 @@ public class Notes extends Activity
     public final static String TEXT_MATCH =
         ".+\\.txt|.+\\.text|.+\\.md|.+\\.markdown";
     public final static String DATE_FORMAT = "EEEE d MMMM yyyy HH:mm";
+    public final static String NEW_FORMAT = "yyyy/MM/dd-HHmmss";
 
     public final static String GEO = "geo";
     public final static String OSM = "osm";
@@ -238,7 +239,8 @@ public class Notes extends Activity
     private Set<String> pathSet;
 
     private String folder = NOTES_FOLDER;
-    private String templateFile;
+    private String templateFile = TEMPLATE_FILE;
+    private String newTemplate = NEW_FILE;
 
     private Uri uri;
     private File file;
@@ -255,6 +257,7 @@ public class Notes extends Activity
     private boolean external = false;
     private boolean useTemplate = false;
     private boolean loadTemplate = false;
+    private boolean useNewTemplate = false;
     private boolean darkTheme = false;
 
     private long modified;
@@ -650,11 +653,15 @@ public class Notes extends Activity
 
         external = preferences.getBoolean(Settings.PREF_EXTERNAL, false);
         useTemplate = preferences.getBoolean(Settings.PREF_USE_TEMPLATE, false);
+        useNewTemplate = preferences.getBoolean(Settings.PREF_NEW_TEMPLATE, false);
         darkTheme = preferences.getBoolean(Settings.PREF_DARK_THEME, false);
 
         // Template file
         templateFile = preferences.getString(Settings.PREF_TEMPLATE_FILE,
                                              TEMPLATE_FILE);
+        // New file template
+        newTemplate = preferences.getString(Settings.PREF_NEW_NAME, NEW_FILE);
+
         // Folder
         folder = preferences.getString(Settings.PREF_FOLDER, NOTES_FOLDER);
 
@@ -1746,7 +1753,7 @@ public class Notes extends Activity
         textView.setText("");
         changed = false;
 
-        file = new File(getHome(), NEW_FILE);
+        file = new File(getHome(), useNewTemplate? getnewName(): NEW_FILE);
         uri = Uri.fromFile(file);
         path = uri.getPath();
 
@@ -1760,6 +1767,47 @@ public class Notes extends Activity
     private File getNewFile()
     {
         return new File(getHome(), NEW_FILE);
+    }
+
+    // getNewName
+    private String getNewName()
+    {
+        StringBuffer buffer = new StringBuffer();
+        Matcher matcher = DATE_PATTERN.matcher(newTemplate);
+
+        // Find matches
+        while (matcher.find())
+        {
+            if (matcher.group(1).isEmpty())
+            {
+
+                DateFormat format = new
+                    SimpleDateFormat(NEW_FORMAT, Locale.getDefault());
+                // Create date
+                String date = format.format(new Date());
+                matcher.appendReplacement(buffer, date);
+            }
+
+            else
+            {
+                try
+                {
+                    DateFormat format = new
+                        SimpleDateFormat(matcher.group(1), Locale.getDefault());
+                    // Create date
+                    String date = format.format(new Date());
+                    matcher.appendReplacement(buffer, date);
+                }
+
+                catch (Exception e)
+                {
+                    alertDialog(R.string.appName, e.getMessage(), R.string.ok);
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return buffer;
     }
 
     // loadTemplate
