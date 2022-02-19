@@ -3,7 +3,7 @@
 
   <string name="appName">Notes</string>
 
-  <string name="newNote">New</string>
+  <string name="newNote">New note</string>
   <string name="openNote">Open</string>
   <string name="openRecent">Open recent</string>
   <string name="clearList">Clear list</string>

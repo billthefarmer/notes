@@ -294,6 +294,10 @@ public class Notes extends Activity
         if (savedInstanceState == null)
         {
             Intent intent = getIntent();
+
+            if (BuildConfig.DEBUG)
+                Log.d(TAG, "Intent " + intent);
+
             if (checkText(intent))
                 getNote(intent);
 
@@ -1753,7 +1757,7 @@ public class Notes extends Activity
         textView.setText("");
         changed = false;
 
-        file = new File(getHome(), useNewTemplate? getnewName(): NEW_FILE);
+        file = new File(getHome(), useNewTemplate? getNewName(): NEW_FILE);
         uri = Uri.fromFile(file);
         path = uri.getPath();
 
@@ -1772,42 +1776,7 @@ public class Notes extends Activity
     // getNewName
     private String getNewName()
     {
-        StringBuffer buffer = new StringBuffer();
-        Matcher matcher = DATE_PATTERN.matcher(newTemplate);
-
-        // Find matches
-        while (matcher.find())
-        {
-            if (matcher.group(1).isEmpty())
-            {
-
-                DateFormat format = new
-                    SimpleDateFormat(NEW_FORMAT, Locale.getDefault());
-                // Create date
-                String date = format.format(new Date());
-                matcher.appendReplacement(buffer, date);
-            }
-
-            else
-            {
-                try
-                {
-                    DateFormat format = new
-                        SimpleDateFormat(matcher.group(1), Locale.getDefault());
-                    // Create date
-                    String date = format.format(new Date());
-                    matcher.appendReplacement(buffer, date);
-                }
-
-                catch (Exception e)
-                {
-                    alertDialog(R.string.appName, e.getMessage(), R.string.ok);
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return buffer;
+        return dateCheck(newTemplate, NEW_FORMAT).toString();
     }
 
     // loadTemplate
@@ -2562,7 +2531,7 @@ public class Notes extends Activity
     {
         if (loadTemplate)
         {
-            text = dateCheck(text);
+            text = dateCheck(text, DATE_FORMAT);
             loadTemplate = false;
         }
 
@@ -2582,7 +2551,7 @@ public class Notes extends Activity
         invalidateOptionsMenu();
     }
 
-    private CharSequence dateCheck(CharSequence text)
+    private CharSequence dateCheck(CharSequence text, String pattern)
     {
         StringBuffer buffer = new StringBuffer();
 
@@ -2595,7 +2564,7 @@ public class Notes extends Activity
             {
 
                 DateFormat format = new
-                    SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
+                    SimpleDateFormat(pattern, Locale.getDefault());
                 // Create date
                 String date = format.format(new Date());
                 matcher.appendReplacement(buffer, date);

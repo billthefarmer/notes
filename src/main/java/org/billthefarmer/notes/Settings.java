@@ -39,6 +39,7 @@ public class Settings extends Activity
     public final static String PREF_EXTERNAL = "pref_external";
     public final static String PREF_NEW_NAME = "pref_new_name";
     public final static String PREF_DARK_THEME = "pref_dark_theme";
+    public final static String PREF_NEW_TEMPLATE = "pref_new_template";
     public final static String PREF_USE_TEMPLATE = "pref_use_template";
     public final static String PREF_TEMPLATE_FILE = "pref_template_file";
 
