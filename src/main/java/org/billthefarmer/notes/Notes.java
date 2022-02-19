@@ -24,6 +24,7 @@
 package org.billthefarmer.notes;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -298,7 +299,10 @@ public class Notes extends Activity
             if (BuildConfig.DEBUG)
                 Log.d(TAG, "Intent " + intent);
 
-            if (checkText(intent))
+            if (checkNew(intent))
+                newNote();
+
+            else if (checkText(intent))
                 getNote(intent);
 
             else if (checkMedia(intent))
@@ -591,7 +595,10 @@ public class Notes extends Activity
     @Override
     public void onNewIntent(Intent intent)
     {
-        if (checkText(intent))
+        if (checkNew(intent))
+            newNote();
+
+        else if (checkText(intent))
             getNote(intent);
 
         else if (checkMedia(intent))
@@ -1467,6 +1474,13 @@ public class Notes extends Activity
         int position = textView.getSelectionStart();
         editable.insert(position, text);
         loadMarkdown();
+    }
+
+    // checkNew
+    @SuppressLint("InlinedApi")
+    private boolean checkNew(Intent intent)
+    {
+        return Intent.ACTION_OPEN_DOCUMENT.equals(intent.getAction());
     }
 
     // checkText

@@ -23,6 +23,7 @@
 
 package org.billthefarmer.notes;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -36,6 +37,7 @@ public class Shortcut extends Activity
     // onCreate
     @Override
     @SuppressWarnings("deprecation")
+    @SuppressLint("InlinedApi")
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -43,8 +45,8 @@ public class Shortcut extends Activity
         // Create the shortcut intent
         Intent shortcut = new
             Intent(this, Notes.class);
-        shortcut.setAction(Intent.ACTION_DEFAULT);
-        shortcut.addCategory(Intent.CATEGORY_LAUNCHER);
+        shortcut.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        shortcut.addCategory(Intent.CATEGORY_DEFAULT);
 
         BitmapDrawable drawable = (BitmapDrawable) getResources()
             .getDrawable(R.drawable.ic_launcher);
