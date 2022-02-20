@@ -80,6 +80,7 @@
     <activity
         android:name="Shortcut"
         android:exported="true"
+        android:label="@string/newNote"
         android:theme="@android:style/Theme.NoDisplay">
       <intent-filter>
         <action android:name="android.intent.action.CREATE_SHORTCUT" />

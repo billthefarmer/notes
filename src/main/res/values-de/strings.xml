@@ -3,7 +3,7 @@
 
   <string name="appName">Notizen</string>
 
-  <string name="newNote">Neu</string>
+  <string name="newNote">Neu Notiz</string>
   <string name="openNote">Öffne</string>
   <string name="openRecent">Öffne letzte</string>
   <string name="clearList">Liste löschen</string>
@@ -33,12 +33,17 @@
   <string name="pref_dark_theme_summ">
     Dunkles Thema für die Bearbeitung verwenden
   </string>
-  <string name="template">Vorlage</string>
+  <string name="template">Neu Notiz Vorlage</string>
   <string name="pref_use_template">Benutze Vorlage</string>
   <string name="pref_use_template_summ">
-    Benutze Volage für Notizen
+    Benutze Volage für Neu Notizen
   </string>
   <string name="pref_template_file">Vorlagendatei</string>
+  <string name="new_note_name">Neue Vorlage für Notiznamen</string>
+  <string name="pref_new_template_summ">
+    Vorlage für neuen Notennamen verwenden
+  </string>
+  <string name="pref_new_name">Neuer Notenname</string>
   <string name="about">Über</string>
   <string name="pref_about_summ"><a href="https://github.com/billthefarmer/notes/releases/latest">Version %s</a></string>
   <string name="built">Erstellt %s</string>

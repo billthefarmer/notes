@@ -1,0 +1,2 @@
+ * Add template for new note name
+ * Add widget for new note

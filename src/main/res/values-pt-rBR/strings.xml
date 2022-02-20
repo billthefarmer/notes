@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="appName">Notes</string>
+  <string name="appName">Notas</string>
 
-  <string name="newNote">Novo</string>
+  <string name="newNote">Nova nota</string>
   <string name="openNote">Abrir</string>
   <string name="openRecent">Abrir recente</string>
   <string name="clearList">Limpiar lista</string>
@@ -33,12 +33,17 @@
   <string name="pref_dark_theme_summ">
     Usar tema oscuro para edição
   </string>
-  <string name="template">Modelo</string>
+  <string name="template">Novo modelo de nota</string>
   <string name="pref_use_template">Use modelo</string>
   <string name="pref_use_template_summ">
-    Use modelo para notas
+    Usar modelo para novas notas
   </string>
-  <string name="pref_template_file">Arquivo de modelo</string>
+  <string name="pref_template_file">Novo arquivo de modelo de nota</string>
+  <string name="new_note_name">Novo modelo de nome de nota</string>
+  <string name="pref_new_template_summ">
+    Use o modelo para o novo nome da nota
+  </string>
+  <string name="pref_new_name">Novo nome da nota</string>
   <string name="about">Sobre</string>
   <string name="pref_about_summ"><a href="https://github.com/billthefarmer/notes/releases/latest">Versão %s</a></string>
   <string name="built">Built %s</string>

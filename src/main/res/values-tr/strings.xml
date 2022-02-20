@@ -3,7 +3,7 @@
 
   <string name="appName">Notlar</string>
 
-  <string name="newNote">Yeni</string>
+  <string name="newNote">Yeni not</string>
   <string name="openNote">Aç</string>
   <string name="openRecent">Son açılanlar</string>
   <string name="clearList">Listeyi sil</string>
@@ -33,12 +33,17 @@
   <string name="pref_dark_theme_summ">
     Düzenleme yaparken karanlık tema kullan
   </string>
-  <string name="template">Şablon</string>
+  <string name="template">Yeni not şablonu</string>
   <string name="pref_use_template">Şablon kullan</string>
   <string name="pref_use_template_summ">
-    Notlar için şablon kullan
+    Yeni notlar için şablon kullan
   </string>
-  <string name="pref_template_file">Şablon dosyası</string>
+  <string name="pref_template_file">Yeni not şablonu dosyası</string>
+  <string name="new_note_name">Yeni not adı şablonu</string>
+  <string name="pref_new_template_summ">
+    Yeni not adı için şablonu kullan
+  </string>
+  <string name="pref_new_name">Yeni not adı</string>
   <string name="about">Hakkında</string>
   <string name="pref_about_summ"><a href="https://github.com/billthefarmer/notes/releases/latest">Sürüm %s</a></string>
   <string name="built">Kurulum %s</string>

@@ -3,7 +3,7 @@
 
   <string name="appName">Muistiinpanot</string>
 
-  <string name="newNote">Uusi</string>
+  <string name="newNote">Uusi muistiinpano</string>
   <string name="openNote">Avaa</string>
   <string name="openRecent">Avaa viimeaikainen</string>
   <string name="clearList">Tyhjennä lista</string>
@@ -33,12 +33,17 @@
   <string name="pref_dark_theme_summ">
     Käytä tummaa teemaa muokatessa
   </string>
-  <string name="template">Malline</string>
+  <string name="template">Uusi muistiinpanomalli</string>
   <string name="pref_use_template">Käytä mallia</string>
   <string name="pref_use_template_summ">
     Käytä mallia uusien dokumenttien pohjana
   </string>
-  <string name="pref_template_file">Mallitiedosto</string>
+  <string name="pref_template_file">Uusi muistiinpanomallitiedosto</string>
+  <string name="new_note_name">Uusi muistiinpanon nimimalli</string>
+  <string name="pref_new_template_summ">
+    Käytä mallia uuden muistiinpanon nimeen
+  </string>
+  <string name="pref_new_name">Uusi muistiinpanon nimi</string>
   <string name="about">Tietoa</string>
   <string name="pref_about_summ"><a href="https://github.com/billthefarmer/notes/releases/latest">Versio %s</a></string>
   <string name="built">Koontiversio %s</string>
