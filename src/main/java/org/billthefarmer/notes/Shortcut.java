@@ -37,7 +37,6 @@ public class Shortcut extends Activity
     // onCreate
     @Override
     @SuppressWarnings("deprecation")
-    @SuppressLint("InlinedApi")
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -45,7 +44,7 @@ public class Shortcut extends Activity
         // Create the shortcut intent
         Intent shortcut = new
             Intent(this, Notes.class);
-        shortcut.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        shortcut.setAction(Notes.NEW_NOTE);
         shortcut.addCategory(Intent.CATEGORY_DEFAULT);
 
         BitmapDrawable drawable = (BitmapDrawable) getResources()

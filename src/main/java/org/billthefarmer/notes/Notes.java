@@ -156,6 +156,8 @@ public class Notes extends Activity
     public final static String IMAGE = "image";
     public final static String AUDIO = "audio";
     public final static String VIDEO = "video";
+    public final static String NEW_NOTE =
+        "org.billthefarmer.notes.NEW_NOTE";
     public final static String MEDIA_TEMPLATE = "![%s](%s)\n";
     public final static String LINK_TEMPLATE = "[%s](%s)\n";
     public final static String POSN_TEMPLATE = "[#]: # (%d)";
@@ -1477,10 +1479,9 @@ public class Notes extends Activity
     }
 
     // checkNew
-    @SuppressLint("InlinedApi")
     private boolean checkNew(Intent intent)
     {
-        return Intent.ACTION_OPEN_DOCUMENT.equals(intent.getAction());
+        return NEW_NOTE.equals(intent.getAction());
     }
 
     // checkText
