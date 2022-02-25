@@ -951,10 +951,13 @@ public class Notes extends Activity
             textView.setOnFocusChangeListener((v, hasFocus) ->
             {
                 // Hide keyboard
-                InputMethodManager imm = (InputMethodManager)
+                InputMethodManager manager = (InputMethodManager)
                     getSystemService(INPUT_METHOD_SERVICE);
                 if (!hasFocus)
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    manager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                else
+                    manager.showSoftInput(textView, 0);
             });
 
             // On long click
@@ -1756,6 +1759,7 @@ public class Notes extends Activity
             }
 
             loadMarkdown();
+            edit.performClick();
             invalidateOptionsMenu();
         });
 
@@ -1763,6 +1767,7 @@ public class Notes extends Activity
             newFile();
 
         loadMarkdown();
+        edit.postDelayed(() -> edit.performClick(), UPDATE_DELAY);
         invalidateOptionsMenu();
     }
 
