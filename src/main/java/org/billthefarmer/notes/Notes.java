@@ -192,7 +192,7 @@ public class Notes extends Activity
         Pattern.compile("^ ?\\[([<#>])\\]: ?#(?: ?\\((\\d+)\\))? *$",
                         Pattern.MULTILINE);
     public final static Pattern DATE_PATTERN =
-        Pattern.compile("<<date *?(.*?)>>", Pattern.MULTILINE);
+        Pattern.compile("<<date *(.*)>>", Pattern.MULTILINE);
 
     private final static int OPEN_DOCUMENT   = 1;
     private final static int CREATE_DOCUMENT = 2;
