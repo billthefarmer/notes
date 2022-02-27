@@ -2,7 +2,8 @@ Notebook with markdown formatting
 
  * Notes saved in text files
  * Use markdown formatting
- * Optional note template
+ * Optional new note template
+ * Optional new note file name template
  * Display media
  * Display OpenStreetMap maps
  * Share notes
@@ -12,6 +13,7 @@ Notebook with markdown formatting
  * Receive geo uris from other apps
  * Incremental search of notes
  * Dark or light theme for editing
+ * Shortcut to open new note
  * Optional CSS styles
  * Optional JavaScript scripts
  * Back up notes to a zip file

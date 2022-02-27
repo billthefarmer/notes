@@ -11,7 +11,8 @@ Android notebook
 
 * Notes saved in text files
 * Use markdown formatting
-* Optional note template
+* Optional new note template
+* Optional new note file name template
 * Display media
 * Display [OpenStreetMap](https://www.openstreetmap.org) maps
 * Print notes
