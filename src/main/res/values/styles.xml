@@ -43,6 +43,7 @@
     <item name="pref_dark_theme">@drawable/ic_action_brightness_high</item>
     <item name="pref_external">@drawable/ic_action_web_site</item>
     <item name="pref_folder">@drawable/ic_action_collection</item>
+    <item name="pref_name">@drawable/ic_action_storage</item>
     <item name="pref_template_file">@drawable/ic_action_storage</item>
     <item name="pref_use_template">@drawable/ic_action_view_as_list</item>
 
@@ -69,6 +70,7 @@
     <item name="pref_dark_theme">@drawable/ic_action_brightness_high_dark</item>
     <item name="pref_external">@drawable/ic_action_web_site_dark</item>
     <item name="pref_folder">@drawable/ic_action_collection_dark</item>
+    <item name="pref_name">@drawable/ic_action_storage_dark</item>
     <item name="pref_template_file">@drawable/ic_action_storage_dark</item>
     <item name="pref_use_template">@drawable/ic_action_view_as_list_dark</item>
 

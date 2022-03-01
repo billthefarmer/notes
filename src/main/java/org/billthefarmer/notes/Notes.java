@@ -242,6 +242,7 @@ public class Notes extends Activity
     private Set<String> pathSet;
 
     private String folder = NOTES_FOLDER;
+    private String defaultName = NOTES_FILE;
     private String templateFile = TEMPLATE_FILE;
     private String newTemplate = NEW_FILE;
 
@@ -677,6 +678,9 @@ public class Notes extends Activity
 
         // Folder
         folder = preferences.getString(Settings.PREF_FOLDER, NOTES_FOLDER);
+
+        // Name
+        defaultName = preferences.getString(Settings.PREF_NAME, NOTES_FILE);
 
         Set<String> set =
             preferences.getStringSet(Settings.PREF_PATHS, null);
@@ -2207,7 +2211,7 @@ public class Notes extends Activity
     // getDefaultFile
     private File getDefaultFile()
     {
-        return new File(getHome(), NOTES_FILE);
+        return new File(getHome(), defaultName);
     }
 
     // defaultFile

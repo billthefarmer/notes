@@ -33,6 +33,7 @@ import android.view.MenuItem;
 // Settings
 public class Settings extends Activity
 {
+    public final static String PREF_NAME = "pref_name";
     public final static String PREF_ABOUT = "pref_about";
     public final static String PREF_PATHS = "pref_paths";
     public final static String PREF_FOLDER = "pref_folder";

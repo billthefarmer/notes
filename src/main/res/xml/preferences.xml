@@ -17,6 +17,19 @@
   </PreferenceCategory>
 
   <PreferenceCategory
+      android:key="pref_name_category"
+      android:title="@string/name">
+
+    <EditTextPreference
+        android:defaultValue="Notes.md"
+        android:icon="?attr/pref_name"
+        android:key="pref_name"
+        android:persistent="true"
+        android:title="@string/pref_name" />
+
+  </PreferenceCategory>
+
+  <PreferenceCategory
       android:key="pref_template_category"
       android:title="@string/template">
 
