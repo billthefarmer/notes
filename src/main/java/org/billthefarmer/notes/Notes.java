@@ -54,6 +54,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -75,6 +76,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -2360,7 +2362,7 @@ public class Notes extends Activity
             switch (id)
             {
             case DialogInterface.BUTTON_POSITIVE:
-                EditText text = ((Dialog) dialog).findViewById(R.id.path_text);
+                EditText text = ((Dialog) dialog).findViewById(R.id.pathText);
                 String string = text.getText().toString();
 
                 // Ignore empty string
@@ -2410,15 +2412,15 @@ public class Notes extends Activity
             builder.setNeutralButton(R.string.storage, listener);
 
         // Create edit text
-        Context context = builder.getContext();
-        EditText text = new EditText(context);
-        text.setId(R.id.path_text);
-        text.setText(path);
+        LayoutInflater inflater = (LayoutInflater) builder.getContext()
+            .getSystemService(LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.save_path, null);
+        builder.setView(view);
 
         // Create the AlertDialog
-        AlertDialog dialog = builder.create();
-        dialog.setView(text, 40, 0, 40, 0);
-        dialog.show();
+        AlertDialog dialog = builder.show();
+        TextView text = dialog.findViewById(R.id.pathText);
+        text.setText(path);
     }
 
     // write

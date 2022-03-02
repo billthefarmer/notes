@@ -23,7 +23,9 @@
   <string name="complete">Varmuuskopionti valmis</string>
   <string name="settings">Asetukset</string>
   <string name="folder">Kansio</string>
+  <string name="name">Nimi</string>
   <string name="media">Media</string>
+  <string name="pref_name">Muistiinpanon oletusnimi</string>
   <string name="pref_external">Selain</string>
   <string name="pref_external_summ">
     Käytä selainta ulkoisten linkkien avaamiseen

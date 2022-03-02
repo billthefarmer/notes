@@ -23,7 +23,9 @@
   <string name="complete">Yedekleme tamamlandı</string>
   <string name="settings">Ayarlar</string>
   <string name="folder">Klasör</string>
+  <string name="name">İsim</string>
   <string name="media">Ortam</string>
+  <string name="pref_name">Varsayılan not adı</string>
   <string name="pref_external">Tarayıcı</string>
   <string name="pref_external_summ">
     Harici link\'ler için tarayıcı kullan

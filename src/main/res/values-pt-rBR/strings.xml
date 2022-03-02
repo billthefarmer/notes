@@ -23,7 +23,9 @@
   <string name="complete">Backup concluído</string>
   <string name="settings">Configurações</string>
   <string name="folder">Pasta</string>
+  <string name="name">Nome</string>
   <string name="media">Média</string>
+  <string name="pref_name">Nome da nota padrão</string>
   <string name="pref_external">Navegador</string>
   <string name="pref_external_summ">
     Use o navegador para links externos

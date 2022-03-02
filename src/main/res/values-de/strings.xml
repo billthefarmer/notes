@@ -23,7 +23,9 @@
   <string name="complete">Sicherung abgeschlossen</string>
   <string name="settings">Einstellungen</string>
   <string name="folder">Ordner</string>
+  <string name="name">Name</string>
   <string name="media">Medien</string>
+  <string name="pref_name">Standardnotizname</string>
   <string name="pref_external">Browser</string>
   <string name="pref_external_summ">
     Browser für externe Links verwenden
