@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb">
 <head>
-  <meta name="generator" content="Hugo 0.91.0" />
+  <meta name="generator" content="Hugo 0.93.0" />
 
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -83,6 +83,8 @@
                     <li><a href="#search">Search</a></li>
                 
                     <li><a href="#find-all">Find All</a></li>
+                
+                    <li><a href="#name-template">Name Template</a></li>
                 
                     <li><a href="#keyboard-shortcuts">Keyboard Shortcuts</a></li>
                 
@@ -210,6 +212,7 @@ whatever you wish to write about.</p>
 <li>Notes saved in text files</li>
 <li>Use markdown formatting</li>
 <li>Optional note template</li>
+<li>Optional template for new note name</li>
 <li>Display media</li>
 <li>Display <a href="https://www.openstreetmap.org/">OpenStreetMap</a> maps</li>
 <li>Print notes</li>
@@ -220,6 +223,7 @@ whatever you wish to write about.</p>
 <li>Receive geo uris from other apps</li>
 <li>Incremental search of notes</li>
 <li>Dark or light theme for editing</li>
+<li>Widget for new notes</li>
 <li>Optional CSS styles</li>
 <li>Optional JavaScript scripts</li>
 <li>Back up notes to a zip file</li>
@@ -380,6 +384,27 @@ item will only appear while the search widget is active. A dialog will
 pop up with a list of matching notes. Touch an entry to open that
 note. You may repeat this or refine the search text to find the
 desired note.</p>
+
+    </div>
+</section>
+
+            
+                <section class="page" id="name-template">
+    
+    <h3>
+        <a href="#name-template">Name Template</a>
+    </h3>
+    
+    <div class="content">
+        <p>You may use a template for new note names. If a template is set it
+will be used for the name of new notes. A date code – <code>&lt;&lt;date&gt;&gt;</code>
+may be inserted into the template which will be converted into the
+current date and time. This will default to <code>yyyy/MM/dd-HHmmss</code>, which
+will expand to <code>2022/02/20-113052</code>, so <code>&lt;&lt;date&gt;&gt;.md</code> will give
+<code>2022/02/20-113052.md</code>. This gives a hierarchical folder structure
+similar to my <a href="https://github.com/billthefarmer/diary">Diary</a>
+app. Alternatively you may use your own date pattern for a custom
+name, as below in <a href="#template">Template</a>.</p>
 
     </div>
 </section>
@@ -723,7 +748,11 @@ not recognised by android.</p>
         <ul>
 <li><strong>Folder</strong> – Change notes storage folder. Caution –
 notes, styles and scripts will not be moved</li>
-<li><strong>Template</strong> – Set a note template. Use the dialog to choose a
+<li><strong>Default note name</strong> – Set a name for the default note. Use
+the dialog to choose a name.</li>
+<li><strong>New note name template</strong> – Set a new note name template. Use
+the dialog to choose a name.</li>
+<li><strong>New note template</strong> – Set a note template. Use the dialog to choose a
 file.</li>
 <li><strong>Browser</strong> – Use browser for external links</li>
 <li><strong>Dark theme</strong> – Use dark theme for editing</li>

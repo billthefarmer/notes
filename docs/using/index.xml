@@ -75,6 +75,15 @@ See Markdown for markdown syntax.</description>
     </item>
     
     <item>
+      <title>Name Template</title>
+      <link>https://billthefarmer.github.io/notes/using/name-template/</link>
+      <pubDate>Wed, 02 Mar 2022 09:59:41 +0000</pubDate>
+      
+      <guid>https://billthefarmer.github.io/notes/using/name-template/</guid>
+      <description>You may use a template for new note names. If a template is set it will be used for the name of new notes. A date code – &amp;lt;&amp;lt;date&amp;gt;&amp;gt; may be inserted into the template which will be converted into the current date and time. This will default to yyyy/MM/dd-HHmmss, which will expand to 2022/02/20-113052, so &amp;lt;&amp;lt;date&amp;gt;&amp;gt;.md will give 2022/02/20-113052.md. This gives a hierarchical folder structure similar to my Diary app.</description>
+    </item>
+    
+    <item>
       <title>Keyboard Shortcuts</title>
       <link>https://billthefarmer.github.io/notes/using/keyboard-shortcuts/</link>
       <pubDate>Thu, 22 Jul 2021 12:18:09 +0100</pubDate>

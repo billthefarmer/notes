@@ -12,7 +12,7 @@ Android notebook
 * Notes saved in text files
 * Use markdown formatting
 * Optional new note template
-* Optional new note file name template
+* Optional new note name template
 * Display media
 * Display [OpenStreetMap](https://www.openstreetmap.org) maps
 * Print notes
@@ -115,7 +115,7 @@ will be used for the name of new notes. A date code &ndash; `<<date>>`
 may be inserted into the template which will be converted into the
 current date and time. This will default to `yyyy/MM/dd-HHmmss`, which
 will expand to `2022/02/20-113052`, so `<<date>>.md` will give
-`2022/02/20-113052.md`. This gives a hierarchical folder sturcture
+`2022/02/20-113052.md`. This gives a hierarchical folder structure
 similar to my [Diary](https://github.com/billthefarmer/diary)
 app. Alternatively you may use your own date pattern for a custom
 name, as above.
@@ -236,6 +236,8 @@ the chooser dialog to open the Note using the android file manager.
 ## Settings
 * **Folder** &ndash; Change notes storage folder. Caution &ndash;
     notes, styles and scripts will not be moved
+* **Default note name** &ndash; Set a name for the default note. Use
+    the dialog to choose a name.
 * **New note template** &ndash; Set a new note template. Use the
     dialog to choose a file.
 * **New note name template** &ndash; Set a template for new note

@@ -7,14 +7,14 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <copyright>Copyright &amp;copy; 2021 Bill Farmer</copyright>
-    <lastBuildDate>Thu, 22 Jul 2021 12:18:09 +0100</lastBuildDate><atom:link href="https://billthefarmer.github.io/notes/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 02 Mar 2022 09:59:41 +0000</lastBuildDate><atom:link href="https://billthefarmer.github.io/notes/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Features</title>
       <link>https://billthefarmer.github.io/notes/introduction/features/</link>
       <pubDate>Sat, 15 Feb 2020 19:08:26 +0000</pubDate>
       
       <guid>https://billthefarmer.github.io/notes/introduction/features/</guid>
-      <description> Notes saved in text files Use markdown formatting Optional note template Display media Display OpenStreetMap maps Print notes Share notes Add date and time Add media from media providers Receive media from other apps Receive geo uris from other apps Incremental search of notes Dark or light theme for editing Optional CSS styles Optional JavaScript scripts Back up notes to a zip file Optional edit cursor position control  </description>
+      <description> Notes saved in text files Use markdown formatting Optional note template Optional template for new note name Display media Display OpenStreetMap maps Print notes Share notes Add date and time Add media from media providers Receive media from other apps Receive geo uris from other apps Incremental search of notes Dark or light theme for editing Widget for new notes Optional CSS styles Optional JavaScript scripts Back up notes to a zip file Optional edit cursor position control  </description>
     </item>
     
     <item>
@@ -81,6 +81,15 @@ See Markdown for markdown syntax.</description>
       
       <guid>https://billthefarmer.github.io/notes/using/find-all/</guid>
       <description>You may find all notes that contain the current search text. This menu item will only appear while the search widget is active. A dialog will pop up with a list of matching notes. Touch an entry to open that note. You may repeat this or refine the search text to find the desired note.</description>
+    </item>
+    
+    <item>
+      <title>Name Template</title>
+      <link>https://billthefarmer.github.io/notes/using/name-template/</link>
+      <pubDate>Wed, 02 Mar 2022 09:59:41 +0000</pubDate>
+      
+      <guid>https://billthefarmer.github.io/notes/using/name-template/</guid>
+      <description>You may use a template for new note names. If a template is set it will be used for the name of new notes. A date code – &amp;lt;&amp;lt;date&amp;gt;&amp;gt; may be inserted into the template which will be converted into the current date and time. This will default to yyyy/MM/dd-HHmmss, which will expand to 2022/02/20-113052, so &amp;lt;&amp;lt;date&amp;gt;&amp;gt;.md will give 2022/02/20-113052.md. This gives a hierarchical folder structure similar to my Diary app.</description>
     </item>
     
     <item>
@@ -219,7 +228,7 @@ If you want to use javascript libraries or write a large script it might be a go
       <pubDate>Sun, 16 Feb 2020 15:22:26 +0000</pubDate>
       
       <guid>https://billthefarmer.github.io/notes/settings/settings/</guid>
-      <description> Folder – Change notes storage folder. Caution – notes, styles and scripts will not be moved Template – Set a note template. Use the dialog to choose a file. Browser – Use browser for external links Dark theme – Use dark theme for editing About – Show app version, licence and credits  </description>
+      <description> Folder – Change notes storage folder. Caution – notes, styles and scripts will not be moved Default note name – Set a name for the default note. Use the dialog to choose a name. New note name template – Set a new note name template. Use the dialog to choose a name. New note template – Set a note template. Use the dialog to choose a file. Browser – Use browser for external links Dark theme – Use dark theme for editing About – Show app version, licence and credits  </description>
     </item>
     
   </channel>
