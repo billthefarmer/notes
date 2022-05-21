@@ -241,7 +241,8 @@ public class Notes extends Activity
     private View accept;
     private View edit;
 
-    private Set<String> pathSet;
+    private Map<String, Integer> pathMap;
+    private List<String> removeList;
 
     private String folder = NOTES_FOLDER;
     private String defaultName = NOTES_FILE;
@@ -415,7 +416,16 @@ public class Notes extends Activity
         SharedPreferences.Editor editor = preferences.edit();
 
         // Add the set of recent files
-        editor.putStringSet(Settings.PREF_PATHS, pathSet);
+        editor.putStringSet(Settings.PREF_PATHS, pathMap.keySet());
+
+        // Add a position for each file
+        for (String path : pathMap.keySet())
+            editor.putInt(path, pathMap.get(path));
+
+        // Remove the old ones
+        for (String path : removeList)
+            editor.remove(path);
+
         editor.apply();
     }
 
@@ -460,7 +470,7 @@ public class Notes extends Activity
         Map<Long, String> map = new HashMap<>();
 
         // Get the last modified dates
-        for (String path : pathSet)
+        for (String path : pathMap.keySet())
         {
             File file = new File(path);
             long last = file.lastModified();
@@ -684,11 +694,14 @@ public class Notes extends Activity
         // Name
         defaultName = preferences.getString(Settings.PREF_NAME, NOTES_FILE);
 
-        Set<String> set =
-            preferences.getStringSet(Settings.PREF_PATHS, null);
-        pathSet = new HashSet<>();
+        Set<String> set = preferences.getStringSet(Settings.PREF_PATHS, null);
+        pathMap = new HashMap<>();
+
         if (set != null)
-            pathSet.addAll(set);
+            for (String path : set)
+                pathMap.put(path, preferences.getInt(path, 0));
+
+        removeList = new ArrayList<>();
     }
 
     // setListeners
@@ -1274,7 +1287,10 @@ public class Notes extends Activity
     // clearList
     private void clearList()
     {
-        pathSet.clear();
+        for (String path : pathMap.keySet())
+            removeList.add(path);
+
+        pathMap.clear();
     }
 
     // printNote
@@ -2154,6 +2170,9 @@ public class Notes extends Activity
             }
         }
 
+        // Save previous path
+        savePath(path);
+
         // Attempt to resolve content uri
         if (CONTENT.equalsIgnoreCase(uri.getScheme()))
         {
@@ -2191,7 +2210,6 @@ public class Notes extends Activity
 
         changed = false;
         modified = file.lastModified();
-        savePath(path);
         invalidateOptionsMenu();
     }
 
@@ -2236,12 +2254,12 @@ public class Notes extends Activity
             return;
 
         // Save the current position
-        pathSet.add(path);
+        pathMap.put(path, markdownView.getScrollY());
 
         // Get a list of files
         List<Long> list = new ArrayList<>();
         Map<Long, String> map = new HashMap<>();
-        for (String name : pathSet)
+        for (String name : pathMap.keySet())
         {
             File file = new File(name);
             list.add(file.lastModified());
@@ -2259,7 +2277,10 @@ public class Notes extends Activity
 
             // Remove old files
             if (count >= MAX_PATHS)
-                pathSet.remove(name);
+            {
+                pathMap.remove(name);
+                removeList.add(name);
+            }
 
             count++;
         }
@@ -2573,10 +2594,18 @@ public class Notes extends Activity
         // Check position
         checkPosition(text);
 
+        // Check for saved position
+        if (pathMap.containsKey(path))
+        {
+            textView.postDelayed(() ->
+                markdownView.scrollTo(0, pathMap.get(path)), POSITION_DELAY);
+        }
+
         // Update menu
         invalidateOptionsMenu();
     }
 
+    // dateCheck
     private CharSequence dateCheck(CharSequence text, String pattern)
     {
         StringBuffer buffer = new StringBuffer();
