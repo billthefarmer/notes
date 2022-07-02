@@ -209,7 +209,9 @@ check and minimise your code. It will handle multiple input files.
 
 ## Backup
 You may create a backup of all your notes in a zip file. The file
-will have the same name as the notes folder, default `Notes.zip`.
+defaults to the same name as the notes folder, `Notes.zip`, but may be
+changed using the dialog, or by using the **Storage** button to save
+the backup using the android file manager.
 
 ## Sync
 Android cloud storage apps when last tested appeared not to be capable
