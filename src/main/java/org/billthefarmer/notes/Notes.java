@@ -1465,9 +1465,9 @@ public class Notes extends Activity
             if (data == null || data.getData() == null)
                 return;
 
-            content = data.getData();
+            Uri uri = data.getData();
             ZipTask zipTask = new ZipTask(this);
-            zipTask.execute(content);
+            zipTask.execute(uri);
             break;
 
         case ADD_MEDIA:
@@ -1476,7 +1476,7 @@ public class Notes extends Activity
                 return;
 
             // Get uri
-            Uri uri = data.getData();
+            uri = data.getData();
             if (uri == null)
                 return;
 
