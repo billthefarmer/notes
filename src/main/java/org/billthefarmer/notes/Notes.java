@@ -151,6 +151,7 @@ public class Notes extends Activity
     public final static String NEW_FILE = "Untitled.md";
     public final static String NOTES_IMAGE = "Notes.png";
     public final static String TEMPLATE_FILE = "Template.md";
+    public final static String APPLICATION_ZIP = "application/zip";
     public final static String TEXT_PLAIN = "text/plain";
     public final static String IMAGE_PNG = "image/png";
     public final static String TEXT_WILD = "text/*";
@@ -198,9 +199,10 @@ public class Notes extends Activity
 
     private final static int OPEN_DOCUMENT   = 1;
     private final static int CREATE_DOCUMENT = 2;
-    private final static int ADD_MEDIA   = 3;
-    private final static int EDIT_STYLES = 4;
-    private final static int EDIT_SCRIPT = 5;
+    private final static int CREATE_BACKUP   = 3;
+    private final static int ADD_MEDIA   = 4;
+    private final static int EDIT_STYLES = 5;
+    private final static int EDIT_SCRIPT = 6;
 
     private static final int EDIT_TEXT = 0;
     private static final int MARKDOWN = 1;
@@ -1100,8 +1102,53 @@ public class Notes extends Activity
     // backup
     public void backup()
     {
-        ZipTask zipTask = new ZipTask(this);
-        zipTask.execute();
+        // Remove path prefix
+        String name = (getHome().getPath() + ZIP)
+            .replaceFirst(Environment.getExternalStorageDirectory()
+                          .getPath() + File.separator, "");
+
+        saveAsDialog(name, R.string.backup, R.string.choose, (dialog, id) ->
+        {
+            switch (id)
+            {
+            case DialogInterface.BUTTON_POSITIVE:
+                EditText text = ((Dialog) dialog).findViewById(R.id.pathText);
+                String string = text.getText().toString();
+
+                // Ignore empty string
+                if (string.isEmpty())
+                    return;
+
+                file = new File(string);
+
+                // Check absolute file
+                if (!file.isAbsolute())
+                    file = new
+                        File(Environment.getExternalStorageDirectory(), string);
+
+                // Start zip task
+                Uri uri = Uri.fromFile(file);
+                ZipTask zipTask = new ZipTask(this);
+                zipTask.execute(uri);
+                break;
+
+            case DialogInterface.BUTTON_NEUTRAL:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                {
+                    Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                    intent.setType(APPLICATION_ZIP);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    // {
+                    //     uri = Uri.fromFile(new File(getHome().getPath() + ZIP));
+                    //     intent.putExtra(DocumentsContract
+                    //                     .EXTRA_INITIAL_URI, uri);
+                    // }
+                    startActivityForResult(intent, CREATE_BACKUP);
+                }
+                break;
+            }
+        });
     }
 
     // settings
@@ -1411,6 +1458,16 @@ public class Notes extends Activity
             content = data.getData();
             setTitle(FileUtils.getDisplayName(this, content, null, null));
             saveNote();
+            break;
+
+        case CREATE_BACKUP:
+            // Check data
+            if (data == null || data.getData() == null)
+                return;
+
+            content = data.getData();
+            ZipTask zipTask = new ZipTask(this);
+            zipTask.execute(content);
             break;
 
         case ADD_MEDIA:
@@ -2378,7 +2435,7 @@ public class Notes extends Activity
                               .getPath() + File.separator, "");
 
         // Open dialog
-        saveAsDialog(name, (dialog, id) ->
+        saveAsDialog(name, R.string.saveNote, R.string.choose, (dialog, id) ->
         {
             switch (id)
             {
@@ -2411,6 +2468,12 @@ public class Notes extends Activity
                     Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
                     intent.setType(TEXT_WILD);
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                    // {
+                    //     uri = Uri.fromFile(new File(path));
+                    //     intent.putExtra(DocumentsContract
+                    //                     .EXTRA_INITIAL_URI, uri);
+                    // }
                     startActivityForResult(intent, CREATE_DOCUMENT);
                 }
                 break;
@@ -2419,12 +2482,12 @@ public class Notes extends Activity
     }
 
     // saveAsDialog
-    private void saveAsDialog(String path,
+    private void saveAsDialog(String path, int title, int message,
                               DialogInterface.OnClickListener listener)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.saveNote);
-        builder.setMessage(R.string.choose);
+        builder.setTitle(title);
+        builder.setMessage(message);
 
         // Add the buttons
         builder.setPositiveButton(R.string.saveNote, listener);
@@ -2925,7 +2988,7 @@ public class Notes extends Activity
 
     // ZipTask
     private static class ZipTask
-            extends AsyncTask<Void, Void, Void>
+            extends AsyncTask<Uri, Void, Void>
     {
         private WeakReference<Notes> notesWeakReference;
 
@@ -2946,7 +3009,7 @@ public class Notes extends Activity
 
         // doInBackground
         @Override
-        protected Void doInBackground(Void... noparams)
+        protected Void doInBackground(Uri... uris)
         {
             final Notes notes = notesWeakReference.get();
             if (notes == null)
@@ -2955,8 +3018,8 @@ public class Notes extends Activity
             File home = notes.getHome();
 
             // Create output stream
-            try (ZipOutputStream output = new
-                 ZipOutputStream(new FileOutputStream(home.getPath() + ZIP)))
+            try (ZipOutputStream output = new ZipOutputStream
+                 (notes.getContentResolver().openOutputStream(uris[0])))
             {
                 byte[] buffer = new byte[BUFFER_SIZE];
 
