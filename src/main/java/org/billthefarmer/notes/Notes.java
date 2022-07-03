@@ -1119,7 +1119,7 @@ public class Notes extends Activity
                 if (string.isEmpty())
                     return;
 
-                file = new File(string);
+                File file = new File(string);
 
                 // Check absolute file
                 if (!file.isAbsolute())
