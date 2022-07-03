@@ -18,7 +18,7 @@
   <string name="addMedia">Lisää media…</string>
   <string name="editStyles">Muokkaa tyyliä…</string>
   <string name="editScript">Muokkaa skriptiä…</string>
-  <string name="backup">Varmuuskopioi</string>
+  <string name="backup">Varmuuskopioi…</string>
   <string name="start">Aloita varmuuskopiointi</string>
   <string name="complete">Varmuuskopionti valmis</string>
   <string name="settings">Asetukset</string>
