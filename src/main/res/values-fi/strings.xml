@@ -9,7 +9,7 @@
   <string name="clearList">Tyhjennä lista</string>
   <string name="saveNote">Tallenna</string>
   <string name="storage">Tallennustila</string>
-  <string name="saveAs">Tallenna nimellä</string>
+  <string name="saveAs">Tallenna nimellä…</string>
   <string name="search">Hae…</string>
   <string name="findAll">Etsi kaikki…</string>
   <string name="print">Tulosta…</string>
