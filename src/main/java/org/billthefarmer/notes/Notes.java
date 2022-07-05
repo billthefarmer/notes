@@ -2450,7 +2450,7 @@ public class Notes extends Activity
                         File(Environment.getExternalStorageDirectory(), string);
 
                 // Set interface title
-                Uri uri = Uri.fromFile(file);
+                uri = Uri.fromFile(file);
                 setTitle(uri.getLastPathSegment());
 
                 path = file.getPath();
@@ -2463,12 +2463,7 @@ public class Notes extends Activity
                     Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
                     intent.setType(TEXT_WILD);
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                    // {
-                    //     uri = Uri.fromFile(new File(path));
-                    //     intent.putExtra(DocumentsContract
-                    //                     .EXTRA_INITIAL_URI, uri);
-                    // }
+                    intent.putExtra(Intent.EXTRA_TITLE, uri.getLastPathSegment());
                     startActivityForResult(intent, CREATE_DOCUMENT);
                 }
                 break;
