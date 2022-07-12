@@ -84,7 +84,8 @@ import android.support.v4.content.FileProvider;
 
 import org.billthefarmer.markdown.MarkdownView;
 
-import org.mozilla.universalchardet.CharsetDetector;
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -2834,14 +2835,16 @@ public class Notes extends Activity
             BufferedReader reader = new
                 BufferedReader(new InputStreamReader(in));
 
-            String match = CharsetDetector.detectCharset
-                (new FileInputStream(file));
+            // Detect charset, using UTF-8 hint
+            CharsetMatch match = new
+                CharsetDetector().setDeclaredEncoding("UTF-8")
+                .setText(in).detect();
+
             if (match != null)
-                reader = new BufferedReader
-                    (new InputStreamReader(in, match));
+                reader = new BufferedReader(match.getReader());
 
             if (BuildConfig.DEBUG && match != null)
-                Log.d(TAG, "Charset " + match);
+                Log.d(TAG, "Charset " + match.getName());
 
             String line;
             while ((line = reader.readLine()) != null)
@@ -3104,15 +3107,16 @@ public class Notes extends Activity
                 BufferedReader reader = new
                     BufferedReader(new InputStreamReader(in));
 
-                String match = CharsetDetector.detectCharset
-                    (notes.getContentResolver().openInputStream(uris[0]));
+                // Detect charset, using UTF-8 hint
+                CharsetMatch match = new
+                    CharsetDetector().setDeclaredEncoding("UTF-8")
+                    .setText(in).detect();
 
                 if (match != null)
-                    reader = new BufferedReader
-                        (new InputStreamReader(in, match));
+                    reader = new BufferedReader(match.getReader());
 
                 if (BuildConfig.DEBUG && match != null)
-                    Log.d(TAG, "Charset " + match);
+                    Log.d(TAG, "Charset " + match.getName());
 
                 String line;
                 while ((line = reader.readLine()) != null)

@@ -51,5 +51,4 @@ android {
 
 dependencies {
     implementation 'com.github.billthefarmer:MarkdownView:v1.09'
-    implementation 'com.github.albfernandez:juniversalchardet:2.4.0'
 }
