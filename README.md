@@ -202,7 +202,7 @@ url("file:///android_asset/styles.css");`, which should be on the
 first line.
 
 ## Javascript
-You may add custom javascript to be loaded into all notes by placing a
+You may add custom [Javascript](https://www.scaler.com/topics/javascript/) to be loaded into all notes by placing a
 `script.js` file in the `Notes/js` folder. Use the built in editor to
 create a script file. You must use the editor `accept` tick button to
 save the edits. Errors in the script will be logged by the
