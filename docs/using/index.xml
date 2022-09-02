@@ -6,7 +6,7 @@
     <description>Recent content in Using on Notes</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <copyright>Copyright &amp;copy; 2021 Bill Farmer</copyright>
+    <copyright>Copyright &amp;copy; 2006 Bill Farmer</copyright>
     <lastBuildDate>Fri, 14 Feb 2020 13:05:31 +0000</lastBuildDate><atom:link href="https://billthefarmer.github.io/notes/using/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Toolbar</title>
@@ -15,8 +15,8 @@
       
       <guid>https://billthefarmer.github.io/notes/using/toolbar/</guid>
       <description>The toolbar items which won&amp;rsquo;t necessarily all appear at once:
- New – Start a new note Save – Save note Open – Open an existing note Search – incremental search of note  And on the menu:
- Find all – Find all notes containing search text Open recent – Pop up a list of recent files  Clear list – Clear list of recent files   Print – Print note Share – Share note Save as – Save note in another file Add date – Add the current date and time Add media – Add media from media providers Edit styles – show an editor to edit the custom styles Edit script – show an editor to edit custom javascript Backup – backup notes to a zip file Settings – Show the settings  </description>
+New – Start a new note Save – Save note Open – Open an existing note Search – incremental search of note And on the menu:
+Find all – Find all notes containing search text Open recent – Pop up a list of recent files Clear list – Clear list of recent files Print – Print note Share – Share note Save as – Save note in another file Add date – Add the current date and time Add media – Add media from media providers Edit styles – show an editor to edit the custom styles Edit script – show an editor to edit custom javascript Backup – backup notes to a zip file Settings – Show the settings </description>
     </item>
     
     <item>
@@ -90,7 +90,7 @@ See Markdown for markdown syntax.</description>
       
       <guid>https://billthefarmer.github.io/notes/using/keyboard-shortcuts/</guid>
       <description>When using an external keyboard, some keyboard shortcuts are implemented:
- Ctrl+A – Accept Ctrl+E – Edit Ctrl+N – New file Ctrl+O – Open file Ctrl+S – Save file Ctrl+Shift+S – Save as  </description>
+Ctrl+A – Accept Ctrl+E – Edit Ctrl+N – New file Ctrl+O – Open file Ctrl+S – Save file Ctrl+Shift+S – Save as </description>
     </item>
     
   </channel>

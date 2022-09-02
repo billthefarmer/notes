@@ -6,7 +6,7 @@
     <description>Recent content on Notes</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
-    <copyright>Copyright &amp;copy; 2021 Bill Farmer</copyright>
+    <copyright>Copyright &amp;copy; 2006 Bill Farmer</copyright>
     <lastBuildDate>Wed, 02 Mar 2022 09:59:41 +0000</lastBuildDate><atom:link href="https://billthefarmer.github.io/notes/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Features</title>
@@ -14,7 +14,7 @@
       <pubDate>Sat, 15 Feb 2020 19:08:26 +0000</pubDate>
       
       <guid>https://billthefarmer.github.io/notes/introduction/features/</guid>
-      <description> Notes saved in text files Use markdown formatting Optional note template Optional template for new note name Display media Display OpenStreetMap maps Print notes Share notes Add date and time Add media from media providers Receive media from other apps Receive geo uris from other apps Incremental search of notes Dark or light theme for editing Widget for new notes Optional CSS styles Optional JavaScript scripts Back up notes to a zip file Optional edit cursor position control  </description>
+      <description> Notes saved in text files Use markdown formatting Optional note template Optional template for new note name Display media Display OpenStreetMap maps Print notes Share notes Add date and time Add media from media providers Receive media from other apps Receive geo uris from other apps Incremental search of notes Dark or light theme for editing Widget for new notes Optional CSS styles Optional JavaScript scripts Back up notes to a zip file Optional edit cursor position control </description>
     </item>
     
     <item>
@@ -24,8 +24,8 @@
       
       <guid>https://billthefarmer.github.io/notes/using/toolbar/</guid>
       <description>The toolbar items which won&amp;rsquo;t necessarily all appear at once:
- New – Start a new note Save – Save note Open – Open an existing note Search – incremental search of note  And on the menu:
- Find all – Find all notes containing search text Open recent – Pop up a list of recent files  Clear list – Clear list of recent files   Print – Print note Share – Share note Save as – Save note in another file Add date – Add the current date and time Add media – Add media from media providers Edit styles – show an editor to edit the custom styles Edit script – show an editor to edit custom javascript Backup – backup notes to a zip file Settings – Show the settings  </description>
+New – Start a new note Save – Save note Open – Open an existing note Search – incremental search of note And on the menu:
+Find all – Find all notes containing search text Open recent – Pop up a list of recent files Clear list – Clear list of recent files Print – Print note Share – Share note Save as – Save note in another file Add date – Add the current date and time Add media – Add media from media providers Edit styles – show an editor to edit the custom styles Edit script – show an editor to edit custom javascript Backup – backup notes to a zip file Settings – Show the settings </description>
     </item>
     
     <item>
@@ -99,7 +99,7 @@ See Markdown for markdown syntax.</description>
       
       <guid>https://billthefarmer.github.io/notes/using/keyboard-shortcuts/</guid>
       <description>When using an external keyboard, some keyboard shortcuts are implemented:
- Ctrl+A – Accept Ctrl+E – Edit Ctrl+N – New file Ctrl+O – Open file Ctrl+S – Save file Ctrl+Shift+S – Save as  </description>
+Ctrl+A – Accept Ctrl+E – Edit Ctrl+N – New file Ctrl+O – Open file Ctrl+S – Save file Ctrl+Shift+S – Save as </description>
     </item>
     
     <item>
@@ -136,7 +136,7 @@ See Markdown for markdown syntax.</description>
       
       <guid>https://billthefarmer.github.io/notes/content/latex/</guid>
       <description>Notes doesn&amp;rsquo;t support LaTeX, but it is possible to use an external site to add LaTeX formatted images.
-![Math](http://www.sciweavers.org/tex2img.php?eq=\sum_{i=1}^{n}x_{i}^{2} &amp;amp;bc=cornsilk&amp;amp;fc=black&amp;amp;im=jpg&amp;amp;fs=24&amp;amp;ff=arev) \sum_{i=1}^{n}x_{i}^{2}  If you don&amp;rsquo;t intend to change the image, you can copy it and use that instead, which will then work offline.</description>
+![Math](http://www.sciweavers.org/tex2img.php?eq=\sum_{i=1}^{n}x_{i}^{2} &amp;amp;bc=cornsilk&amp;amp;fc=black&amp;amp;im=jpg&amp;amp;fs=24&amp;amp;ff=arev) \sum_{i=1}^{n}x_{i}^{2} If you don&amp;rsquo;t intend to change the image, you can copy it and use that instead, which will then work offline.</description>
     </item>
     
     <item>
@@ -228,7 +228,7 @@ If you want to use javascript libraries or write a large script it might be a go
       <pubDate>Sun, 16 Feb 2020 15:22:26 +0000</pubDate>
       
       <guid>https://billthefarmer.github.io/notes/settings/settings/</guid>
-      <description> Folder – Change notes storage folder. Caution – notes, styles and scripts will not be moved Default note name – Set a name for the default note. Use the dialog to choose a name. New note name template – Set a new note name template. Use the dialog to choose a name. New note template – Set a note template. Use the dialog to choose a file. Browser – Use browser for external links Dark theme – Use dark theme for editing About – Show app version, licence and credits  </description>
+      <description> Folder – Change notes storage folder. Caution – notes, styles and scripts will not be moved Default note name – Set a name for the default note. Use the dialog to choose a name. New note name template – Set a new note name template. Use the dialog to choose a name. New note template – Set a note template. Use the dialog to choose a file. Browser – Use browser for external links Dark theme – Use dark theme for editing About – Show app version, licence and credits </description>
     </item>
     
   </channel>
