@@ -324,7 +324,7 @@ public class Notes extends Activity
                 defaultFile();
         }
 
-        setListeners();
+        setListeners(this);
 
         gestureDetector =
             new GestureDetector(this, new GestureListener());
@@ -708,7 +708,7 @@ public class Notes extends Activity
     }
 
     // setListeners
-    private void setListeners()
+    private void setListeners(Context context)
     {
         if (markdownView != null)
         {
@@ -722,7 +722,14 @@ public class Notes extends Activity
                     if (URLUtil.isFileUrl(url))
                     {
                         getActionBar().setDisplayHomeAsUpEnabled(false);
-                        setTitle(uri.getLastPathSegment());
+
+                        if (content != null)
+                            setTitle(FileUtils.getDisplayName(context, content,
+                                                              null, null));
+
+                        else if (uri != null)
+                            setTitle(uri.getLastPathSegment());
+
                         view.clearHistory();
                     }
 
@@ -740,7 +747,14 @@ public class Notes extends Activity
                         else
                         {
                             getActionBar().setDisplayHomeAsUpEnabled(false);
-                            setTitle(uri.getLastPathSegment());
+
+                            if (content != null)
+                                setTitle(FileUtils
+                                         .getDisplayName(context, content,
+                                                         null, null));
+
+                            else if (uri != null)
+                                setTitle(uri.getLastPathSegment());
                         }
                     }
                 }

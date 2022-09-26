@@ -250,8 +250,10 @@ public class Editor extends Activity
         });
 
         else
+        {
             setResult(RESULT_CANCELED, null);
             finish();
+        }
     }
 
     // onRequestPermissionsResult
