@@ -1,8 +1,7 @@
 window.onload = function() {
-    const re = /:[\w-]+?:/g;
-    let l = document.querySelectorAll('p');
+    let l = document.querySelectorAll('p, td, li, dd, h1, h2, h3, h4, span');
     for (let p of l) {
-        let emoes = p.textContent.match(re);
+        let emoes = p.textContent.match(/:[\w-]+?:/g);
         if (emoes)
         {
             for (let emo of emoes) {
