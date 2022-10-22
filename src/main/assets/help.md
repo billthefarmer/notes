@@ -207,6 +207,14 @@ might be a good idea to use the Google
 [Closure Compiler](https://developers.google.com/closure/compiler) to
 check and minimise your code. It will handle multiple input files.
 
+## Emojies
+There is a script,
+[emojies.js](https://github.com/billthefarmer/notes/blob/master/data/emojies.js)
+in the data folder and a minimised version,
+[emojies.min.js](https://github.com/billthefarmer/notes/blob/master/data/emojies.min.js). Either
+may be copied to the `script.js` file as above. The script is a work
+in progress, it could do with some TLC from an expert.
+
 ## Backup
 You may create a backup of all your notes in a zip file. The file
 defaults to the same name as the notes folder, `Notes.zip`, but may be
