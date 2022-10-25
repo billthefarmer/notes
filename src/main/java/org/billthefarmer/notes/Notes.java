@@ -162,13 +162,17 @@ public class Notes extends Activity
     public final static String VIDEO = "video";
     public final static String NEW_NOTE =
         "org.billthefarmer.notes.NEW_NOTE";
-    public final static String MEDIA_TEMPLATE = "![%s](%s)\n";
-    public final static String LINK_TEMPLATE = "[%s](%s)\n";
+    public final static String MEDIA_TEMPLATE = "![%s](%s)";
+    public final static String LINK_TEMPLATE = "[%s](%s)";
     public final static String POSN_TEMPLATE = "[#]: # (%d)";
     public final static String AUDIO_TEMPLATE =
-        "<audio controls src=\"%s\"></audio>\n";
+        "<audio controls src=\"%s\"></audio>";
     public final static String VIDEO_TEMPLATE =
-        "<video controls src=\"%s\"></video>\n";
+        "<video controls src=\"%s\"></video>";
+    public final static String SUP_TEMPLATE =
+        "<sup>%s</sup>";
+    public final static String SUB_TEMPLATE =
+        "<sub>%s</sub>";
     public final static String MAP_TEMPLATE =
         "<iframe width=\"560\" height=\"420\" " +
         "src=\"https://www.openstreetmap.org/export/embed.html?" +
@@ -197,6 +201,12 @@ public class Notes extends Activity
                         Pattern.MULTILINE);
     public final static Pattern DATE_PATTERN =
         Pattern.compile("<<date *(.*)>>", Pattern.MULTILINE);
+    public final static Pattern SUP_PATTERN =
+        Pattern.compile("(?<!\\^)\\^(?!\\^)(.+?)(?<!\\^)\\^(?!\\^)",
+                        Pattern.MULTILINE);
+    public final static Pattern SUB_PATTERN =
+        Pattern.compile("(?<!~)~(?!~)(.+?)(?<!~)~(?!~)",
+                        Pattern.MULTILINE);
 
     private final static int OPEN_DOCUMENT   = 1;
     private final static int CREATE_DOCUMENT = 2;
@@ -1180,8 +1190,42 @@ public class Notes extends Activity
     // markdownCheck
     private String markdownCheck(CharSequence text)
     {
+        Matcher matcher = SUP_PATTERN.matcher(text);
+        StringBuffer buffer = new StringBuffer();
+
+        // Find matches
+        while (matcher.find())
+        {
+            // Create replacement
+            String replace =
+                String.format(SUP_TEMPLATE, matcher.group(1));
+
+            // Append replacement
+            matcher.appendReplacement(buffer, replace);
+        }
+
+        // Append rest of entry
+        matcher.appendTail(buffer);
+
+        matcher = SUB_PATTERN.matcher(buffer);
+        buffer = new StringBuffer();
+
+        // Find matches
+        while (matcher.find())
+        {
+            // Create replacement
+            String replace =
+                String.format(SUB_TEMPLATE, matcher.group(1));
+
+            // Append replacement
+            matcher.appendReplacement(buffer, replace);
+        }
+
+        // Append rest of entry
+        matcher.appendTail(buffer);
+
         // Check for media
-        return mediaCheck(text).toString();
+        return mediaCheck(buffer).toString();
     }
 
     // getStyles
