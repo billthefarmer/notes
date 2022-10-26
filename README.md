@@ -143,7 +143,7 @@ device storage may work but may not be persistent and is not supported.
 Notes supports several markdown extensions including autolink, tables
 using vertical bar characters, heading anchor, underlining using
 `++underline++`, YAML front matter, task lists using `- [x] task #1`,
-`- [ ] task #2`, superscript using `^super^`, subscript using `+sub+`.
+`- [ ] task #2`, superscript using `^super^`, subscript using `~sub~`.
 
 ## LaTeX
 Notes doesn't support [LaTeX](https://en.wikipedia.org/wiki/LaTeX),
