@@ -190,7 +190,7 @@ public class Notes extends Activity
     public final static String HTTP = "http";
     public final static String TEXT = "text";
     public final static String HTTPS = "https";
-    private final static String MAILTO = "mailto";
+    public final static String MAILTO = "mailto";
 
     public final static Pattern GEO_PATTERN =
         Pattern.compile("geo:(-?\\d+[.]\\d+), ?(-?\\d+[.]\\d+).*");
@@ -202,10 +202,10 @@ public class Notes extends Activity
     public final static Pattern DATE_PATTERN =
         Pattern.compile("<<date *(.*)>>", Pattern.MULTILINE);
     public final static Pattern SUP_PATTERN =
-        Pattern.compile("(?<!\\^)\\^(?!\\^)(.+?)(?<!\\^)\\^(?!\\^)",
+        Pattern.compile("(?<!\\^|`)\\^(?!\\^)(.+?)(?<!\\^)\\^(?!\\^|`)",
                         Pattern.MULTILINE);
     public final static Pattern SUB_PATTERN =
-        Pattern.compile("(?<!~)~(?!~)(.+?)(?<!~)~(?!~)",
+        Pattern.compile("(?<!~|`)~(?!~)(.+?)(?<!~)~(?!~|`)",
                         Pattern.MULTILINE);
 
     private final static int OPEN_DOCUMENT   = 1;
