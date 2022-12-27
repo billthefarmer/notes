@@ -2359,7 +2359,7 @@ public class Notes extends Activity
     {
         Uri uri = Uri.fromFile(file);
         Uri newUri = Uri.fromFile(getNewFile());
-        if (content != null && newUri.getPath().equals(uri.getPath()))
+        if (content == null && newUri.getPath().equals(uri.getPath()))
             saveAs();
 
         else
