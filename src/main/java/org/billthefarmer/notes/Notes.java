@@ -1874,6 +1874,9 @@ public class Notes extends Activity
 
         if (useTemplate)
             loadTemplate();
+
+        if (file.exists())
+            readNote(uri);
     }
 
     // getNewFile
@@ -2465,12 +2468,38 @@ public class Notes extends Activity
                     file = new
                         File(Environment.getExternalStorageDirectory(), string);
 
-                // Set interface title
+                // Check uri
                 uri = Uri.fromFile(file);
-                setTitle(uri.getLastPathSegment());
+                Uri newUri = Uri.fromFile(getNewFile());
+                if (newUri.getPath().equals(uri.getPath()))
+                {
+                    saveAs();
+                    return;
+                }
 
-                path = file.getPath();
-                saveNote();
+                // Check exists
+                if (file.exists())
+                    alertDialog(R.string.appName, R.string.changedOverwrite,
+                                R.string.overwrite, R.string.cancel, (dg, b) ->
+                    {
+                        switch (b)
+                        {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            // Set interface title
+                            setTitle(uri.getLastPathSegment());
+                            path = file.getPath();
+                            saveNote();
+                            break;
+                        }
+                    });
+
+                else
+                {
+                    // Set interface title
+                    setTitle(uri.getLastPathSegment());
+                    path = file.getPath();
+                    saveNote();
+                }
                 break;
 
             case DialogInterface.BUTTON_NEUTRAL:
