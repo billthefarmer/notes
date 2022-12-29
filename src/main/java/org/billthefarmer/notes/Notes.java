@@ -84,9 +84,6 @@ import android.support.v4.content.FileProvider;
 
 import org.billthefarmer.markdown.MarkdownView;
 
-import com.ibm.icu.text.CharsetDetector;
-import com.ibm.icu.text.CharsetMatch;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -2498,6 +2495,7 @@ public class Notes extends Activity
                     // Set interface title
                     setTitle(uri.getLastPathSegment());
                     path = file.getPath();
+                    content = null;
                     saveNote();
                 }
                 break;
@@ -2883,17 +2881,6 @@ public class Notes extends Activity
             BufferedReader reader = new
                 BufferedReader(new InputStreamReader(in));
 
-            // Detect charset, using UTF-8 hint
-            CharsetMatch match = new
-                CharsetDetector().setDeclaredEncoding("UTF-8")
-                .setText(in).detect();
-
-            if (match != null)
-                reader = new BufferedReader(match.getReader());
-
-            if (BuildConfig.DEBUG && match != null)
-                Log.d(TAG, "Charset " + match.getName());
-
             String line;
             while ((line = reader.readLine()) != null)
             {
@@ -3154,17 +3141,6 @@ public class Notes extends Activity
             {
                 BufferedReader reader = new
                     BufferedReader(new InputStreamReader(in));
-
-                // Detect charset, using UTF-8 hint
-                CharsetMatch match = new
-                    CharsetDetector().setDeclaredEncoding("UTF-8")
-                    .setText(in).detect();
-
-                if (match != null)
-                    reader = new BufferedReader(match.getReader());
-
-                if (BuildConfig.DEBUG && match != null)
-                    Log.d(TAG, "Charset " + match.getName());
 
                 String line;
                 while ((line = reader.readLine()) != null)
