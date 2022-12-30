@@ -1,0 +1,2 @@
+ * Update save as dialog
+ * Remove charset detection
