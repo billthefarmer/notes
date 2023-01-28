@@ -222,6 +222,8 @@ public class Notes extends Activity
     private final static int FIND_DELAY = 128;
     private final static int MAX_PATHS = 10;
 
+    public static final int VERSION_CODE_S_V2 = 32;
+
     private EditText textView;
     private ScrollView scrollView;
 
@@ -2602,7 +2604,7 @@ public class Notes extends Activity
         toast.setGravity(Gravity.CENTER, 0, 0);
         // Fix for android 13
         View view = toast.getView();
-        if (view != null && Build.VERSION.SDK_INT > Build.VERSION_CODES.P)
+        if (view != null && Build.VERSION.SDK_INT > VERSION_CODE_S_V2)
             view.setBackgroundResource(R.drawable.toast_frame);
         toast.show();
     }
