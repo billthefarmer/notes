@@ -1,4 +1,4 @@
-# ![Logo](src/main/res/drawable-hdpi/ic_launcher.png) Notes [![.github/workflows/main.yml](https://github.com/billthefarmer/notes/workflows/.github/workflows/main.yml/badge.svg)](https://github.com/billthefarmer/notes/actions) [![Release](https://img.shields.io/github/release/billthefarmer/notes.svg?logo=github)](https://github.com/billthefarmer/notes/releases)
+# ![Logo](src/main/res/drawable-hdpi/ic_launcher.png) Notes [![.github/workflows/main.yml](https://github.com/billthefarmer/notes/workflows/.github/workflows/build.yml/badge.svg)](https://github.com/billthefarmer/notes/actions) [![Release](https://img.shields.io/github/release/billthefarmer/notes.svg?logo=github)](https://github.com/billthefarmer/notes/releases)
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.svg" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/org.billthefarmer.notes)
 
 Android notebook
