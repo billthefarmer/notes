@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedAttribute">
+  <shortcut
+      android:shortcutId="newNote"
+      android:enabled="true"
+      android:icon="@drawable/ic_launcher"
+      android:shortcutShortLabel="@string/newNote">
+    <intent
+        android:action="org.billthefarmer.notes.NEW_NOTE"
+        android:targetPackage="org.billthefarmer.notes"
+        android:targetClass="org.billthefarmer.notes.Notes" />
+  </shortcut>
+</shortcuts>
