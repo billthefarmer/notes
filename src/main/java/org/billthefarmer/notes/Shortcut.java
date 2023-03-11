@@ -46,15 +46,14 @@ public class Shortcut extends Activity
         shortcut.setAction(Notes.NEW_NOTE);
         shortcut.addCategory(Intent.CATEGORY_DEFAULT);
 
-        BitmapDrawable drawable = (BitmapDrawable) getResources()
-            .getDrawable(R.drawable.ic_launcher);
-        Bitmap bitmap = drawable.getBitmap();
-
         // Create the shortcut
         Intent intent = new Intent();
         intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcut);
-        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.newNote));
-        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, bitmap);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME,
+                        getString(R.string.newNote));
+        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+                        Intent.ShortcutIconResource.fromContext
+                        (this, R.drawable.ic_launcher));
 
         setResult(RESULT_OK, intent);
         finish();
