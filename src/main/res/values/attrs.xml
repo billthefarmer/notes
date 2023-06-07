@@ -13,13 +13,13 @@
     <attr name="video" format="reference" />
     <attr name="file" format="reference" />
 
+    <attr name="pref_name" format="reference" />
     <attr name="pref_about" format="reference" />
     <attr name="pref_theme" format="reference" />
-    <attr name="pref_external" format="reference" />
     <attr name="pref_folder" format="reference" />
-    <attr name="pref_name" format="reference" />
-    <attr name="pref_template_file" format="reference" />
+    <attr name="pref_external" format="reference" />
     <attr name="pref_use_template" format="reference" />
+    <attr name="pref_template_file" format="reference" />
 
   </declare-styleable>
 
