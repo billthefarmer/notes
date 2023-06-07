@@ -40,7 +40,7 @@
     <item name="video">@drawable/ic_action_video</item>
 
     <item name="pref_about">@drawable/ic_action_about</item>
-    <item name="pref_dark_theme">@drawable/ic_action_brightness_high</item>
+    <item name="pref_theme">@drawable/ic_action_brightness_high</item>
     <item name="pref_external">@drawable/ic_action_web_site</item>
     <item name="pref_folder">@drawable/ic_action_collection</item>
     <item name="pref_name">@drawable/ic_action_storage</item>
@@ -67,7 +67,7 @@
     <item name="video">@drawable/ic_action_video_dark</item>
 
     <item name="pref_about">@drawable/ic_action_about_dark</item>
-    <item name="pref_dark_theme">@drawable/ic_action_brightness_high_dark</item>
+    <item name="pref_theme">@drawable/ic_action_brightness_high_dark</item>
     <item name="pref_external">@drawable/ic_action_web_site_dark</item>
     <item name="pref_folder">@drawable/ic_action_collection_dark</item>
     <item name="pref_name">@drawable/ic_action_storage_dark</item>

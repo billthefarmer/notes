@@ -33,6 +33,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -212,6 +213,10 @@ public class Notes extends Activity
     private final static int REQUEST_OPEN = 3;
     private final static int REQUEST_TEMPLATE = 4;
 
+    public static final int LIGHT  = 0;
+    public static final int DARK   = 1;
+    public static final int SYSTEM = 2;
+
     private final static int BUFFER_SIZE = 4096;
     private final static int MENU_SIZE = 192;
     private final static int LARGE_SIZE = 262144;
@@ -267,9 +272,11 @@ public class Notes extends Activity
     private boolean useTemplate = false;
     private boolean loadTemplate = false;
     private boolean useNewTemplate = false;
-    private boolean darkTheme = false;
+    // private boolean darkTheme = false;
 
     private long modified;
+
+    private int theme;
 
     // onCreate
     @Override
@@ -280,8 +287,32 @@ public class Notes extends Activity
         // Get preferences
         getPreferences();
 
-        if (!darkTheme)
+        Configuration config = getResources().getConfiguration();
+        int night = config.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+        switch (theme)
+        {
+        case LIGHT:
             setTheme(R.style.AppTheme);
+            break;
+
+        case DARK:
+            setTheme(R.style.AppDarkTheme);
+            break;
+
+        case SYSTEM:
+            switch (night)
+            {
+            case Configuration.UI_MODE_NIGHT_NO:
+                setTheme(R.style.AppTheme);
+                break;
+
+            case Configuration.UI_MODE_NIGHT_YES:
+                setTheme(R.style.AppDarkTheme);
+                break;
+            }
+            break;
+        }
 
         setContentView(R.layout.main);
 
@@ -371,13 +402,13 @@ public class Notes extends Activity
     {
         super.onResume();
 
-        boolean dark = darkTheme;
+        int last = theme;
 
         // Get preferences
         getPreferences();
 
         // Recreate
-        if (dark != darkTheme && Build.VERSION.SDK_INT != Build.VERSION_CODES.M)
+        if (last != theme && Build.VERSION.SDK_INT != Build.VERSION_CODES.M)
             recreate();
 
         // Clear cache
@@ -679,11 +710,12 @@ public class Notes extends Activity
         SharedPreferences preferences =
             PreferenceManager.getDefaultSharedPreferences(this);
 
+        theme = Integer.parseInt(preferences.getString(Settings.PREF_THEME,
+                                                       "0"));
+
         external = preferences.getBoolean(Settings.PREF_EXTERNAL, false);
         useTemplate = preferences.getBoolean(Settings.PREF_USE_TEMPLATE, false);
         useNewTemplate = preferences.getBoolean(Settings.PREF_NEW_TEMPLATE, false);
-        darkTheme = preferences.getBoolean(Settings.PREF_DARK_THEME, false);
-
         // Template file
         templateFile = preferences.getString(Settings.PREF_TEMPLATE_FILE,
                                              TEMPLATE_FILE);

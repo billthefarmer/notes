@@ -31,6 +31,7 @@
     Use browser for external links
   </string>
   <string name="theme">Theme</string>
+  <string translatable="false" name="pref_theme_summ">%s</string>
   <string name="pref_dark_theme">Dark</string>
   <string name="pref_dark_theme_summ">
     Use dark theme for editing

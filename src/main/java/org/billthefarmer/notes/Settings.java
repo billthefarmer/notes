@@ -26,6 +26,7 @@ package org.billthefarmer.notes;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
@@ -34,12 +35,12 @@ import android.view.MenuItem;
 public class Settings extends Activity
 {
     public final static String PREF_NAME = "pref_name";
+    public final static String PREF_THEME = "pref_theme";
     public final static String PREF_ABOUT = "pref_about";
     public final static String PREF_PATHS = "pref_paths";
     public final static String PREF_FOLDER = "pref_folder";
     public final static String PREF_EXTERNAL = "pref_external";
     public final static String PREF_NEW_NAME = "pref_new_name";
-    public final static String PREF_DARK_THEME = "pref_dark_theme";
     public final static String PREF_NEW_TEMPLATE = "pref_new_template";
     public final static String PREF_USE_TEMPLATE = "pref_use_template";
     public final static String PREF_TEMPLATE_FILE = "pref_template_file";
@@ -55,11 +56,34 @@ public class Settings extends Activity
         SharedPreferences preferences =
             PreferenceManager.getDefaultSharedPreferences(this);
 
-        boolean darkTheme =
-            preferences.getBoolean(PREF_DARK_THEME, false);
+        int theme = Integer.parseInt(preferences.getString(PREF_THEME, "0"));
 
-        if (!darkTheme)
+        Configuration config = getResources().getConfiguration();
+        int night = config.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+        switch (theme)
+        {
+        case Notes.LIGHT:
             setTheme(R.style.AppTheme);
+            break;
+
+        case Notes.DARK:
+            setTheme(R.style.AppDarkTheme);
+            break;
+
+        case Notes.SYSTEM:
+            switch (night)
+            {
+            case Configuration.UI_MODE_NIGHT_NO:
+                setTheme(R.style.AppTheme);
+                break;
+
+            case Configuration.UI_MODE_NIGHT_YES:
+                setTheme(R.style.AppDarkTheme);
+                break;
+            }
+            break;
+        }
 
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction()

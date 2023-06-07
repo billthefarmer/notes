@@ -14,7 +14,7 @@
     <attr name="file" format="reference" />
 
     <attr name="pref_about" format="reference" />
-    <attr name="pref_dark_theme" format="reference" />
+    <attr name="pref_theme" format="reference" />
     <attr name="pref_external" format="reference" />
     <attr name="pref_folder" format="reference" />
     <attr name="pref_name" format="reference" />
