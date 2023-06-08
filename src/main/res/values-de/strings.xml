@@ -31,10 +31,6 @@
     Browser für externe Links verwenden
   </string>
   <string name="theme">Thema</string>
-  <string name="pref_dark_theme">Dunkel</string>
-  <string name="pref_dark_theme_summ">
-    Dunkles Thema für die Bearbeitung verwenden
-  </string>
   <string name="template">Neu Notiz Vorlage</string>
   <string name="pref_use_template">Benutze Vorlage</string>
   <string name="pref_use_template_summ">
