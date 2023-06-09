@@ -250,5 +250,5 @@ the chooser dialog to open the Note using the android file manager.
 * **New note name template** &ndash; Set a template for new note
   names. Use the dialog to choose a name.
 * **Browser** &ndash; Use browser for external links
-* **Dark theme** &ndash; Use dark theme for editing
+* **Theme** &ndash; Choose app theme
 * **About** &ndash; Show app version, licence and credits
