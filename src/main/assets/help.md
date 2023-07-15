@@ -17,7 +17,7 @@ Android notebook
 * Receive geo uris from other apps
 * Incremental search of notes
 * Dark or light theme for editing
-* Widget for new notes
+* Shortcut for new notes
 * Optional CSS styles
 * Optional JavaScript scripts
 * Back up notes to a zip file
@@ -138,6 +138,11 @@ using vertical bar characters, heading anchor, underlining using
 `++underline++`, strikethrough using `~~strike~~`, YAML front matter,
 task lists using `- [x] task #1`, `- [ ] task #2`, superscript using
 `^super^`, subscript using `~sub~`.
+
+## Task lists
+To change the state of check boxes in a task list, switch to the edit
+view and tap on the box `[ ]`. The box will change state and the edit
+cursor will be where you tapped.
 
 ## LaTeX
 Notes doesn't support [LaTeX](https://en.wikipedia.org/wiki/LaTeX),

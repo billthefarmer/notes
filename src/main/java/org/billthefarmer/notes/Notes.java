@@ -195,6 +195,9 @@ public class Notes extends Activity
                         Pattern.MULTILINE);
     public final static Pattern DATE_PATTERN =
         Pattern.compile("<<date *(.*)>>", Pattern.MULTILINE);
+    public final static Pattern CHECK_PATTERN =
+        Pattern.compile("^\\s*[-+*]\\s+\\[(X|x| )\\]\\s+",
+                        Pattern.MULTILINE);
 
     private final static int OPEN_DOCUMENT   = 1;
     private final static int CREATE_DOCUMENT = 2;
@@ -213,9 +216,9 @@ public class Notes extends Activity
     private final static int REQUEST_OPEN = 3;
     private final static int REQUEST_TEMPLATE = 4;
 
-    public static final int LIGHT  = 0;
-    public static final int DARK   = 1;
-    public static final int SYSTEM = 2;
+    public final static int LIGHT  = 0;
+    public final static int DARK   = 1;
+    public final static int SYSTEM = 2;
 
     private final static int BUFFER_SIZE = 4096;
     private final static int MENU_SIZE = 192;
@@ -1025,6 +1028,37 @@ public class Notes extends Activity
 
                 else
                     manager.showSoftInput(textView, 0);
+            });
+
+            // On click
+            textView.setOnClickListener(v ->
+            {
+                // Get selection
+                int selection = textView.getSelectionStart();
+
+                // Get text position
+                int line = textView.getLayout().getLineForOffset(selection);
+                int start = textView.getLayout().getLineStart(line);
+                int end = textView.getLayout().getLineEnd(line);
+
+                // Match checkbox pattern
+                Matcher matcher = CHECK_PATTERN.matcher(textView.getText());
+                if (matcher.region(start, end).find() &&
+                    matcher.end() > selection)
+                {
+                    Editable editable = textView.getEditableText();
+                    switch (editable.charAt(matcher.start(1)))
+                    {
+                    case 'x':
+                    case 'X':
+                        editable.replace(matcher.start(1), matcher.end(1), " ");
+                        break;
+
+                    case ' ':
+                        editable.replace(matcher.start(1), matcher.end(1), "x");
+                        break;
+                    }
+                }
             });
 
             // On long click
