@@ -1044,7 +1044,7 @@ public class Notes extends Activity
                 // Match checkbox pattern
                 Matcher matcher = CHECK_PATTERN.matcher(textView.getText());
                 if (matcher.region(start, end).find() &&
-                    matcher.end() > selection)
+                    matcher.end() >= selection)
                 {
                     Editable editable = textView.getEditableText();
                     switch (editable.charAt(matcher.start(1)))
