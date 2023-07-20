@@ -36,6 +36,24 @@
     </item>
     
     <item>
+      <title>Markdown</title>
+      <link>https://billthefarmer.github.io/notes/content/markdown/</link>
+      <pubDate>Thu, 20 Jul 2023 13:43:41 +0100</pubDate>
+      
+      <guid>https://billthefarmer.github.io/notes/content/markdown/</guid>
+      <description>Notes supports several markdown extensions including autolink, tables using vertical bar characters, heading anchor, underlining using ++underline++, strikethrough using ~~strike~~, YAML front matter, task lists using - [x] task #1, - [ ] task #2, superscript using ^super^, subscript using ~sub~.</description>
+    </item>
+    
+    <item>
+      <title>Task Lists</title>
+      <link>https://billthefarmer.github.io/notes/content/task-lists/</link>
+      <pubDate>Thu, 20 Jul 2023 13:39:50 +0100</pubDate>
+      
+      <guid>https://billthefarmer.github.io/notes/content/task-lists/</guid>
+      <description>To change the state of check boxes in a task list, switch to the edit view and tap on the box [ ]. The box will change state and the edit cursor will be where you tapped.</description>
+    </item>
+    
+    <item>
       <title>Latex</title>
       <link>https://billthefarmer.github.io/notes/content/latex/</link>
       <pubDate>Sat, 15 Feb 2020 19:46:17 +0000</pubDate>
