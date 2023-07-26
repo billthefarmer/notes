@@ -195,9 +195,9 @@ public class Notes extends Activity
                         Pattern.MULTILINE);
     public final static Pattern DATE_PATTERN =
         Pattern.compile("<<date *(.*)>>", Pattern.MULTILINE);
-    public final static Pattern CHECK_PATTERN =
-        Pattern.compile("^ *(?:[-+*]|\\d+\\.) +\\[(X|x| )\\] +",
-                        Pattern.MULTILINE);
+    public final static Pattern CHECK_PATTERN = Pattern.compile
+        ("^\\s*(?:[-+*]|\\d+\\.)\\s+\\[(X|x|\\s)\\]\\s+(?=\\p{Graph}+)",
+         Pattern.MULTILINE);
 
     private final static int OPEN_DOCUMENT   = 1;
     private final static int CREATE_DOCUMENT = 2;
