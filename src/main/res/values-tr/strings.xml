@@ -16,6 +16,7 @@
   <string name="share">Paylaş…</string>
   <string name="addDate">Tarih ekle</string>
   <string name="addMedia">Görüntü ekle…</string>
+  <string name="addLink">Bağlantı ekle</string>
   <string name="editStyles">CSS düzenle…</string>
   <string name="editScript">JS düzenle…</string>
   <string name="backup">Yedekle…</string>

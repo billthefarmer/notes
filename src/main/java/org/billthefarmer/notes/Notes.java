@@ -1612,14 +1612,53 @@ public class Notes extends Activity
                 FileUtils.getDisplayName(this, uri, null, null):
                 uri.getLastPathSegment();
 
-        String text = String.format(LINK_TEMPLATE,
-                                    title,
-                                    uri.toString());
+        String url = uri.toString();
+        addLinkDialog(url, title, (dialog, id) ->
+        {
+            switch (id)
+            {
+            case DialogInterface.BUTTON_POSITIVE:
+                EditText text = ((Dialog) dialog).findViewById(R.id.pathText);
+                String string = text.getText().toString();
 
-        Editable editable = textView.getEditableText();
-        int position = textView.getSelectionStart();
-        editable.insert(position, text);
-        loadMarkdown();
+                // Ignore empty string
+                if (string.isEmpty())
+                    return;
+
+                String linkText = String.format(LINK_TEMPLATE, string, url);
+
+                Editable editable = textView.getEditableText();
+                int position = textView.getSelectionStart();
+                editable.insert(position, linkText);
+                loadMarkdown();
+                break;
+            }
+        });
+    }
+
+    // addLinkDialog
+    private void addLinkDialog(String url, String title,
+                               DialogInterface.OnClickListener listener)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.addLink);
+        builder.setMessage(url);
+
+        // Add the buttons
+        builder.setPositiveButton(R.string.addLink, listener);
+        builder.setNegativeButton(android.R.string.cancel, listener);
+
+        // Create edit text
+        LayoutInflater inflater = (LayoutInflater) builder.getContext()
+            .getSystemService(LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.save_path, null);
+        builder.setView(view);
+
+        // Create the AlertDialog
+        AlertDialog dialog = builder.show();
+        TextView text = dialog.findViewById(R.id.pathText);
+        text.setHint("");
+        text.setText(title);
     }
 
     // addMap
@@ -1722,7 +1761,12 @@ public class Notes extends Activity
                 if ((uri != null) && (uri.getScheme() != null) &&
                         (uri.getScheme().equalsIgnoreCase(HTTP) ||
                          uri.getScheme().equalsIgnoreCase(HTTPS)))
-                    addLink(uri, intent.getStringExtra(Intent.EXTRA_TITLE));
+                {
+                    String title = intent.hasExtra(Intent.EXTRA_TITLE)?
+                        intent.getStringExtra(Intent.EXTRA_TITLE):
+                        intent.getStringExtra(Intent.EXTRA_SUBJECT);
+                    addLink(uri, title);
+                }
 
                 else
                 {
@@ -1743,7 +1787,10 @@ public class Notes extends Activity
                 if (CONTENT.equalsIgnoreCase(uri.getScheme()))
                     uri = resolveContent(uri);
 
-                addLink(uri, intent.getStringExtra(Intent.EXTRA_TITLE));
+                String title = intent.hasExtra(Intent.EXTRA_TITLE)?
+                    intent.getStringExtra(Intent.EXTRA_TITLE):
+                    intent.getStringExtra(Intent.EXTRA_SUBJECT);
+                addLink(uri, title);
             }
         }
 

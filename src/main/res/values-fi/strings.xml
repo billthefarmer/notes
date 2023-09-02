@@ -16,6 +16,7 @@
   <string name="share">Jaa…</string>
   <string name="addDate">Lisää päivämäärä</string>
   <string name="addMedia">Lisää media…</string>
+  <string name="addLink">Lisää linkki</string>
   <string name="editStyles">Muokkaa tyyliä…</string>
   <string name="editScript">Muokkaa skriptiä…</string>
   <string name="backup">Varmuuskopioi…</string>
