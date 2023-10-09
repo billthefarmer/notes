@@ -141,7 +141,7 @@ public class Notes extends Activity
     public final static String JS_SCRIPT = "js/script.js";
     public final static String TEXT_JAVASCRIPT = "text/javascript";
 
-    public final static String FOLDER = "Folder:  ";
+    public final static String FOLDER = "Folder";
     public final static String FILE_PROVIDER =
         "org.billthefarmer.notes.fileprovider";
 
@@ -509,6 +509,10 @@ public class Notes extends Activity
         for (String path : pathMap.keySet())
         {
             File file = new File(path);
+            // Check it exists
+            if (!file.exists())
+                continue;
+
             long last = file.lastModified();
             list.add(last);
             map.put(last, path);
@@ -2438,9 +2442,18 @@ public class Notes extends Activity
         // Get a list of files
         List<Long> list = new ArrayList<>();
         Map<Long, String> map = new HashMap<>();
-        for (String name : pathMap.keySet())
+        for (Iterator<String> iter = pathMap.keySet().iterator();
+             iter.hasNext();)
         {
+            String name = iter.next();
             File file = new File(name);
+            if (!file.exists())
+            {
+                iter.remove();
+                removeList.add(name);
+                continue;
+            }
+
             list.add(file.lastModified());
             map.put(file.lastModified(), name);
         }
