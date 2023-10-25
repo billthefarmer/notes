@@ -29,23 +29,22 @@
         API-level can go here.
     -->
 
+    <item name="application">@drawable/ic_stop_black_24dp</item>
+    <item name="audio">@drawable/ic_volume_up_black_24dp</item>
+    <item name="external">@drawable/ic_sd_storage_black_24dp</item>
+    <item name="file">@drawable/ic_list_black_24dp</item>
+    <item name="folder">@drawable/ic_folder_open_black_24dp</item>
+    <item name="image">@drawable/ic_image_black_24dp</item>
+    <item name="parent">@drawable/ic_reply_black_24dp</item>
+    <item name="video">@drawable/ic_videocam_black_24dp</item>
 
-    <item name="application">@drawable/ic_action_stop</item>
-    <item name="audio">@drawable/ic_action_volume_on</item>
-    <item name="external">@drawable/ic_action_sd_storage</item>
-    <item name="file">@drawable/ic_action_view_as_list</item>
-    <item name="folder">@drawable/ic_action_collection</item>
-    <item name="image">@drawable/ic_action_picture</item>
-    <item name="parent">@drawable/ic_action_reply</item>
-    <item name="video">@drawable/ic_action_video</item>
-
-    <item name="pref_about">@drawable/ic_action_about</item>
-    <item name="pref_theme">@drawable/ic_action_brightness_high</item>
-    <item name="pref_external">@drawable/ic_action_web_site</item>
-    <item name="pref_folder">@drawable/ic_action_collection</item>
-    <item name="pref_name">@drawable/ic_action_storage</item>
-    <item name="pref_template_file">@drawable/ic_action_storage</item>
-    <item name="pref_use_template">@drawable/ic_action_view_as_list</item>
+    <item name="pref_about">@drawable/ic_info_outline_black_24dp</item>
+    <item name="pref_theme">@drawable/ic_brightness_high_black_24dp</item>
+    <item name="pref_external">@drawable/ic_cloud_circle_black_24dp</item>
+    <item name="pref_folder">@drawable/ic_folder_black_24dp</item>
+    <item name="pref_name">@drawable/ic_folder_open_black_24dp</item>
+    <item name="pref_template_file">@drawable/ic_folder_open_black_24dp</item>
+    <item name="pref_use_template">@drawable/ic_list_black_24dp</item>
 
   </style>
 
@@ -56,23 +55,22 @@
         API-level can go here.
     -->
 
+    <item name="application">@drawable/ic_stop_white_24dp</item>
+    <item name="audio">@drawable/ic_volume_up_white_24dp</item>
+    <item name="external">@drawable/ic_sd_storage_white_24dp</item>
+    <item name="file">@drawable/ic_list_white_24dp</item>
+    <item name="folder">@drawable/ic_folder_open_white_24dp</item>
+    <item name="image">@drawable/ic_image_white_24dp</item>
+    <item name="parent">@drawable/ic_reply_white_24dp</item>
+    <item name="video">@drawable/ic_videocam_white_24dp</item>
 
-    <item name="application">@drawable/ic_action_stop_dark</item>
-    <item name="audio">@drawable/ic_action_volume_on_dark</item>
-    <item name="external">@drawable/ic_action_sd_storage_dark</item>
-    <item name="file">@drawable/ic_action_view_as_list_dark</item>
-    <item name="folder">@drawable/ic_action_collection_dark</item>
-    <item name="image">@drawable/ic_action_picture_dark</item>
-    <item name="parent">@drawable/ic_action_reply_dark</item>
-    <item name="video">@drawable/ic_action_video_dark</item>
-
-    <item name="pref_about">@drawable/ic_action_about_dark</item>
-    <item name="pref_theme">@drawable/ic_action_brightness_high_dark</item>
-    <item name="pref_external">@drawable/ic_action_web_site_dark</item>
-    <item name="pref_folder">@drawable/ic_action_collection_dark</item>
-    <item name="pref_name">@drawable/ic_action_storage_dark</item>
-    <item name="pref_template_file">@drawable/ic_action_storage_dark</item>
-    <item name="pref_use_template">@drawable/ic_action_view_as_list_dark</item>
+    <item name="pref_about">@drawable/ic_info_outline_white_24dp</item>
+    <item name="pref_theme">@drawable/ic_brightness_high_white_24dp</item>
+    <item name="pref_external">@drawable/ic_cloud_circle_white_24dp</item>
+    <item name="pref_folder">@drawable/ic_folder_white_24dp</item>
+    <item name="pref_name">@drawable/ic_folder_open_white_24dp</item>
+    <item name="pref_template_file">@drawable/ic_folder_open_white_24dp</item>
+    <item name="pref_use_template">@drawable/ic_list_white_24dp</item>
 
   </style>
 

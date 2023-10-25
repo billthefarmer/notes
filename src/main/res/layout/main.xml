@@ -54,7 +54,7 @@
         android:layout_marginBottom="28dp"
         android:background="@drawable/ic_button_background"
         android:elevation="6dp"
-        android:src="@drawable/ic_action_accept"
+        android:src="@drawable/ic_done_white_24dp"
         tools:ignore="UnusedAttribute" />
 
     <ImageButton
@@ -65,7 +65,7 @@
         android:layout_marginBottom="28dp"
         android:background="@drawable/ic_button_background"
         android:elevation="6dp"
-        android:src="@drawable/ic_action_edit"
+        android:src="@drawable/ic_edit_white_24dp"
         tools:ignore="UnusedAttribute" />
   </ViewSwitcher>
 

@@ -9,22 +9,22 @@
       android:title="@string/findAll" />
   <item
       android:id="@+id/newNote"
-      android:icon="@drawable/ic_action_new"
+      android:icon="@drawable/ic_add_white_24dp"
       android:showAsAction="ifRoom"
       android:title="@string/newNote" />
   <item
       android:id="@+id/saveNote"
-      android:icon="@drawable/ic_action_save"
+      android:icon="@drawable/ic_save_white_24dp"
       android:showAsAction="ifRoom"
       android:title="@string/saveNote" />
   <item
       android:id="@+id/openNote"
-      android:icon="@drawable/ic_action_collection_dark"
+      android:icon="@drawable/ic_folder_open_white_24dp"
       android:showAsAction="ifRoom"
       android:title="@string/openNote" />
   <item
       android:id="@+id/search"
-      android:icon="@drawable/ic_action_search"
+      android:icon="@drawable/ic_search_white_24dp"
       android:showAsAction="ifRoom|collapseActionView"
       android:actionViewClass="android.widget.SearchView"
       android:title="@string/search" />
@@ -50,42 +50,36 @@
   </item>
   <item
       android:id="@+id/printNote"
-      android:icon="@drawable/ic_action_print"
+      android:icon="@drawable/ic_print_white_24dp"
       android:showAsAction="ifRoom"
       android:title="@string/print" />
   <item
       android:id="@+id/shareNote"
-      android:icon="@drawable/ic_action_share"
+      android:icon="@drawable/ic_share_white_24dp"
       android:showAsAction="ifRoom"
       android:title="@string/share" />
   <item
       android:id="@+id/addDate"
-      android:icon="@drawable/ic_action_time"
       android:showAsAction="never"
       android:title="@string/addDate" />
   <item
       android:id="@+id/addMedia"
-      android:icon="@drawable/ic_action_picture"
       android:showAsAction="never"
       android:title="@string/addMedia" />
   <item
       android:id="@+id/editStyles"
-      android:icon="@drawable/ic_action_save"
       android:showAsAction="never"
       android:title="@string/editStyles" />
   <item
       android:id="@+id/editScript"
-      android:icon="@drawable/ic_action_save"
       android:showAsAction="never"
       android:title="@string/editScript" />
   <item
       android:id="@+id/backup"
-      android:icon="@drawable/ic_action_save"
       android:showAsAction="never"
       android:title="@string/backup" />
   <item
       android:id="@+id/settings"
-      android:icon="@drawable/ic_action_settings"
       android:showAsAction="never"
       android:title="@string/settings" />
 
