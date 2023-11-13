@@ -480,8 +480,6 @@ public class Notes extends Activity
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         menu.findItem(R.id.saveNote).setVisible(changed);
-        menu.findItem(R.id.printNote)
-            .setVisible(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
 
         // Set up search view
         searchItem = menu.findItem(R.id.search);
@@ -1217,14 +1215,11 @@ public class Notes extends Activity
                 break;
 
             case DialogInterface.BUTTON_NEUTRAL:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-                {
-                    Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                    intent.setType(APPLICATION_ZIP);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.putExtra(Intent.EXTRA_TITLE, name);
-                    startActivityForResult(intent, CREATE_BACKUP);
-                }
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                intent.setType(APPLICATION_ZIP);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.putExtra(Intent.EXTRA_TITLE, name);
+                startActivityForResult(intent, CREATE_BACKUP);
                 break;
             }
         });
@@ -1422,9 +1417,6 @@ public class Notes extends Activity
     // printNote
     private void printNote()
     {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-            return;
-
         // Get a PrintManager instance
         PrintManager printManager = (PrintManager)
             getSystemService(PRINT_SERVICE);
@@ -2130,8 +2122,7 @@ public class Notes extends Activity
         // Pop up dialog
         openDialog(dirList, fileList, (dialog, which) ->
         {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
-                DialogInterface.BUTTON_NEUTRAL == which)
+            if (DialogInterface.BUTTON_NEUTRAL == which)
             {
                 // Use storage
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -2217,8 +2208,7 @@ public class Notes extends Activity
         builder.setAdapter(adapter, listener);
 
         // Add storage button
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            builder.setNeutralButton(R.string.storage, listener);
+        builder.setNeutralButton(R.string.storage, listener);
         // Add cancel button
         builder.setNegativeButton(R.string.cancel, null);
 
@@ -2625,14 +2615,11 @@ public class Notes extends Activity
                 break;
 
             case DialogInterface.BUTTON_NEUTRAL:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-                {
-                    Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                    intent.setType(TEXT_WILD);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.putExtra(Intent.EXTRA_TITLE, uri.getLastPathSegment());
-                    startActivityForResult(intent, CREATE_DOCUMENT);
-                }
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                intent.setType(TEXT_WILD);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.putExtra(Intent.EXTRA_TITLE, uri.getLastPathSegment());
+                startActivityForResult(intent, CREATE_DOCUMENT);
                 break;
             }
         });
@@ -2649,8 +2636,7 @@ public class Notes extends Activity
         // Add the buttons
         builder.setPositiveButton(R.string.saveNote, listener);
         builder.setNegativeButton(R.string.cancel, listener);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-            builder.setNeutralButton(R.string.storage, listener);
+        builder.setNeutralButton(R.string.storage, listener);
 
         // Create edit text
         LayoutInflater inflater = (LayoutInflater) builder.getContext()
