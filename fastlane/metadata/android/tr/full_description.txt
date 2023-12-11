@@ -1,0 +1,20 @@
+Markdown formatlamalı not defteri
+
+ * Notlar .txt olarak kaydedilir
+ * Markdown formatlamasını kullanır
+ * Opsiyonel yeni not biçimi
+ * Opsiyonel yeni not dosya adı biçimi
+ * Medya göster
+ * OpenStreetMap haritalarını gösterir
+ * Notları paylaş
+ * Tarih ve saat ekle
+ * Medya sağlayıcılardan medya ekle
+ * Diğer uygulamalardan medya al
+ * Diğer uygulamalardan coğrafi uriler al
+ * Notlar için artımsal arama
+ * Düzenleme için karanlık ve aydınlık tema
+ * Yeni not açmak için kısayol
+ * Opsiyonel CSS stilleri
+ * Opsiyonel JavaScript komut dosyaları
+ * Notları zip dosyasına yedekle
+ * Opsiyonel imleç pozisyon kontrolü düzenleme
