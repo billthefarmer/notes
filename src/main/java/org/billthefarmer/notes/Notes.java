@@ -2931,7 +2931,7 @@ public class Notes extends Activity
                 markdownView.findNext(true);
 
             // Use regex search and spannable for highlighting
-            else
+            else if (matcher != null)
             {
                 // Find next text
                 if (matcher.find())
