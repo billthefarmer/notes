@@ -7,33 +7,28 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-gb</language>
     <copyright>Copyright &amp;copy; 2006 Bill Farmer</copyright>
-    <lastBuildDate>Sun, 16 Feb 2020 15:21:16 +0000</lastBuildDate><atom:link href="https://billthefarmer.github.io/notes/manage/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 16 Feb 2020 15:22:08 +0000</lastBuildDate>
+    <atom:link href="https://billthefarmer.github.io/notes/manage/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Backup</title>
       <link>https://billthefarmer.github.io/notes/manage/backup/</link>
       <pubDate>Sun, 16 Feb 2020 15:21:07 +0000</pubDate>
-      
       <guid>https://billthefarmer.github.io/notes/manage/backup/</guid>
       <description>You may create a backup of all your notes in a zip file. The file will have the same name as the notes folder, default Notes.zip.</description>
     </item>
-    
     <item>
       <title>Sync</title>
       <link>https://billthefarmer.github.io/notes/manage/sync/</link>
       <pubDate>Sun, 16 Feb 2020 15:21:42 +0000</pubDate>
-      
       <guid>https://billthefarmer.github.io/notes/manage/sync/</guid>
       <description>Android cloud storage apps when last tested appeared not to be capable of syncing a real storage folder on the device. However Syncthing does just that and can sync your notes folder with other devices and desktop computers.</description>
     </item>
-    
     <item>
       <title>SD Cards</title>
       <link>https://billthefarmer.github.io/notes/manage/sd-cards/</link>
       <pubDate>Sun, 16 Feb 2020 15:22:08 +0000</pubDate>
-      
       <guid>https://billthefarmer.github.io/notes/manage/sd-cards/</guid>
       <description>Android allows removable SD cards to be used like a USB stick or as part of the device storage. Notes opened using the chooser on a removable SD card may not save successfully using the save button. Use the Save as menu item and the Storage button to save it using the android file manager. Alternatively use the Storage button on the chooser dialog to open the Note using the android file manager.</description>
     </item>
-    
   </channel>
 </rss>
