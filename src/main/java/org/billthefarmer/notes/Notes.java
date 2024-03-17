@@ -240,6 +240,7 @@ public class Notes extends Activity
     private ViewSwitcher buttonSwitcher;
 
     private GestureDetector gestureDetector;
+    private QueryTextListener queryTextListener;
 
     private SearchView searchView;
     private MenuItem searchItem;
@@ -358,9 +359,6 @@ public class Notes extends Activity
         }
 
         setListeners(this);
-
-        gestureDetector =
-            new GestureDetector(this, new GestureListener());
     }
 
     // onRestoreInstanceState
@@ -490,7 +488,7 @@ public class Notes extends Activity
         {
             searchView.setSubmitButtonEnabled(true);
             searchView.setImeOptions(EditorInfo.IME_ACTION_GO);
-            searchView.setOnQueryTextListener(new QueryTextListener());
+            searchView.setOnQueryTextListener(queryTextListener);
         }
 
         // Show find all item
@@ -670,12 +668,13 @@ public class Notes extends Activity
     @Override
     public boolean dispatchKeyEvent(KeyEvent event)
     {
-        // Check Ctrl key
-        if (event.isCtrlPressed())
+        // Check action
+        switch (event.getAction())
         {
-            switch (event.getAction())
+        case KeyEvent.ACTION_DOWN:
+            // Check Ctrl key
+            if (event.isCtrlPressed())
             {
-            case KeyEvent.ACTION_DOWN:
                 switch (event.getKeyCode())
                 {
                     // Accept
@@ -686,6 +685,22 @@ public class Notes extends Activity
                 case KeyEvent.KEYCODE_E:
                     edit.performClick();
                     break;
+                    // Search
+                case KeyEvent.KEYCODE_F:
+                    if (event.isShiftPressed())
+                        searchItem.collapseActionView();
+                    else
+                        searchItem.expandActionView();
+                    // Find next
+                    if (event.isAltPressed() &&
+                        searchItem.isActionViewExpanded())
+                        queryTextListener.onQueryTextSubmit
+                            (searchView.getQuery().toString());
+                    break;
+                    // Menu
+                case KeyEvent.KEYCODE_M:
+                    openOptionsMenu();
+                    break;
                     // New
                 case KeyEvent.KEYCODE_N:
                     newNote();
@@ -694,6 +709,10 @@ public class Notes extends Activity
                 case KeyEvent.KEYCODE_O:
                     openNote();
                     break;
+                    // Print
+                case KeyEvent.KEYCODE_P:
+                    printNote();
+                    break;
                     // Save, Save as
                 case KeyEvent.KEYCODE_S:
                     if (event.isShiftPressed())
@@ -701,7 +720,34 @@ public class Notes extends Activity
                     else
                         saveCheck();
                     break;
+
+                default:
+                    return super.dispatchKeyEvent(event);
                 }
+
+                return true;
+            }
+
+            else
+            {
+                switch (event.getKeyCode())
+                {
+                    // Find next
+                case KeyEvent.KEYCODE_F3:
+                    if (searchItem.isActionViewExpanded())
+                        queryTextListener.onQueryTextSubmit
+                            (searchView.getQuery().toString());
+                    break;
+                    // Menu
+                case KeyEvent.KEYCODE_F10:
+                    openOptionsMenu();
+                    break;
+
+                default:
+                    return super.dispatchKeyEvent(event);
+                }
+
+                return true;
             }
         }
 
@@ -746,6 +792,9 @@ public class Notes extends Activity
     // setListeners
     private void setListeners(Context context)
     {
+        gestureDetector = new GestureDetector(this, new GestureListener());
+        queryTextListener = new QueryTextListener();
+
         if (markdownView != null)
         {
             markdownView.setWebViewClient(new WebViewClient()
