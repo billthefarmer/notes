@@ -70,7 +70,7 @@
       <link>https://billthefarmer.github.io/notes/using/keyboard-shortcuts/</link>
       <pubDate>Thu, 22 Jul 2021 12:18:09 +0100</pubDate>
       <guid>https://billthefarmer.github.io/notes/using/keyboard-shortcuts/</guid>
-      <description>When using an external keyboard, some keyboard shortcuts are implemented:&#xA;Ctrl+A – Accept Ctrl+E – Edit Ctrl+N – New file Ctrl+O – Open file Ctrl+S – Save file Ctrl+Shift+S – Save as </description>
+      <description>When using an external keyboard, some keyboard shortcuts are implemented:&#xA;Ctrl+D – Done Ctrl+E – Edit Ctrl+F – Search Ctrl+Shift+F – Close search Ctrl+Alt+F – Find next Ctrl+M – Show menu Ctrl+N – New note Ctrl+O – Open note Ctrl+P – Print note Ctrl+S – Save note Ctrl+Shift+S – Save as F3 – Find next F10 – Show menu </description>
     </item>
   </channel>
 </rss>
