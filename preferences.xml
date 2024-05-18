@@ -5,7 +5,7 @@
         <EditTextPreference android:icon="?pref_folder" android:persistent="true" android:title="@string/folder" android:key="pref_folder" android:defaultValue="Записки" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/name" android:key="pref_name_category">
-        <EditTextPreference android:icon="?pref_name" android:persistent="true" android:title="@string/pref_name" android:key="pref_name" android:defaultValue="Заметки.md" />
+        <EditTextPreference android:icon="?pref_name" android:persistent="true" android:title="@string/pref_name" android:key="pref_name" android:defaultValue="Записки.md" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/template" android:key="pref_template_category">
         <CheckBoxPreference android:icon="?pref_use_template" android:persistent="true" android:title="@string/pref_use_template" android:key="pref_use_template" android:summary="@string/pref_use_template_summ" android:defaultValue="false" />
