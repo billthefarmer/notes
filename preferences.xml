@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen android:title="@string/settings"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/folder" android:key="pref_folder_category">
+        <EditTextPreference android:icon="?pref_folder" android:persistent="true" android:title="@string/folder" android:key="pref_folder" android:defaultValue="Записки" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/name" android:key="pref_name_category">
+        <EditTextPreference android:icon="?pref_name" android:persistent="true" android:title="@string/pref_name" android:key="pref_name" android:defaultValue="Записки.md" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/template" android:key="pref_template_category">
+        <CheckBoxPreference android:icon="?pref_use_template" android:persistent="true" android:title="@string/pref_use_template" android:key="pref_use_template" android:summary="@string/pref_use_template_summ" android:defaultValue="false" />
+        <EditTextPreference android:icon="?pref_template_file" android:persistent="true" android:title="@string/pref_template_file" android:key="pref_template_file" android:dependency="pref_use_template" android:defaultValue="Шаблон.md" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/new_note_name" android:key="pref_new_category">
+        <CheckBoxPreference android:icon="?pref_use_template" android:persistent="true" android:title="@string/pref_use_template" android:key="pref_new_template" android:summary="@string/pref_new_template_summ" android:defaultValue="false" />
+        <EditTextPreference android:icon="?pref_template_file" android:persistent="true" android:title="@string/pref_new_name" android:key="pref_new_name" android:dependency="pref_new_template" android:defaultValue="Безымянный.md" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/media" android:key="pref_media_category">
+        <CheckBoxPreference android:icon="?pref_external" android:persistent="true" android:title="@string/pref_external" android:key="pref_external" android:summary="@string/pref_external_summ" android:defaultValue="false" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/theme" android:key="pref_theme_category">
+        <ListPreference android:icon="?pref_theme" android:entries="@array/pref_theme_entries" android:title="@string/theme" android:key="pref_theme" android:summary="@string/pref_theme_summ" android:defaultValue="@integer/default_theme" android:dialogIcon="?pref_theme" android:entryValues="@array/pref_theme_entry_values" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/about" android:key="pref_about_category">
+        <org.billthefarmer.notes.AboutPreference android:icon="?pref_about" android:title="@string/about" android:key="pref_about" android:summary="@string/pref_about_summ" android:dialogTitle="@string/appName" android:negativeButtonText="" android:dialogLayout="@layout/about" />
+    </PreferenceCategory>
+</PreferenceScreen>
