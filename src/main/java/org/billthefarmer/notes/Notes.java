@@ -37,7 +37,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -97,8 +96,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
-import java.lang.ref.WeakReference;
-
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -114,6 +111,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Locale;
 import java.util.UUID;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -241,7 +241,7 @@ public class Notes extends Activity
 
     private GestureDetector gestureDetector;
     private QueryTextListener queryTextListener;
-
+    private ExecutorService executor;
     private SearchView searchView;
     private MenuItem searchItem;
 
@@ -335,6 +335,7 @@ public class Notes extends Activity
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
 
+        executor = Executors.newSingleThreadExecutor();
         if (savedInstanceState == null)
         {
             Intent intent = getIntent();
@@ -1226,8 +1227,9 @@ public class Notes extends Activity
         // Get search string
         String search = searchView.getQuery().toString();
 
-        FindTask findTask = new FindTask(this);
-        findTask.execute(search);
+        doFind(search);
+        // FindTask findTask = new FindTask(this);
+        // findTask.execute(search);
     }
 
     // backup
@@ -1259,8 +1261,7 @@ public class Notes extends Activity
 
                 // Start zip task
                 Uri uri = Uri.fromFile(file);
-                ZipTask zipTask = new ZipTask(this);
-                zipTask.execute(uri);
+                doZip(uri);
                 break;
 
             case DialogInterface.BUTTON_NEUTRAL:
@@ -1586,8 +1587,7 @@ public class Notes extends Activity
                 return;
 
             Uri uri = data.getData();
-            ZipTask zipTask = new ZipTask(this);
-            zipTask.execute(uri);
+            doZip(uri);
             break;
 
         case ADD_MEDIA:
@@ -2071,9 +2071,7 @@ public class Notes extends Activity
             file = new File(getHome(), templateFile);
 
         loadTemplate = true;
-        ReadTask read = new ReadTask(this);
-        read.execute(Uri.fromFile(file));
-
+        doRead(Uri.fromFile(file));
         loadMarkdown();
     }
 
@@ -2427,8 +2425,7 @@ public class Notes extends Activity
 
         textView.setText(R.string.loading);
 
-        ReadTask read = new ReadTask(this);
-        read.execute(uri);
+        doRead(uri);
 
         changed = false;
         modified = file.lastModified();
@@ -3060,36 +3057,19 @@ public class Notes extends Activity
         return text;
     }
 
-    // FindTask
-    private static class FindTask
-            extends AsyncTask<String, Void, List<File>>
+    // doFind
+    private void doFind(String search)
     {
-        private WeakReference<Notes> notesWeakReference;
-        private String search;
-
-        // FindTask
-        public FindTask(Notes notes)
+        // Create a list of matches
+        List<File> matchList = new ArrayList<>();
+        Pattern pattern =
+            Pattern.compile(search, Pattern.CASE_INSENSITIVE |
+                            Pattern.LITERAL | Pattern.UNICODE_CASE);
+        // Get entry list
+        List<File> entries = new ArrayList<>();
+        executor.execute(() ->
         {
-            notesWeakReference = new WeakReference<>(notes);
-        }
-
-        // doInBackground
-        @Override
-        protected List<File> doInBackground(String... params)
-        {
-            // Create a list of matches
-            List<File> matchList = new ArrayList<>();
-            final Notes notes = notesWeakReference.get();
-            if (notes == null)
-                return matchList;
-
-            search = params[0];
-            Pattern pattern =
-                Pattern.compile(search, Pattern.CASE_INSENSITIVE |
-                                Pattern.LITERAL | Pattern.UNICODE_CASE);
-            // Get entry list
-            List<File> entries = new ArrayList<>();
-            listNotes(notes.getHome(), entries);
+            listNotes(getHome(), entries);
 
             // Check the entries
             for (File file : entries)
@@ -3100,56 +3080,48 @@ public class Notes extends Activity
                     matchList.add(file);
             }
 
-            return matchList;
-        }
-
-        // onPostExecute
-        @Override
-        protected void onPostExecute(List<File> matchList)
-        {
-            final Notes notes = notesWeakReference.get();
-            if (notes == null)
-                return;
-
-            // Build dialog
-            AlertDialog.Builder builder = new AlertDialog.Builder(notes);
-            builder.setTitle(R.string.findAll);
-
-            // If found populate dialog
-            if (!matchList.isEmpty())
+            searchView.post(() ->
             {
-                List<String> choiceList = new ArrayList<>();
-                for (File file : matchList)
-                {
-                    // Remove path prefix
-                    String path = file.getPath();
-                    String name =
-                        path.replaceFirst(Environment
-                                          .getExternalStorageDirectory()
-                                          .getPath() + File.separator, "");
+                // Build dialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.findAll);
 
-                    choiceList.add(name);
+                // If found populate dialog
+                if (!matchList.isEmpty())
+                {
+                    List<String> choiceList = new ArrayList<>();
+                    for (File file : matchList)
+                    {
+                        // Remove path prefix
+                        String path = file.getPath();
+                        String name =
+                            path.replaceFirst(Environment
+                                              .getExternalStorageDirectory()
+                                              .getPath() + File.separator, "");
+
+                        choiceList.add(name);
+                    }
+
+                    String[] choices = choiceList.toArray(new String[0]);
+                    builder.setItems(choices, (dialog, which) ->
+                    {
+                        File file = matchList.get(which);
+                        Uri uri = Uri.fromFile(file);
+                        // Open the entry chosen
+                        readNote(uri);
+
+                        // Put the search text back - why it
+                        // disappears I have no idea or why I have to
+                        // do it after a delay
+                        searchView.postDelayed(() ->
+                            searchView.setQuery(search, false), FIND_DELAY);
+                    });
                 }
 
-                String[] choices = choiceList.toArray(new String[0]);
-                builder.setItems(choices, (dialog, which) ->
-                {
-                    File file = matchList.get(which);
-                    Uri uri = Uri.fromFile(file);
-                    // Open the entry chosen
-                    notes.readNote(uri);
-
-                    // Put the search text back - why it
-                    // disappears I have no idea or why I have to
-                    // do it after a delay
-                    notes.searchView.postDelayed(() ->
-                      notes.searchView.setQuery(search, false), FIND_DELAY);
-                });
-            }
-
-            builder.setNegativeButton(android.R.string.cancel, null);
-            builder.show();
-        }
+                builder.setNegativeButton(android.R.string.cancel, null);
+                builder.show();
+            });
+        });
     }
 
     // listFiles
@@ -3173,40 +3145,15 @@ public class Notes extends Activity
             }
     }
 
-    // ZipTask
-    private static class ZipTask
-            extends AsyncTask<Uri, Void, Void>
+    private void doZip(Uri uri)
     {
-        private WeakReference<Notes> notesWeakReference;
-
-        // ZipTask
-        public ZipTask(Notes notes)
+        showToast(R.string.start);
+        File home = getHome();
+        executor.execute(() ->
         {
-            notesWeakReference = new WeakReference<>(notes);
-        }
-
-        // onPreExecute
-        @Override
-        protected void onPreExecute()
-        {
-            final Notes notes = notesWeakReference.get();
-            if (notes != null)
-                notes.showToast(R.string.start);
-        }
-
-        // doInBackground
-        @Override
-        protected Void doInBackground(Uri... uris)
-        {
-            final Notes notes = notesWeakReference.get();
-            if (notes == null)
-                return null;
-
-            File home = notes.getHome();
-
             // Create output stream
             try (ZipOutputStream output = new ZipOutputStream
-                 (notes.getContentResolver().openOutputStream(uris[0])))
+                 (getContentResolver().openOutputStream(uri)))
             {
                 byte[] buffer = new byte[BUFFER_SIZE];
 
@@ -3252,87 +3199,50 @@ public class Notes extends Activity
 
                 // Close last entry
                 output.closeEntry();
+                textView.post(() -> showToast(R.string.complete));
             }
 
             catch (Exception e)
             {
-                notes.runOnUiThread (() ->
-                    notes.alertDialog(R.string.appName, e.getMessage(),
-                                      android.R.string.ok));
+                textView.post(() ->
+                    alertDialog(R.string.appName, e.getMessage(),
+                                android.R.string.ok));
                 e.printStackTrace();
             }
-
-            return null;
-        }
-
-        // onPostExecute
-        @Override
-        protected void onPostExecute(Void noresult)
-        {
-            final Notes notes = notesWeakReference.get();
-            if (notes != null)
-                notes.showToast(R.string.complete);
-        }
+        });
     }
 
-    // ReadTask
-    private static class ReadTask
-        extends AsyncTask<Uri, Void, CharSequence>
+    // doRead
+    private void doRead(Uri uri)
     {
-        private WeakReference<Notes> notesWeakReference;
-
-        public ReadTask(Notes notes)
+        StringBuilder builder = new StringBuilder();
+        executor.execute(() ->
         {
-            notesWeakReference = new WeakReference<>(notes);
-        }
-
-        // doInBackground
-        @Override
-        protected CharSequence doInBackground(Uri... uris)
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            final Notes notes = notesWeakReference.get();
-            if (notes == null)
-                return stringBuilder;
-
-            try (BufferedInputStream in = new BufferedInputStream
-                 (notes.getContentResolver().openInputStream(uris[0])))
+            try (BufferedReader reader = new BufferedReader
+                 (new InputStreamReader(new BufferedInputStream
+                      (getContentResolver().openInputStream(uri)))))
             {
-                BufferedReader reader = new
-                    BufferedReader(new InputStreamReader(in));
-
                 String line;
                 while ((line = reader.readLine()) != null)
                 {
-                    stringBuilder.append(line);
-                    stringBuilder.append(System.getProperty("line.separator"));
-                    if (stringBuilder.length() >= LARGE_SIZE)
+                    builder.append(line);
+                    builder.append(System.getProperty("line.separator"));
+                    if (builder.length() >= LARGE_SIZE)
                         break;
                 }
             }
 
             catch (Exception e)
             {
-                notes.runOnUiThread(() ->
-                    notes.alertDialog(R.string.appName,
-                                      e.getMessage(),
-                                      R.string.ok));
+                textView.post(() ->
+                    alertDialog(R.string.appName,
+                                e.getMessage(),
+                                R.string.ok));
                 e.printStackTrace();
             }
 
-            return stringBuilder;
-        }
-
-        // onPostExecute
-        @Override
-        protected void onPostExecute(CharSequence result)
-        {
-            final Notes notes = notesWeakReference.get();
-            if (notes == null)
-                return;
-
-            notes.loadText(result);
-        }
+            textView.post(() -> loadText(builder));
+        });
     }
 
     // GestureListener
