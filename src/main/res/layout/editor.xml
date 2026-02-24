@@ -47,6 +47,6 @@
       android:elevation="6dp"
       android:src="@drawable/ic_done_white_24dp"
       android:visibility="visible"
-      tools:ignore="UnusedAttribute" />
+      tools:ignore="UnusedAttribute,ContentDescription" />
 
 </RelativeLayout>

@@ -44,7 +44,8 @@
       android:layout_height="wrap_content"
       android:layout_gravity="bottom|end"
       android:inAnimation="@anim/flip_in"
-      android:outAnimation="@anim/flip_out">
+      android:outAnimation="@anim/flip_out"
+      tools:ignore="ContentDescription">
 
     <ImageButton
         android:id="@+id/accept"

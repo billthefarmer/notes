@@ -20,10 +20,11 @@
       android:allowBackup="true"
       android:supportsRtl="true"
       android:usesCleartextTraffic="true"
+      android:requestLegacyExternalStorage="true"
       android:icon="@drawable/ic_launcher"
       android:label="@string/appName"
       android:theme="@style/AppDarkTheme"
-      tools:ignore="AllowBackup">
+      tools:ignore="AllowBackup,UnusedAttribute">
 
     <activity
         android:name="Notes"

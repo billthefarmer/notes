@@ -45,6 +45,7 @@ import java.util.Locale;
  * @author Bill Farmer (billthefarmer)
  * @version 2017-06-22
  */
+@SuppressWarnings("deprecation")
 public class FileUtils
 {
     /**

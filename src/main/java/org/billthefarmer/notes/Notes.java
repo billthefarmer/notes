@@ -24,7 +24,6 @@
 package org.billthefarmer.notes;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -121,6 +120,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+@SuppressWarnings("deprecation")
 public class Notes extends Activity
 {
     public final static String TAG = "Notes";
@@ -136,6 +136,7 @@ public class Notes extends Activity
     public final static String STYLES = "file:///android_asset/styles.css";
     public final static String SCRIPT = "file:///android_asset/script.js";
     public final static String HELP = "file:///android_asset/help.md";
+    public final static String PACKAGE = "package:";
     public final static String CSS_STYLES = "css/styles.css";
     public final static String TEXT_CSS = "text/css";
     public final static String JS_SCRIPT = "js/script.js";
@@ -211,10 +212,10 @@ public class Notes extends Activity
     private static final int ACCEPT = 0;
     private static final int EDIT = 1;
 
-    private final static int REQUEST_READ = 1;
-    private final static int REQUEST_SAVE = 2;
-    private final static int REQUEST_OPEN = 3;
-    private final static int REQUEST_TEMPLATE = 4;
+    private final static int REQUEST_READ = 7;
+    private final static int REQUEST_SAVE = 8;
+    private final static int REQUEST_OPEN = 9;
+    private final static int REQUEST_TEMPLATE = 10;
 
     public final static int LIGHT  = 0;
     public final static int DARK   = 1;
@@ -877,8 +878,7 @@ public class Notes extends Activity
                     if (external || MAILTO.equalsIgnoreCase(uri.getScheme()))
                     {
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                        if (intent.resolveActivity(getPackageManager()) != null)
-                            startActivity(intent);
+                        startActivity(intent);
                         return true;
                     }
 
@@ -2051,6 +2051,19 @@ public class Notes extends Activity
     // loadTemplate
     private void loadTemplate()
     {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+        {
+            if (!Environment.isExternalStorageManager())
+            {
+                Uri id = Uri.parse(PACKAGE + BuildConfig.APPLICATION_ID);
+                Intent intent = new
+                    Intent(android.provider.Settings.
+                           ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, id);
+                startActivity(intent);
+                return;
+            }
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -2136,6 +2149,19 @@ public class Notes extends Activity
     private void getNote()
     {
         // Check permissions
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+        {
+            if (!Environment.isExternalStorageManager())
+            {
+                Uri id = Uri.parse(PACKAGE + BuildConfig.APPLICATION_ID);
+                Intent intent = new
+                    Intent(android.provider.Settings.
+                           ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, id);
+                startActivity(intent);
+                return;
+            }
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -2199,6 +2225,7 @@ public class Notes extends Activity
     }
 
     // getList
+    @SuppressWarnings("deprecation")
     private List<File> getList(File dir)
     {
         List<File> list = null;
@@ -2377,6 +2404,19 @@ public class Notes extends Activity
         if (uri == null)
             return;
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+        {
+            if (!Environment.isExternalStorageManager())
+            {
+                Uri id = Uri.parse(PACKAGE + BuildConfig.APPLICATION_ID);
+                Intent intent = new
+                    Intent(android.provider.Settings.
+                           ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, id);
+                startActivity(intent);
+                // return;
+            }
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -2529,6 +2569,19 @@ public class Notes extends Activity
     // saveNote
     private void saveNote()
     {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+        {
+            if (!Environment.isExternalStorageManager())
+            {
+                Uri id = Uri.parse(PACKAGE + BuildConfig.APPLICATION_ID);
+                Intent intent = new
+                    Intent(android.provider.Settings.
+                           ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, id);
+                startActivity(intent);
+                return;
+            }
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
             if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -2597,6 +2650,7 @@ public class Notes extends Activity
     }
 
     // saveAs
+    @SuppressWarnings("deprecation")
     private void saveAs()
     {
         // Remove path prefix
@@ -2747,6 +2801,7 @@ public class Notes extends Activity
     }
 
     // showToast
+    @SuppressWarnings("deprecation")
     private void showToast(String text)
     {
         // Cancel the last one
@@ -3058,6 +3113,7 @@ public class Notes extends Activity
     }
 
     // doFind
+    @SuppressWarnings("deprecation")
     private void doFind(String search)
     {
         // Create a list of matches
