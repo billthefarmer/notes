@@ -277,7 +277,6 @@ public class Notes extends Activity
     private boolean useTemplate = false;
     private boolean loadTemplate = false;
     private boolean useNewTemplate = false;
-    // private boolean darkTheme = false;
 
     private long modified;
 
@@ -337,12 +336,62 @@ public class Notes extends Activity
         settings.setDisplayZoomControls(false);
 
         executor = Executors.newSingleThreadExecutor();
+        setListeners(this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+            !Environment.isExternalStorageManager())
+        {
+            alertDialog(R.string.access, R.string.manageFiles,
+                        R.string.access, R.string.cancel, (dialog, id) ->
+            {
+                switch (id)
+                {
+                case DialogInterface.BUTTON_POSITIVE:
+                    Uri appId = Uri.parse(PACKAGE + BuildConfig.APPLICATION_ID);
+                    Intent intent = new
+                        Intent(android.provider.Settings.
+                               ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                               appId);
+                    startActivity(intent);
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+                }
+            });
+
+            newNote();
+            return;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED)
+        {
+            alertDialog(R.string.files, R.string.manageFiles,
+                        R.string.files, R.string.cancel, (dialog, id) ->
+            {
+                switch (id)
+                {
+                case DialogInterface.BUTTON_POSITIVE:
+                    requestPermissions(new String[]
+                    {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                     Manifest.permission.READ_EXTERNAL_STORAGE},
+                                       REQUEST_OPEN);
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+                }
+            });
+
+            newNote();
+            return;
+        }
+
         if (savedInstanceState == null)
         {
             Intent intent = getIntent();
-
-            if (BuildConfig.DEBUG)
-                Log.d(TAG, "Intent " + intent);
 
             if (checkNew(intent))
                 newNote();
@@ -359,8 +408,6 @@ public class Notes extends Activity
             else
                 defaultFile();
         }
-
-        setListeners(this);
     }
 
     // onRestoreInstanceState
@@ -2051,31 +2098,9 @@ public class Notes extends Activity
     // loadTemplate
     private void loadTemplate()
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-        {
-            if (!Environment.isExternalStorageManager())
-            {
-                Uri id = Uri.parse(PACKAGE + BuildConfig.APPLICATION_ID);
-                Intent intent = new
-                    Intent(android.provider.Settings.
-                           ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, id);
-                startActivity(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+            !Environment.isExternalStorageManager())
                 return;
-            }
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED)
-            {
-                requestPermissions(new String[]
-                    {Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                     Manifest.permission.READ_EXTERNAL_STORAGE},
-                                   REQUEST_TEMPLATE);
-                return;
-            }
-        }
 
         textView.setText(R.string.loading);
 
@@ -2148,32 +2173,6 @@ public class Notes extends Activity
     // getNote
     private void getNote()
     {
-        // Check permissions
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-        {
-            if (!Environment.isExternalStorageManager())
-            {
-                Uri id = Uri.parse(PACKAGE + BuildConfig.APPLICATION_ID);
-                Intent intent = new
-                    Intent(android.provider.Settings.
-                           ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, id);
-                startActivity(intent);
-                return;
-            }
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED)
-            {
-                requestPermissions(new String[]
-                    {Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                     Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_OPEN);
-                return;
-            }
-        }
-
         // Open parent folder
         File dir = file.getParentFile();
         getNote(dir);
@@ -2404,32 +2403,6 @@ public class Notes extends Activity
         if (uri == null)
             return;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-        {
-            if (!Environment.isExternalStorageManager())
-            {
-                Uri id = Uri.parse(PACKAGE + BuildConfig.APPLICATION_ID);
-                Intent intent = new
-                    Intent(android.provider.Settings.
-                           ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, id);
-                startActivity(intent);
-                // return;
-            }
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED)
-            {
-                requestPermissions(new String[]
-                    {Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                     Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ);
-                this.uri = uri;
-                return;
-            }
-        }
-
         // Save previous path
         savePath(path);
 
@@ -2569,31 +2542,6 @@ public class Notes extends Activity
     // saveNote
     private void saveNote()
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-        {
-            if (!Environment.isExternalStorageManager())
-            {
-                Uri id = Uri.parse(PACKAGE + BuildConfig.APPLICATION_ID);
-                Intent intent = new
-                    Intent(android.provider.Settings.
-                           ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, id);
-                startActivity(intent);
-                return;
-            }
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED)
-            {
-                requestPermissions(new String[]
-                    {Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                     Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_SAVE);
-                return;
-            }
-        }
-
         if (file.lastModified() > modified)
             alertDialog(R.string.appName, R.string.changedOverwrite,
                         R.string.overwrite, R.string.cancel, (dialog, id) ->
