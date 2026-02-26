@@ -73,10 +73,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 import android.widget.ViewSwitcher;
 
 import android.support.v4.content.FileProvider;
@@ -122,6 +124,7 @@ import java.util.zip.ZipOutputStream;
 
 @SuppressWarnings("deprecation")
 public class Notes extends Activity
+    implements PopupMenu.OnMenuItemClickListener
 {
     public final static String TAG = "Notes";
 
@@ -212,10 +215,7 @@ public class Notes extends Activity
     private static final int ACCEPT = 0;
     private static final int EDIT = 1;
 
-    private final static int REQUEST_READ = 7;
-    private final static int REQUEST_SAVE = 8;
-    private final static int REQUEST_OPEN = 9;
-    private final static int REQUEST_TEMPLATE = 10;
+    private final static int REQUEST_OPEN = 7;
 
     public final static int LIGHT  = 0;
     public final static int DARK   = 1;
@@ -245,6 +245,7 @@ public class Notes extends Activity
     private ExecutorService executor;
     private SearchView searchView;
     private MenuItem searchItem;
+    private Toolbar toolbar;
 
     private Runnable showEdit;
     private Runnable showAccept;
@@ -319,6 +320,19 @@ public class Notes extends Activity
         }
 
         setContentView(R.layout.main);
+
+        // Find toolbar
+        toolbar = findViewById(getResources().getIdentifier("action_bar",
+                                                            "id", "android"));
+        // Set up navigation
+        toolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        toolbar.setNavigationOnClickListener((v) ->
+        {
+            PopupMenu popup = new PopupMenu(this, v);
+            popup.inflate(R.menu.navigation);
+            popup.setOnMenuItemClickListener(this);
+            popup.show();
+        });
 
         textView = findViewById(R.id.text);
         scrollView = findViewById(R.id.scroll);
@@ -651,12 +665,41 @@ public class Notes extends Activity
         case R.id.fileItem:
             openRecent(item);
             break;
+        default:
+            return false;
         }
 
         // Close text search
         if (searchItem != null && searchItem.isActionViewExpanded() &&
                 item.getItemId() != R.id.findAll)
             searchItem.collapseActionView();
+
+        return true;
+    }
+
+    // onMenuItemClick
+    @Override
+    public boolean onMenuItemClick(MenuItem item)
+    {
+        // Get id
+        int id = item.getItemId();
+        switch (id)
+        {
+        case R.id.editStyles:
+            editStyles();
+            break;
+
+        case R.id.editScript:
+            editScript();
+            break;
+
+        case R.id.settings:
+            settings();
+            break;
+
+        default:
+            return false;
+        }
 
         return true;
     }
@@ -1482,7 +1525,8 @@ public class Notes extends Activity
 
             if (changed)
                 alertDialog(R.string.openRecent, R.string.modified,
-                            R.string.saveNote, R.string.discard, (dialog, id) ->
+                            R.string.saveNote, R.string.discard,
+                            R.string.cancel, (dialog, id) ->
             {
                 switch (id)
                 {
@@ -2037,31 +2081,35 @@ public class Notes extends Activity
         // Check if file changed
         if (changed)
             alertDialog(R.string.newNote, R.string.modified,
-                        R.string.saveNote, R.string.discard, (dialog, id) ->
+                        R.string.saveNote, R.string.discard,
+                        R.string.cancel, (dialog, id) ->
         {
             switch (id)
             {
             case DialogInterface.BUTTON_POSITIVE:
                 saveNote();
                 newFile();
+                loadMarkdown();
+                edit.performClick();
+                invalidateOptionsMenu();
                 break;
 
             case DialogInterface.BUTTON_NEGATIVE:
                 newFile();
+                loadMarkdown();
+                edit.performClick();
+                invalidateOptionsMenu();
                 break;
             }
-
-            loadMarkdown();
-            edit.performClick();
-            invalidateOptionsMenu();
         });
 
         else
+        {
             newFile();
-
-        loadMarkdown();
-        edit.postDelayed(() -> edit.performClick(), UPDATE_DELAY);
-        invalidateOptionsMenu();
+            loadMarkdown();
+            edit.postDelayed(() -> edit.performClick(), UPDATE_DELAY);
+            invalidateOptionsMenu();
+        }
     }
 
     // newFile
@@ -2098,12 +2146,6 @@ public class Notes extends Activity
     // loadTemplate
     private void loadTemplate()
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
-            !Environment.isExternalStorageManager())
-                return;
-
-        textView.setText(R.string.loading);
-
         File file = new File(templateFile);
         if (!file.isAbsolute())
             file = new File(getHome(), templateFile);
@@ -2119,7 +2161,8 @@ public class Notes extends Activity
         // Check if file changed
         if (changed)
             alertDialog(R.string.openNote, R.string.modified,
-                        R.string.saveNote, R.string.discard, (dialog, id) ->
+                        R.string.saveNote, R.string.discard,
+                        R.string.cancel, (dialog, id) ->
         {
             switch (id)
             {
@@ -2137,6 +2180,24 @@ public class Notes extends Activity
 
         else
             getNote();
+    }
+
+    // alertDialog
+    private void alertDialog(int title, int message, int positiveButton,
+                             int negativeButton, int neutralButton,
+                             DialogInterface.OnClickListener listener)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        // Add the buttons
+        builder.setPositiveButton(positiveButton, listener);
+        builder.setNegativeButton(negativeButton, listener);
+        builder.setNeutralButton(neutralButton, listener);
+
+        // Create the AlertDialog
+        builder.show();
     }
 
     // alertDialog
@@ -2328,24 +2389,6 @@ public class Notes extends Activity
     {
         switch (requestCode)
         {
-        case REQUEST_SAVE:
-            for (int i = 0; i < grantResults.length; i++)
-                if (permissions[i].equals(Manifest.permission
-                                          .WRITE_EXTERNAL_STORAGE) &&
-                    grantResults[i] == PackageManager.PERMISSION_GRANTED)
-                    // Granted, save file
-                    saveNote();
-            break;
-
-        case REQUEST_READ:
-            for (int i = 0; i < grantResults.length; i++)
-                if (permissions[i].equals(Manifest.permission
-                                          .READ_EXTERNAL_STORAGE) &&
-                    grantResults[i] == PackageManager.PERMISSION_GRANTED)
-                    // Granted, read file
-                    readNote(uri);
-            break;
-
         case REQUEST_OPEN:
             for (int i = 0; i < grantResults.length; i++)
                 if (permissions[i].equals(Manifest.permission
@@ -2353,15 +2396,6 @@ public class Notes extends Activity
                     grantResults[i] == PackageManager.PERMISSION_GRANTED)
                     // Granted, open file
                     getNote();
-            break;
-
-        case REQUEST_TEMPLATE:
-            for (int i = 0; i < grantResults.length; i++)
-                if (permissions[i].equals(Manifest.permission
-                                          .READ_EXTERNAL_STORAGE) &&
-                    grantResults[i] == PackageManager.PERMISSION_GRANTED)
-                    // Granted, load template
-                    loadTemplate();
             break;
         }
     }
@@ -2378,7 +2412,8 @@ public class Notes extends Activity
         // Check if file changed
         if (changed)
             alertDialog(R.string.openNote, R.string.modified,
-                        R.string.saveNote, R.string.discard, (dialog, id) ->
+                        R.string.saveNote, R.string.discard,
+                        R.string.cancel, (dialog, id) ->
         {
             switch (id)
             {
@@ -2771,7 +2806,8 @@ public class Notes extends Activity
         // Check if file changed
         if (changed)
             alertDialog(R.string.openNote, R.string.modified,
-                        R.string.saveNote, R.string.discard, (dialog, id) ->
+                        R.string.saveNote, R.string.discard,
+                        R.string.cancel, (dialog, id) ->
             {
                 switch (id)
                 {
