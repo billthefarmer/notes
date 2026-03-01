@@ -27,6 +27,8 @@ Android notebook
 
 The toolbar items which won’t necessarily all appear at once:
 
+* **Back** &ndash; Navigate back
+* **Forward** &ndash; Navigate forward
 * **New** &ndash; Start a new note
 * **Save** &ndash; Save note
 * **Open** &ndash; Open an existing note
@@ -169,9 +171,9 @@ Editor](https://svgbob-editor.netlify.app/).
 You may put external links in notes, so
 `[DuckDuckGo](https://duckduckgo.com)` will show a link to
 [DuckDuckGo](https://duckduckgo.com). Links will be followed if
-touched. Use the back button in the toolbar or the navigation bar to
-return to the note. Links to other notes may added as a relative
-reference `[AnotherNote](AnotherNote.md)`.
+touched. Use the back and forward buttons in the toolbar to navigate,
+the back button to return to the note. Links to other notes may added
+as a relative reference `[AnotherNote](AnotherNote.md)`.
 
 ## Maps
 You may put [OpenStreetMap](https://www.openstreetmap.org) maps in
