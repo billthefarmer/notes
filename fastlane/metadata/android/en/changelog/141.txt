@@ -1,0 +1,3 @@
+ * Use executor for background tasks
+ * Update SDK, permissions
+ * Update navigation
