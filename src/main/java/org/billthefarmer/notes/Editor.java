@@ -367,17 +367,14 @@ public class Editor extends Activity
     {
         StringBuilder stringBuilder = new StringBuilder();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED)
         {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED)
-            {
-                requestPermissions(new String[]
-                    {Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                     Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ);
+            requestPermissions(new String[]
+            {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+             Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ);
 
-                return stringBuilder;
-            }
+            return stringBuilder;
         }
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader
@@ -390,8 +387,13 @@ public class Editor extends Activity
                 stringBuilder.append(System.getProperty("line.separator"));
             }
         }
+
         catch (IOException e)
         {
+                alertDialog(R.string.appName, e.getMessage(),
+                            android.R.string.ok);
+
+                e.printStackTrace();
         }
 
         return stringBuilder;
@@ -400,17 +402,14 @@ public class Editor extends Activity
     // write
     private void write(CharSequence text, File file)
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED)
         {
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED)
-            {
-                requestPermissions(new String[]
-                    {Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                     Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_WRITE);
+            requestPermissions(new String[]
+            {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+             Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_WRITE);
 
-                return;
-            }
+            return;
         }
 
         if (file != null)
