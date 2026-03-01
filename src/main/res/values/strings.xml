@@ -5,6 +5,8 @@
 
   <string name="appName">Notes</string>
 
+  <string name="back">Back</string>
+  <string name="forward">Forward</string>
   <string name="newNote">New note</string>
   <string name="openNote">Open</string>
   <string name="openRecent">Open recent</string>

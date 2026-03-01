@@ -6,6 +6,16 @@
       android:showAsAction="never"
       android:title="@string/findAll" />
   <item
+      android:id="@+id/back"
+      android:icon="@drawable/ic_arrow_back_white_24dp"
+      android:showAsAction="ifRoom"
+      android:title="@string/back" />
+  <item
+      android:id="@+id/forward"
+      android:icon="@drawable/ic_arrow_forward_white_24dp"
+      android:showAsAction="ifRoom"
+      android:title="@string/forward" />
+  <item
       android:id="@+id/newNote"
       android:icon="@drawable/ic_add_white_24dp"
       android:showAsAction="ifRoom"

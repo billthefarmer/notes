@@ -541,6 +541,8 @@ public class Notes extends Activity
     @Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
+        menu.findItem(R.id.back).setVisible(markdownView.canGoBack());
+        menu.findItem(R.id.forward).setVisible(markdownView.canGoForward());
         menu.findItem(R.id.saveNote).setVisible(changed);
 
         // Set up search view
@@ -620,6 +622,12 @@ public class Notes extends Activity
         {
         case android.R.id.home:
             onBackPressed();
+            break;
+        case R.id.back:
+            goBack();
+            break;
+        case R.id.forward:
+            goForward();
             break;
         case R.id.newNote:
             newNote();
@@ -888,383 +896,362 @@ public class Notes extends Activity
         gestureDetector = new GestureDetector(this, new GestureListener());
         queryTextListener = new QueryTextListener();
 
-        if (markdownView != null)
+        markdownView.setWebViewClient(new WebViewClient()
         {
-            markdownView.setWebViewClient(new WebViewClient()
+            // onPageFinished
+            @Override
+            public void onPageFinished(WebView view, String url)
             {
-                // onPageFinished
-                @Override
-                public void onPageFinished(WebView view, String url)
+                // Check if local
+                if (URLUtil.isFileUrl(url))
                 {
-                    // Check if local
-                    if (URLUtil.isFileUrl(url))
+                    if (content != null)
+                        setTitle(FileUtils.getDisplayName(context, content,
+                                                          null, null));
+
+                    else if (uri != null)
+                        setTitle(uri.getLastPathSegment());
+
+                    view.clearHistory();
+                }
+
+                else
+                {
+                    if (view.canGoBack())
                     {
-                        getActionBar().setDisplayHomeAsUpEnabled(false);
-
-                        if (content != null)
-                            setTitle(FileUtils.getDisplayName(context, content,
-                                                              null, null));
-
-                        else if (uri != null)
-                            setTitle(uri.getLastPathSegment());
-
-                        view.clearHistory();
+                        // Get page title
+                        if (view.getTitle() != null)
+                            setTitle(view.getTitle());
                     }
 
                     else
                     {
-                        if (view.canGoBack())
-                        {
-                            getActionBar().setDisplayHomeAsUpEnabled(true);
+                        if (content != null)
+                            setTitle(FileUtils
+                                     .getDisplayName(context, content,
+                                                     null, null));
 
-                            // Get page title
-                            if (view.getTitle() != null)
-                                setTitle(view.getTitle());
-                        }
+                        else if (uri != null)
+                            setTitle(uri.getLastPathSegment());
 
-                        else
-                        {
-                            getActionBar().setDisplayHomeAsUpEnabled(false);
-
-                            if (content != null)
-                                setTitle(FileUtils
-                                         .getDisplayName(context, content,
-                                                         null, null));
-
-                            else if (uri != null)
-                                setTitle(uri.getLastPathSegment());
-                        }
+                        loadMarkdown();
                     }
                 }
 
-                // shouldOverrideUrlLoading
-                @Override
-                @SuppressWarnings("deprecation")
-                public boolean shouldOverrideUrlLoading(WebView view,
-                                                        String url)
-                {
-                    // Get uri
-                    Uri uri = Uri.parse(url);
-
-                    // Local url
-                    if (URLUtil.isFileUrl(url))
-                    {
-                        File file = new File(uri.getPath());
-
-                        if (file.exists())
-                        {
-                            getNote(Uri.fromFile(file));
-                            return true;
-                        }
-                    }
-
-                    // Asset url
-                    if (URLUtil.isAssetUrl(url))
-                    {
-                        getAssetFile(uri.getLastPathSegment());
-                        return true;
-                    }
-
-                    // Email url or use external browser
-                    if (external || MAILTO.equalsIgnoreCase(uri.getScheme()))
-                    {
-                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                        startActivity(intent);
-                        return true;
-                    }
-
-                    return false;
-                }
-            });
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            {
-                showEdit = () ->
-                {
-                    startAnimation(edit, R.anim.fade_in, View.VISIBLE);
-                    scrollUp = false;
-                    scrollDn = false;
-                };
-
-                // onScrollChange
-                markdownView.setOnScrollChangeListener((v, x, y, oldX, oldY) ->
-                {
-                    // Scroll up
-                    if (y > oldY)
-                    {
-                        if (!scrollUp)
-                        {
-                            // Hide button
-                            // edit.setVisibility(View.INVISIBLE);
-                            startAnimation(edit, R.anim.fade_out,
-                                           View.INVISIBLE);
-
-                            // Set flags
-                            scrollUp = true;
-                            scrollDn = false;
-                        }
-
-                        // Show button delayed
-                        markdownView.removeCallbacks(showEdit);
-                        markdownView.postDelayed(showEdit, VISIBLE_DELAY);
-                    }
-
-                    else if (!scrollDn)
-                    {
-                        // Set flags
-                        scrollUp = false;
-                        scrollDn = true;
-
-                        // Show button
-                        if (edit.getVisibility() != View.VISIBLE)
-                        {
-                            // edit.setVisibility(View.VISIBLE);
-                            startAnimation(edit, R.anim.fade_in, View.VISIBLE);
-                            markdownView.removeCallbacks(showEdit);
-                        }
-                   }
-                });
+                invalidateOptionsMenu();
             }
 
-            // On long click
-            markdownView.setOnLongClickListener(v ->
+            // shouldOverrideUrlLoading
+            @Override
+            @SuppressWarnings("deprecation")
+            public boolean shouldOverrideUrlLoading(WebView view,
+                                                    String url)
             {
+                // Get uri
+                Uri uri = Uri.parse(url);
+
+                // Local url
+                if (URLUtil.isFileUrl(url))
+                {
+                    File file = new File(uri.getPath());
+
+                    if (file.exists())
+                    {
+                        getNote(Uri.fromFile(file));
+                        return true;
+                    }
+                }
+
+                // Asset url
+                if (URLUtil.isAssetUrl(url))
+                {
+                    getAssetFile(uri.getLastPathSegment());
+                    return true;
+                }
+
+                // Email url or use external browser
+                if (external || MAILTO.equalsIgnoreCase(uri.getScheme()))
+                {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    startActivity(intent);
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        showEdit = () ->
+        {
+            startAnimation(edit, R.anim.fade_in, View.VISIBLE);
+            scrollUp = false;
+            scrollDn = false;
+        };
+
+        // onScrollChange
+        markdownView.setOnScrollChangeListener((v, x, y, oldX, oldY) ->
+        {
+            // Scroll up
+            if (y > oldY)
+            {
+                if (!scrollUp)
+                {
+                    // Hide button
+                    // edit.setVisibility(View.INVISIBLE);
+                    startAnimation(edit, R.anim.fade_out,
+                                   View.INVISIBLE);
+
+                    // Set flags
+                    scrollUp = true;
+                    scrollDn = false;
+                }
+
+                // Show button delayed
+                markdownView.removeCallbacks(showEdit);
+                markdownView.postDelayed(showEdit, VISIBLE_DELAY);
+            }
+
+            else if (!scrollDn)
+            {
+                // Set flags
+                scrollUp = false;
+                scrollDn = true;
+
                 // Show button
                 if (edit.getVisibility() != View.VISIBLE)
+                {
+                    // edit.setVisibility(View.VISIBLE);
                     startAnimation(edit, R.anim.fade_in, View.VISIBLE);
-                scrollUp = false;
-                scrollDn = false;
-                return false;
-            });
-        }
-
-        if (accept != null)
-        {
-            // On click
-            accept.setOnClickListener(v ->
-            {
-                // Get text
-                if (display)
-                    loadMarkdown();
-
-                // Animation
-                animateAccept();
-
-                // Close text search
-                if (searchItem != null && searchItem.isActionViewExpanded())
-                    searchItem.collapseActionView();
-
-                shown = true;
-            });
-
-            // On long click
-            accept.setOnLongClickListener(v ->
-            {
-                // Hide button
-                v.setVisibility(View.INVISIBLE);
-                scrollUp = true;
-                scrollDn = false;
-                return true;
-            });
-        }
-
-        if (edit != null)
-        {
-            // On click
-            edit.setOnClickListener(v ->
-            {
-                // Animation
-                animateEdit();
-
-                // Close text search
-                if (searchItem != null && searchItem.isActionViewExpanded())
-                    searchItem.collapseActionView();
-
-                // Scroll after delay
-                edit.postDelayed(() ->
-                {
-                    // Get selection
-                    int selection = textView.getSelectionStart();
-
-                    // Get text position
-                    int line = textView.getLayout().getLineForOffset(selection);
-                    int position = textView.getLayout().getLineBaseline(line);
-
-                    // Scroll to it
-                    int height = scrollView.getHeight();
-                    scrollView.smoothScrollTo(0, position - height / 2);
-                }, POSITION_DELAY);
-
-                shown = false;
-            });
-
-            // On long click
-            edit.setOnLongClickListener(v ->
-            {
-                // Hide button
-                v.setVisibility(View.INVISIBLE);
-                scrollUp = true;
-                scrollDn = false;
-                return true;
-            });
-        }
-
-        if (textView != null)
-        {
-            textView.addTextChangedListener(new TextWatcher()
-            {
-                // afterTextChanged
-                @Override
-                public void afterTextChanged(Editable s)
-                {
-                    // Text changed
-                    if (!changed)
-                    {
-                        changed = true;
-                        invalidateOptionsMenu();
-                    }
-
-                    if (!display)
-                        display = true;
+                    markdownView.removeCallbacks(showEdit);
                 }
+            }
+        });
 
-                // beforeTextChanged
-                @Override
-                public void beforeTextChanged(CharSequence s,
-                                              int start,
-                                              int count,
-                                              int after)
-                {
-                    if (searchItem != null &&
-                        searchItem.isActionViewExpanded())
-                    {
-                        final CharSequence query = searchView.getQuery();
+        // On long click
+        markdownView.setOnLongClickListener(v ->
+        {
+            // Show button
+            if (edit.getVisibility() != View.VISIBLE)
+                startAnimation(edit, R.anim.fade_in, View.VISIBLE);
+            scrollUp = false;
+            scrollDn = false;
+            return false;
+        });
 
-                        textView.postDelayed(() ->
-                        {
-                            if (searchItem != null &&
-                                searchItem.isActionViewExpanded())
-                            {
-                                if (query != null)
-                                    searchView.setQuery(query, false);
-                            }
-                        }, UPDATE_DELAY);
-                    }
-                }
+        // On click
+        accept.setOnClickListener(v ->
+        {
+            // Get text
+            if (display)
+                loadMarkdown();
 
-                // onTextChanged
-                @Override
-                public void onTextChanged(CharSequence s,
-                                          int start,
-                                          int before,
-                                          int count) {}
-            });
+            // Animation
+            animateAccept();
 
-            // onFocusChange
-            textView.setOnFocusChangeListener((v, hasFocus) ->
-            {
-                // Hide keyboard
-                InputMethodManager manager = (InputMethodManager)
-                    getSystemService(INPUT_METHOD_SERVICE);
-                if (!hasFocus)
-                    manager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            // Close text search
+            if (searchItem != null && searchItem.isActionViewExpanded())
+                searchItem.collapseActionView();
 
-                else
-                    manager.showSoftInput(textView, 0);
-            });
+            shown = true;
+        });
 
-            // On click
-            textView.setOnClickListener(v ->
+        // On long click
+        accept.setOnLongClickListener(v ->
+        {
+            // Hide button
+            v.setVisibility(View.INVISIBLE);
+            scrollUp = true;
+            scrollDn = false;
+            return true;
+        });
+
+        // On click
+        edit.setOnClickListener(v ->
+        {
+            // Animation
+            animateEdit();
+
+            // Close text search
+            if (searchItem != null && searchItem.isActionViewExpanded())
+                searchItem.collapseActionView();
+
+            // Scroll after delay
+            edit.postDelayed(() ->
             {
                 // Get selection
                 int selection = textView.getSelectionStart();
 
                 // Get text position
                 int line = textView.getLayout().getLineForOffset(selection);
-                int start = textView.getLayout().getLineStart(line);
-                int end = textView.getLayout().getLineEnd(line);
+                int position = textView.getLayout().getLineBaseline(line);
 
-                // Match checkbox pattern
-                Matcher matcher = CHECK_PATTERN.matcher(textView.getText());
-                if (matcher.region(start, end).find() &&
-                    matcher.end() >= selection)
-                {
-                    Editable editable = textView.getEditableText();
-                    switch (editable.charAt(matcher.start(1)))
-                    {
-                    case 'x':
-                    case 'X':
-                        editable.replace(matcher.start(1), matcher.end(1), " ");
-                        break;
+                // Scroll to it
+                int height = scrollView.getHeight();
+                scrollView.smoothScrollTo(0, position - height / 2);
+            }, POSITION_DELAY);
 
-                    case ' ':
-                        editable.replace(matcher.start(1), matcher.end(1), "x");
-                        break;
-                    }
-                }
-            });
+            shown = false;
+        });
 
-            // On long click
-            textView.setOnLongClickListener(v ->
+        // On long click
+        edit.setOnLongClickListener(v ->
+        {
+            // Hide button
+            v.setVisibility(View.INVISIBLE);
+            scrollUp = true;
+            scrollDn = false;
+            return true;
+        });
+
+        textView.addTextChangedListener(new TextWatcher()
+        {
+            // afterTextChanged
+            @Override
+            public void afterTextChanged(Editable s)
             {
+                // Text changed
+                if (!changed)
+                {
+                    changed = true;
+                    invalidateOptionsMenu();
+                }
+
+                if (!display)
+                    display = true;
+            }
+
+            // beforeTextChanged
+            @Override
+            public void beforeTextChanged(CharSequence s,
+                                          int start,
+                                          int count,
+                                          int after)
+            {
+                if (searchItem != null &&
+                    searchItem.isActionViewExpanded())
+                {
+                    final CharSequence query = searchView.getQuery();
+
+                    textView.postDelayed(() ->
+                    {
+                        if (searchItem != null &&
+                            searchItem.isActionViewExpanded())
+                        {
+                            if (query != null)
+                                searchView.setQuery(query, false);
+                        }
+                    }, UPDATE_DELAY);
+                }
+            }
+
+            // onTextChanged
+            @Override
+            public void onTextChanged(CharSequence s,
+                                      int start,
+                                      int before,
+                                      int count) {}
+        });
+
+        // onFocusChange
+        textView.setOnFocusChangeListener((v, hasFocus) ->
+        {
+            // Hide keyboard
+            InputMethodManager manager = (InputMethodManager)
+                getSystemService(INPUT_METHOD_SERVICE);
+            if (!hasFocus)
+                manager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+            else
+                manager.showSoftInput(textView, 0);
+        });
+
+        // On click
+        textView.setOnClickListener((v) ->
+        {
+            // Get selection
+            int selection = textView.getSelectionStart();
+
+            // Get text position
+            int line = textView.getLayout().getLineForOffset(selection);
+            int start = textView.getLayout().getLineStart(line);
+            int end = textView.getLayout().getLineEnd(line);
+
+            // Match checkbox pattern
+            Matcher matcher = CHECK_PATTERN.matcher(textView.getText());
+            if (matcher.region(start, end).find() &&
+                matcher.end() >= selection)
+            {
+                Editable editable = textView.getEditableText();
+                switch (editable.charAt(matcher.start(1)))
+                {
+                case 'x':
+                case 'X':
+                    editable.replace(matcher.start(1), matcher.end(1), " ");
+                    break;
+
+                case ' ':
+                    editable.replace(matcher.start(1), matcher.end(1), "x");
+                    break;
+                }
+            }
+        });
+
+        // On long click
+        textView.setOnLongClickListener(v ->
+        {
+            // Show button
+            if (accept.getVisibility() != View.VISIBLE)
+                startAnimation(accept, R.anim.fade_in, View.VISIBLE);
+            scrollUp = false;
+            scrollDn = false;
+            return false;
+        });
+
+        showAccept = () ->
+        {
+            startAnimation(accept, R.anim.fade_in, View.VISIBLE);
+            scrollUp = false;
+        };
+
+        // onScrollChange
+        scrollView.setOnScrollChangeListener((v, x, y, oldX, oldY) ->
+        {
+            // Scroll up
+            if (y > oldY)
+            {
+                if (!scrollUp)
+                {
+                    // Hide button
+                    // accept.setVisibility(View.INVISIBLE);
+                    startAnimation(accept, R.anim.fade_out,
+                                   View.INVISIBLE);
+
+                    // Set flags
+                    scrollUp = true;
+                    scrollDn = false;
+                }
+
+                // Show button delayed
+                scrollView.removeCallbacks(showAccept);
+                scrollView.postDelayed(showAccept, VISIBLE_DELAY);
+            }
+
+            else if (!scrollDn)
+            {
+                // Set flags
+                scrollUp = false;
+                scrollDn = true;
+
                 // Show button
                 if (accept.getVisibility() != View.VISIBLE)
-                    startAnimation(accept, R.anim.fade_in, View.VISIBLE);
-                scrollUp = false;
-                scrollDn = false;
-                return false;
-            });
-        }
-
-        if (scrollView != null)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            {
-                showAccept = () ->
                 {
-                    startAnimation(accept, R.anim.fade_in, View.VISIBLE);
-                    scrollUp = false;
-                };
-
-                // onScrollChange
-                scrollView.setOnScrollChangeListener((v, x, y, oldX, oldY) ->
-                {
-                    // Scroll up
-                    if (y > oldY)
-                    {
-                        if (!scrollUp)
-                        {
-                            // Hide button
-                            // accept.setVisibility(View.INVISIBLE);
-                            startAnimation(accept, R.anim.fade_out,
-                                           View.INVISIBLE);
-
-                            // Set flags
-                            scrollUp = true;
-                            scrollDn = false;
-                        }
-
-                        // Show button delayed
-                        scrollView.removeCallbacks(showAccept);
-                        scrollView.postDelayed(showAccept, VISIBLE_DELAY);
-                    }
-
-                    else if (!scrollDn)
-                    {
-                        // Set flags
-                        scrollUp = false;
-                        scrollDn = true;
-
-                        // Show button
-                        if (accept.getVisibility() != View.VISIBLE)
-                        {
-                            // accept.setVisibility(View.VISIBLE);
-                            startAnimation(accept, R.anim.fade_in,
-                                           View.VISIBLE);
-                            scrollView.removeCallbacks(showAccept);
-                        }
-                    }
-                });
+                    // accept.setVisibility(View.VISIBLE);
+                    startAnimation(accept, R.anim.fade_in,
+                                   View.VISIBLE);
+                    scrollView.removeCallbacks(showAccept);
+                }
             }
+        });
     }
 
     // animateAccept
@@ -2056,6 +2043,20 @@ public class Notes extends Activity
         }
 
         return text;
+    }
+
+    // goBack
+    private void goBack()
+    {
+        if (markdownView.canGoBack())
+            markdownView.goBack();
+    }
+
+    // goForward
+    private void goForward()
+    {
+        if (markdownView.canGoForward())
+            markdownView.goForward();
     }
 
     // editStyles
