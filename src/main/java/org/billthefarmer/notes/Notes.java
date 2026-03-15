@@ -34,6 +34,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -152,7 +153,7 @@ public class Notes extends Activity
     public final static String NOTES_FOLDER = "Notes";
     public final static String NOTES_FILE = "Notes.md";
     public final static String NEW_FILE = "Untitled.md";
-    public final static String NOTES_IMAGE = "Notes.png";
+    public final static String DOT_PNG = ".png";
     public final static String TEMPLATE_FILE = "Template.md";
     public final static String APPLICATION_ZIP = "application/zip";
     public final static String TEXT_PLAIN = "text/plain";
@@ -1575,11 +1576,14 @@ public class Notes extends Activity
         {
             intent.setType(IMAGE_PNG);
 
-            markdownView.setDrawingCacheEnabled(true);
-            Bitmap bitmap = Bitmap.createBitmap(markdownView.getDrawingCache());
-            markdownView.setDrawingCacheEnabled(false);
+            Bitmap bitmap = Bitmap.createBitmap(markdownView.getWidth(),
+                                                markdownView.getHeight(),
+                                                Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bitmap);
+            markdownView.draw(canvas);
 
-            File image = new File(getCacheDir(), NOTES_IMAGE);
+            String name = UUID.randomUUID().toString() + DOT_PNG;
+            File image = new File(getCacheDir(), name);
             try (FileOutputStream out = new FileOutputStream(image))
             {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
@@ -2122,6 +2126,7 @@ public class Notes extends Activity
         file = new File(getHome(), useNewTemplate? getNewName(): NEW_FILE);
         uri = Uri.fromFile(file);
         path = uri.getPath();
+        content = null;
 
         setTitle(uri.getLastPathSegment());
 
