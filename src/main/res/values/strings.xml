@@ -76,6 +76,7 @@
   <string name="access">Access all files</string>
 
   <string name="ok">OK</string>
+  <string name="no_app">No application found to open this link</string>
   <string name="reload">Reload</string>
   <string name="overwrite">Overwrite</string>
   <string name="discard">Discard</string>

@@ -971,7 +971,14 @@ public class Notes extends Activity
                 if (external || MAILTO.equalsIgnoreCase(uri.getScheme()))
                 {
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    startActivity(intent);
+                    try
+                    {
+                        startActivity(intent);
+                    }
+                    catch (Exception e)
+                    {
+                        showToast(R.string.no_app);
+                    }
                     return true;
                 }
 
