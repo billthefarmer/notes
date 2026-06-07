@@ -971,12 +971,24 @@ public class Notes extends Activity
                 if (external || MAILTO.equalsIgnoreCase(uri.getScheme()))
                 {
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    startActivity(intent);
+                    if (intent.resolveActivity(getPackageManager()) != null)
+                        startActivity(intent);
                     return true;
                 }
 
                 return false;
             }
+                // onReceivedError
+                @Override
+                @SuppressWarnings("deprecation")
+                public void onReceivedError(WebView view,
+                                            int errorCode,
+                                            String description,
+                                            String failingUrl)
+                {
+                    Log.w(TAG, "WebView load error " + errorCode
+                          + ": " + description + " @" + failingUrl);
+                }
         });
 
         showEdit = () ->
