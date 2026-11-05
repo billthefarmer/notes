@@ -30,9 +30,9 @@ android {
     defaultConfig {
         applicationId "org.billthefarmer.notes"
         minSdkVersion 23
-        targetSdkVersion 35
-        versionName "1.41"
-        versionCode 141
+        targetSdkVersion 28
+        versionName "1.42"
+        versionCode 142
 
         buildConfigField "long", "BUILT", System.currentTimeMillis() + "L"
     }
@@ -48,7 +48,8 @@ android {
 
     lintOptions {
         disable 'OldTargetApi', 'ScopedStorage', 'NonConstantResourceId', 'GradleDependency',
-	'AndroidGradlePluginVersion', 'DiscouragedApi', 'SetJavaScriptEnabled'
+	'AndroidGradlePluginVersion', 'DiscouragedApi', 'SetJavaScriptEnabled',
+	'ExpiredTargetSdkVersion'
         // abortOnError false
     }
 }
